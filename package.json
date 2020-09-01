@@ -1,0 +1,40 @@
+{
+  "name": "@hyperstone/stardust",
+  "version": "0.0.1",
+  "repository": "https://github.com/HyperstoneNet/Stardust.git",
+  "author": "Hyperstone Developers <devs@hyperstone.io>",
+  "scripts": {
+    "start": "nodemon",
+    "start:client": "ts-node src/client/test.ts",
+    "test": "jest",
+    "clear-test-cache": "jest --clearCache"
+  },
+  "dependencies": {
+    "@bwatton/logger": "^1.0.4",
+    "@yarnpkg/pnpify": "^2.0.0-rc.19",
+    "chalk": "^3.0.0",
+    "math3d": "^0.2.2",
+    "tsee": "^1.3.0"
+  },
+  "devDependencies": {
+    "@babel/core": "^7.9.0",
+    "@babel/preset-env": "^7.9.0",
+    "@babel/preset-typescript": "^7.9.0",
+    "@types/chalk": "^2.2.0",
+    "@types/jest": "^25.1.4",
+    "@types/math3d": "^0.2.3",
+    "@types/node": "^13.9.1",
+    "@types/pbf": "^3.0.2",
+    "@typescript-eslint/eslint-plugin": "^3.7.1",
+    "@typescript-eslint/parser": "^3.7.1",
+    "babel-jest": "^25.1.0",
+    "eslint": "^7.5.0",
+    "eslint-plugin-deprecation": "^1.1.0",
+    "jest": "^26.1.0",
+    "nodemon": "^2.0.4",
+    "ts-jest": "^26.1.2",
+    "ts-node": "^9.0.0",
+    "tslint": "^6.1.0",
+    "typescript": "^3.8.3"
+  }
+}
