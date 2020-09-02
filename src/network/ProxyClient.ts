@@ -7,7 +7,7 @@ import { BundledPacket } from './raknet/BundledPacket'
 import { Socket } from 'dgram'
 import { NewIncomingConnection } from './raknet/NewIncomingConnection'
 import { PacketBatch } from './bedrock/PacketBatch'
-import { Transfer, ChangeDimension, BatchedPacket, Disconnect, DisconnectNotification, Login, ResourcePacksInfo, ResourcePacksResponse, PacketViolationWarning, StartGame, RequestChunkRadius, ChunkRadiusUpdated, SetLocalPlayerInitialized } from './bedrock'
+import { Transfer, ChangeDimension, Disconnect, Login, ResourcePacksInfo, ResourcePacksResponse, PacketViolationWarning, StartGame, RequestChunkRadius, ChunkRadiusUpdated, SetLocalPlayerInitialized, DisconnectionNotification } from './bedrock'
 import { ConnectedPing } from './raknet/ConnectedPing'
 import { Vector3 } from 'math3d'
 import { Stardust } from '../Stardust'
@@ -18,6 +18,7 @@ import { ConnectedPong } from './raknet/ConnectedPong'
 import { PlayStatus } from './bedrock/PlayStatus'
 import { bundlePackets } from '../utils'
 import { ProxyLogger } from '../utils/ProxyLogger'
+import { BatchedPacket } from './bedrock/BatchedPacket'
 
 export enum Direction {
   DOWNSTREAM,
@@ -724,7 +725,7 @@ export class ProxyClient {
 
   private async smoothTransfer(ip: string, port: number) {
     this.state = State.P_INITIALISATION
-    this.sendBundled(new DisconnectNotification(), Direction.UPSTREAM)
+    this.sendBundled(new DisconnectionNotification(), Direction.UPSTREAM)
 
     await this.setUpstreamAddr({ ip, port, family: ip.includes(':') ? 6 : 4 })
 

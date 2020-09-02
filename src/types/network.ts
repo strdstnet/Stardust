@@ -1,5 +1,6 @@
 import { Socket } from 'dgram'
 import { PacketData } from '../network/PacketData'
+import { Packet } from '../network/Packet'
 
 export interface IAddress {
   ip: string,
@@ -25,6 +26,12 @@ export const FamilyIntToStr = {
 export const FamilyStrToInt = {
   [AddressFamilyStr.IPV4]: AddressFamily.IPV4,
   [AddressFamilyStr.IPV6]: AddressFamily.IPV6,
+}
+
+export interface ISendPacketArgs {
+  packet: Packet<any>,
+  socket: Socket,
+  address: IAddress,
 }
 
 export interface IPacketHandlerArgs {

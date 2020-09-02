@@ -50,7 +50,6 @@ export class Login extends BatchedPacket<ILogin> {
     super(Packets.LOGIN, [
       { name: 'protocol', parser: DataType.INT },
       {
-        name: 'logintest',
         parser({ type, data, props }) {
           if(type === ParserType.DECODE) {
             const sub = data.readByteArray()

@@ -117,20 +117,18 @@ export function parseBundledPackets(data: PacketData): Array<BundledPacket<any>>
     const packetId = data.buf[data.pos]
 
     let packet: BundledPacket<any> | null = null
-    if(props.hasSplit) {
+    // if(props.hasSplit) {
+    if(props.hasSplit && props.splitIndex > 0) {
       // if(props.splitIndex < props.splitCount - 1) {
-      packet = new PartialPacket()
+      packet = new PartialPacket(packetId)
       // } else {
       //   packet = new ReassembledPacket()
       // }
-
-      packet.props = props
-      packet.data = data.readByteArray(length)
     } else {
       switch(packetId) {
-        // case Packets.CONNECTION_REQUEST:
-        //   packet = new ConnectionRequest()
-        //   break
+        case Packets.CONNECTION_REQUEST:
+          packet = new ConnectionRequest()
+          break
         case Packets.CONNECTION_REQUEST_ACCEPTED:
           packet = new ConnectionRequestAccepted()
           break
@@ -154,8 +152,13 @@ export function parseBundledPackets(data: PacketData): Array<BundledPacket<any>>
           // console.log(`UNKNOWN BUNDLED: ${packetId}`)
           // throw new Error(`Unknown packet: (dec) ${data.buf[data.pos]}`)
       }
+    }
 
-      packet.props = props
+    packet.props = props
+
+    if(props.hasSplit) {
+      packet.data = data.readByteArray(length)
+    } else {
       packet.decode(new PacketData(data.read(length)), props)
     }
 
