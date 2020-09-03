@@ -5,60 +5,50 @@ import { ParserType, IParserArgs } from '../Packet'
 interface IResourcePack {
   id: string,
   version: string,
-  size: bigint, // bytes
-  encryptionKey: string,
   subPackName: string,
-  contentId: string,
-  hasScripts: boolean,
 }
 
-interface IResourcePacksInfo {
+interface IResourcePacksStack {
   mustAccept: boolean,
-  hasScripts: boolean,
   behaviourPacks: IResourcePack[],
   resourcePacks: IResourcePack[],
+  experimental: boolean,
+  gameVersion: string,
 }
 
 function parsePacks(behaviourPacks: boolean) {
-  return ({ type, data, props }: IParserArgs<IResourcePacksInfo>) => {
+  return ({ type, data, props }: IParserArgs<IResourcePacksStack>) => {
     const prop = behaviourPacks ? 'behaviourPacks' : 'resourcePacks'
     if(type === ParserType.DECODE) {
       props[prop] = []
 
-      for(let i = 0; i < data.readLShort(); i++) {
+      for(let i = 0; i < data.readUnsignedVarInt(); i++) {
         props[prop].push({
           id: data.readString(),
           version: data.readString(),
-          size: data.readLLong(),
-          encryptionKey: data.readString(),
           subPackName: data.readString(),
-          contentId: data.readString(),
-          hasScripts: data.readBoolean(),
         })
       }
     } else {
-      data.writeLShort(props[prop].length)
+      data.writeUnsignedVarInt(props[prop].length)
       for(const pack of props[prop]) {
         data.writeString(pack.id)
         data.writeString(pack.version)
-        data.writeLLong(pack.size)
-        data.writeString(pack.encryptionKey)
         data.writeString(pack.subPackName)
-        data.writeString(pack.contentId)
-        data.writeBoolean(pack.hasScripts)
       }
     }
   }
 }
 
-export class ResourcePacksInfo extends BatchedPacket<IResourcePacksInfo> {
+export class ResourcePacksStack extends BatchedPacket<IResourcePacksStack> {
 
-  constructor(p?: IResourcePacksInfo) {
-    super(Packets.RESOURCE_PACKS_INFO, [
+  constructor(p?: IResourcePacksStack) {
+    super(Packets.RESOURCE_PACKS_STACK, [
       { name: 'mustAccept', parser: DataType.BOOLEAN },
-      { name: 'hasScripts', parser: DataType.BOOLEAN },
       { parser: parsePacks(true) },
       { parser: parsePacks(false) },
+      { name: 'experimental', parser: DataType.BOOLEAN },
+      { name: 'gameVersion', parser: DataType.STRING },
     ])
 
     if(p) this.props = Object.assign({}, p)

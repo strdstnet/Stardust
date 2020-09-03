@@ -1,4 +1,4 @@
-import { BundledPacket } from '../raknet/BundledPacket'
+import { BundledPacket, BPacketOpt } from '../raknet/BundledPacket'
 import { Packets } from '../../types'
 import { BatchedPacket } from './BatchedPacket'
 import { ParserType } from '../Packet'
@@ -13,6 +13,7 @@ import { ResourcePacksInfo } from './ResourcePacksInfo'
 import { StartGame } from './StartGame'
 import { ChunkRadiusUpdated } from './ChunkRadiusUpdated'
 import { UnknownBatchedPacket } from '../custom'
+import { ResourcePacksResponse } from './ResourcePacksResponse'
 
 interface IPacketBatch {
   packets: Array<BatchedPacket<any>>,
@@ -27,7 +28,7 @@ export class PacketBatch extends BundledPacket<IPacketBatch> {
   private static senderSubId = 0
   private static recipientSubId = 0
 
-  constructor(p?: IPacketBatch) {
+  constructor(p?: BPacketOpt<IPacketBatch>) {
     super(Packets.PACKET_BATCH, [
       {
         parser({ type, data, props }) {
@@ -68,6 +69,9 @@ export class PacketBatch extends BundledPacket<IPacketBatch> {
                   break
                 case Packets.RESOURCE_PACKS_INFO:
                   packet = new ResourcePacksInfo()
+                  break
+                case Packets.RESOURCE_PACKS_RESPONSE:
+                  packet = new ResourcePacksResponse()
                   break
                 case Packets.START_GAME:
                   packet = new StartGame()

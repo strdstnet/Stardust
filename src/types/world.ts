@@ -35,3 +35,52 @@ export enum RespawnState {
   SERVER_READY = 1,
   CLIENT_READY = 2,
 }
+
+export enum BiomeType {
+
+}
+
+export enum GeneratorType {
+  FINITE_OVERWORLD = 0,
+  OVERWORLD        = 1,
+  FLAT             = 2,
+  NETHER           = 3,
+  END              = 4,
+}
+
+export enum Difficulty {
+  PEACEFUL = 0,
+}
+
+export enum GameRuleType {
+  BOOL  = 1,
+  INT   = 2,
+  FLOAT = 3,
+}
+
+export interface IGameRule {
+  name: string,
+  type: GameRuleType,
+}
+
+export interface IBoolGameRule extends IGameRule {
+  type: GameRuleType.BOOL,
+  value: boolean,
+}
+
+export interface IIntGameRule extends IGameRule {
+  type: GameRuleType.INT,
+  value: number,
+}
+
+export interface IFloatGameRule extends IGameRule {
+  type: GameRuleType.FLOAT,
+  value: number,
+}
+
+export enum PlayerPermissions {
+  VISITOR  = 0,
+  MEMBER   = 1,
+  OPERATOR = 2,
+  CUSTOM   = 3,
+}

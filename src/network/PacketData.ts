@@ -306,6 +306,21 @@ export class PacketData {
     if(skip) this.pos += DataLengths.L_SHORT
   }
 
+  public writeSignedLShort(val: number, skip = true): void {
+    this.alloc(DataLengths.L_SHORT)
+
+    this.buf.writeInt16LE(val, this.pos)
+    if(skip) this.pos += DataLengths.L_SHORT
+  }
+
+  public readSignedLShort(skip = true): number {
+    const val = this.buf.readInt16LE(this.pos)
+
+    if(skip) this.pos += DataLengths.L_SHORT
+
+    return val
+  }
+
   public readByteArray(length: number = this.readUnsignedVarInt(), skip = true): PacketData {
     return new PacketData(this.read(length, skip))
   }

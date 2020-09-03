@@ -1,3 +1,5 @@
+import { Vector3 } from 'math3d'
+
 export type Props = Record<string, never>
 
 export enum DataType {
@@ -11,9 +13,11 @@ export enum DataType {
   SECURITY,
   BOOLEAN,
   ADDRESS,
+  L_INT,
   L_TRIAD,
   L_SHORT,
   L_FLOAT,
+  L_LONG,
   VECTOR3_FLOAT,
   VECTOR3_VARINT,
   VECTOR3,
@@ -21,4 +25,20 @@ export enum DataType {
   U_VARINT,
   VARLONG,
   U_VARLONG,
+}
+
+export class PlayerPosition {
+
+  public location: Vector3
+
+  constructor(
+    locationX: number,
+    locationY: number,
+    locationZ: number,
+    public pitch: number,
+    public yaw: number
+  ) {
+    this.location = new Vector3(locationX, locationY, locationZ)
+  }
+
 }

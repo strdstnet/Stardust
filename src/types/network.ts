@@ -58,3 +58,11 @@ export interface IBundledPacket {
   splitId: number,
   splitIndex: number,
 }
+
+export enum MultiplayerVisibility {
+  NONE               = 0,
+  INVITE             = 1,
+  FRIENDS            = 2,
+  FRIENDS_OF_FRIENDS = 3,
+  PUBLIC             = 4,
+}

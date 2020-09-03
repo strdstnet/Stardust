@@ -1,5 +1,6 @@
 import { PacketData } from './PacketData'
 import { DataType } from '../types'
+import Logger from '@bwatton/logger'
 
 export enum ParserType {
   ENCODE,
@@ -94,6 +95,12 @@ const encodeDataType = (data: PacketData, type: DataType, value: any, p?: string
     case DataType.L_FLOAT:
       data.writeLFloat(value)
       break
+    case DataType.L_INT:
+      data.writeLInt(value)
+      break
+    case DataType.L_LONG:
+      data.writeLLong(value)
+      break
   }
 }
 
@@ -135,10 +142,16 @@ const decodeDataType = (data: PacketData, type: DataType) => {
       return data.readVarLong()
     case DataType.L_FLOAT:
       return data.readLFloat()
+    case DataType.L_INT:
+      return data.readLInt()
+    case DataType.L_LONG:
+      return data.readLLong()
   }
 }
 
 export abstract class Packet<T> {
+
+  protected static logger = new Logger('Packet')
 
   protected encodeId = true
   protected decodeId = true
@@ -149,6 +162,10 @@ export abstract class Packet<T> {
 
   constructor(public id: number, protected schema: Array<IPacketSchemaItem<T>>) {
 
+  }
+
+  protected get logger(): Logger {
+    return Packet.logger
   }
 
   public encode(props: T = {} as T): PacketData {

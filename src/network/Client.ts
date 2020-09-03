@@ -1,4 +1,4 @@
-import { IAddress, IClientArgs, Packets, Protocol, DummyAddress, IBundledPacket } from '../types'
+import { IAddress, IClientArgs, Packets, Protocol, DummyAddress, IBundledPacket, PlayStatusType, ResourcePackResponseStatus, PlayerPosition } from '../types'
 import Logger from '@bwatton/logger'
 import { PacketData, BitFlag } from './PacketData'
 import { PacketBundle } from './raknet/PacketBundle'
@@ -9,11 +9,13 @@ import { Server } from '../Server'
 import { ConnectionRequestAccepted } from './raknet/ConnectionRequestAccepted'
 import { NewIncomingConnection } from './raknet/NewIncomingConnection'
 import { PacketBatch } from './bedrock/PacketBatch'
-import { Disconnect, ResourcePacksInfo, Login } from './bedrock'
+import { Disconnect, ResourcePacksInfo, Login, ResourcePacksStack, PlayStatus, ResourcePacksResponse, StartGame } from './bedrock'
 import { ConnectedPing } from './raknet/ConnectedPing'
 import { ConnectedPong } from './raknet/ConnectedPong'
 import { PartialPacket } from './custom'
 import { BatchedPacket } from './bedrock/BatchedPacket'
+import { Reliability } from '../utils'
+import { Player } from '../Player'
 
 interface SplitQueue {
   [splitId: number]: BundledPacket<any>,
@@ -31,6 +33,10 @@ export class Client {
 
   // private splitQueue: Map<number, BundledPacket<any>> = new Map()
   private splitQueue: SplitQueue = {}
+
+  public sequenceNumber = -1
+
+  private player!: Player
 
   constructor({ id, address, socket, mtuSize }: IClientArgs) {
     this.id = id
@@ -131,7 +137,7 @@ export class Client {
     })
   }
 
-  private send(packet: BundledPacket<any>, sequenceNumber = 0) {
+  private send(packet: BundledPacket<any>, sequenceNumber = ++this.sequenceNumber) {
     Server.current.send({
       packet: new PacketBundle({
         sequenceNumber,
@@ -143,10 +149,15 @@ export class Client {
   }
 
   // TODO: Add client ticks and send queue
-  private sendBatched(packet: BatchedPacket<any>, sequenceNumber = 0) {
+  private sendBatched(packet: BatchedPacket<any>, sequenceNumber?: number) {
     this.send(new PacketBatch({
       packets: [packet],
+      reliability: Reliability.ReliableOrdered,
     }), sequenceNumber)
+  }
+
+  private sendBatchedMulti(packets: BatchedPacket<any>[], sequenceNumber?: number) {
+    this.send(new PacketBatch({ packets }), sequenceNumber)
   }
 
   private handleConnectedPing(packet: ConnectedPing) {
@@ -177,6 +188,9 @@ export class Client {
           case Packets.LOGIN:
             this.handleLogin(pk)
             break
+          case Packets.RESOURCE_PACKS_RESPONSE:
+            this.handleResourcePacksResponse(pk)
+            break
           default:
             this.logger.debug(`UNKNOWN BATCHED PACKET ${pk.id}`)
         }
@@ -189,12 +203,55 @@ export class Client {
   }
 
   private handleLogin(packet: Login) {
+    // TODO: Login verification, already logged in?, ...
+
+    const { displayName } = packet.props
+
+    this.player = new Player(displayName)
+
     // TODO: Actually implement packs
-    this.sendBatched(new ResourcePacksInfo({
-      mustAccept: false,
-      hasScripts: false,
-      behaviourPacks: [],
-      resourcePacks: [],
+    this.sendBatchedMulti([
+      new PlayStatus({
+        status: PlayStatusType.SUCCESS,
+      }),
+      new ResourcePacksInfo({
+        mustAccept: false,
+        hasScripts: false,
+        behaviourPacks: [],
+        resourcePacks: [],
+      }),
+    ])
+  }
+
+  private handleResourcePacksResponse(packet: ResourcePacksResponse) {
+    const { packIds, status } = packet.props
+    this.logger.debug(`Got resource pack status: ${packet.props.status}`, packet.props.packIds)
+
+    // TODO: Implement other statuses
+    switch(status) {
+      case ResourcePackResponseStatus.HAVE_ALL_PACKS:
+        this.sendBatched(new ResourcePacksStack({
+          mustAccept: false,
+          behaviourPacks: [],
+          resourcePacks: [],
+          experimental: false,
+          gameVersion: Protocol.BEDROCK_VERSION,
+        }))
+        break
+      case ResourcePackResponseStatus.COMPLETED:
+        this.completeLogin()
+        break
+      default:
+        this.logger.error(`Unknown ResourcePackResponseStatus: ${status}`)
+    }
+  }
+
+  private completeLogin() {
+    this.sendBatched(new StartGame({
+      entityUniqueId: this.player.id,
+      entityRuntimeId: this.player.id,
+      playerPosition: new PlayerPosition(0, 0, 0, 0, 0),
     }))
   }
+
 }
