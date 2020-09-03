@@ -44,7 +44,7 @@ const encodeDataType = (data: PacketData, type: DataType, value: any, p?: string
       data.writeByte(value)
       break
     case DataType.LONG:
-      data.writeLong(value)
+      data.writeLong(value instanceof BigInt ? Number(value) : value)
       break
     case DataType.SHORT:
       data.writeShort(value)

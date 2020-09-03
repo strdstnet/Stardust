@@ -1,4 +1,4 @@
-import { IAddress, IClientArgs, Packets, Protocol, DummyAddress, IBundledPacket, PlayStatusType, ResourcePackResponseStatus, PlayerPosition } from '../types'
+import { IAddress, IClientArgs, Packets, Protocol, DummyAddress, IBundledPacket, PlayStatusType, ResourcePackResponseStatus, PlayerPosition, AdventureSettingsFlag, PlayerPermissions, CommandPermissions } from '../types'
 import Logger from '@bwatton/logger'
 import { PacketData, BitFlag } from './PacketData'
 import { PacketBundle } from './raknet/PacketBundle'
@@ -9,7 +9,7 @@ import { Server } from '../Server'
 import { ConnectionRequestAccepted } from './raknet/ConnectionRequestAccepted'
 import { NewIncomingConnection } from './raknet/NewIncomingConnection'
 import { PacketBatch } from './bedrock/PacketBatch'
-import { Disconnect, ResourcePacksInfo, Login, ResourcePacksStack, PlayStatus, ResourcePacksResponse, StartGame } from './bedrock'
+import { Disconnect, ResourcePacksInfo, Login, ResourcePacksStack, PlayStatus, ResourcePacksResponse, StartGame, EntityDefinitionList, BiomeDefinitionList, UpdateAttributes, AvailableCommands, AdventureSettings, SetActorData } from './bedrock'
 import { ConnectedPing } from './raknet/ConnectedPing'
 import { ConnectedPong } from './raknet/ConnectedPong'
 import { PartialPacket } from './custom'
@@ -208,6 +208,7 @@ export class Client {
     const { displayName } = packet.props
 
     this.player = new Player(displayName)
+    this.initPlayerListeners()
 
     // TODO: Actually implement packs
     this.sendBatchedMulti([
@@ -252,6 +253,58 @@ export class Client {
       entityRuntimeId: this.player.id,
       playerPosition: new PlayerPosition(0, 0, 0, 0, 0),
     }))
+
+    this.sendBatchedMulti([
+      new EntityDefinitionList(),
+      new BiomeDefinitionList(),
+    ])
+
+    this.sendAttributes(true)
+
+    // TODO: Name tag visible, can climb, immobile
+    // https://github.com/pmmp/PocketMine-MP/blob/e47a711494c20ac86fea567b44998f2e24f3dbc7/src/pocketmine/Player.php#L2255
+
+    Server.logger.info(`${this.player.name} logged in from ${this.address.ip}:${this.address.port}`)
+
+    this.sendBatched(new AvailableCommands())
+
+    this.sendBatched(new AdventureSettings({
+      flags: [
+        [AdventureSettingsFlag.WORLD_IMMUTABLE, this.player.isSpectator()],
+        [AdventureSettingsFlag.NO_PVP, this.player.isSpectator()],
+        [AdventureSettingsFlag.AUTO_JUMP, this.player.autoJump],
+        [AdventureSettingsFlag.ALLOW_FLIGHT, this.player.allowFlight],
+        [AdventureSettingsFlag.NO_CLIP, this.player.isSpectator()], // TODO: Disable?
+        [AdventureSettingsFlag.FLYING, this.player.flying],
+      ],
+      commandPermission: CommandPermissions.NORMAL,
+      playerPermission: PlayerPermissions.MEMBER,
+      entityUniqueId: this.player.id,
+    }))
+
+    this.player.notifySelf()
+  }
+
+  private sendAttributes(all = false): void {
+    const entries = all ? this.player.attributeMap.all() : this.player.attributeMap.needSend()
+
+    if(entries.length) {
+      this.sendBatched(new UpdateAttributes({
+        entityRuntimeId: this.player.id,
+        entries,
+      }))
+
+      entries.forEach(e => e.markSynchronized())
+    }
+  }
+
+  private initPlayerListeners() {
+    this.player.on('Client:entityNotification', (entityRuntimeId, metadata) => {
+      this.sendBatched(new SetActorData({
+        entityRuntimeId,
+        metadata,
+      }))
+    })
   }
 
 }

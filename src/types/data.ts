@@ -2,6 +2,8 @@ import { Vector3 } from 'math3d'
 
 export type Props = Record<string, never>
 
+export const FLOAT_MAX_VAL = 340282346638528859811704183484516925440
+
 export enum DataType {
   BYTE,
   LONG,

@@ -237,7 +237,7 @@ export class PacketData {
     return 0
   }
 
-  public readUnsignedVarLong(skip = true): number {
+  public readUnsignedVarLong(skip = true): bigint {
     let value = 0
 
     for(let i = 0; i <= 63; i += 7) {
@@ -245,14 +245,16 @@ export class PacketData {
       value |= ((b & 0x7f) << i)
 
       if ((b & 0x80) === 0) {
-        return value
+        return BigInt(value)
       }
     }
 
-    return 0
+    return 0n
   }
 
-  public writeUnsignedVarLong(val: number): void {
+  public writeUnsignedVarLong(v: bigint): void {
+    let val = Number(v)
+
     for (let i = 0; i < 10; i++) {
       if ((val >> 7) !== 0) {
         this.writeByte(val | 0x80)
@@ -499,14 +501,15 @@ export class PacketData {
     this.writeVarInt(v3.z)
   }
 
-  public readVarLong(skip = true): number {
-    const raw = this.readUnsignedVarLong(skip)
+  public readVarLong(skip = true): bigint {
+    const raw = Number(this.readUnsignedVarLong(skip))
     const tmp = (((raw << 63) >> 63) ^ raw) >> 1
-    return tmp ^ (raw & -2147483648)
+    return BigInt(tmp ^ (raw & -2147483648))
   }
 
-  public writeVarLong(v: number): void {
-    this.writeUnsignedVarLong((v << 1) ^ (v >> 63))
+  public writeVarLong(v: bigint): void {
+    const val = Number(v)
+    this.writeUnsignedVarLong(BigInt((val << 1) ^ (val >> 63)))
   }
 
 }

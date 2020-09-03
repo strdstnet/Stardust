@@ -2,7 +2,7 @@ import { BatchedPacket } from './BatchedPacket'
 import { Packets, DataType } from '../../types'
 
 interface ISetLocalPlayerInitialized {
-  entityRuntimeId: number,
+  entityRuntimeId: bigint,
 }
 
 export class SetLocalPlayerInitialized extends BatchedPacket<ISetLocalPlayerInitialized> {

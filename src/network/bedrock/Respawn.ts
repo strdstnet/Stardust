@@ -5,7 +5,7 @@ import { Vector3 } from 'math3d'
 interface IRespawn {
   position: Vector3,
   state: RespawnState,
-  entityId: number,
+  entityId: bigint,
 }
 
 export class Respawn extends BatchedPacket<IRespawn> {

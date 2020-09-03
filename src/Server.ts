@@ -6,6 +6,9 @@ import { API } from './API'
 import { PacketData, Client } from './network'
 import { UnconnectedPing, UnconnectedPong, OpenConnectionRequestOne, IncompatibleProtocol, OpenConnectionReplyOne, OpenConnectionRequestTwo, OpenConnectionReplyTwo } from './network/raknet'
 import { Packet } from './network/Packet'
+import { BedrockData } from './data/BedrockData'
+import { Attribute } from './entity/Attribute'
+import { Player } from './Player'
 
 const DEFAULT_OPTS: ServerOpts = {
   address: '0.0.0.0',
@@ -22,13 +25,14 @@ export class Server {
 
   public static current: Server
 
-  private logger: Logger = new Logger('Server')
+  public static logger = new Logger('Server')
 
   private sockets: Array<[string, Socket]> // Array<[id, Socket]>
 
   private startedAt: number = Date.now()
 
   private clients: Map<string, Client> = new Map()
+  private players: Map<bigint, Player> = new Map() // Map<Player ID (Entity Runtime ID, Player)>
 
   private constructor(public opts: ServerOpts) {
     if(Server.current) {
@@ -53,7 +57,14 @@ export class Server {
   public static async start(opts?: Partial<ServerOpts>): Promise<Server> {
     await API.create()
 
+    BedrockData.loadData()
+    Attribute.initAttributes()
+
     return new Server(Object.assign({}, DEFAULT_OPTS, opts))
+  }
+
+  private get logger() {
+    return Server.logger
   }
 
   private init() {
@@ -121,7 +132,7 @@ export class Server {
 
     return UnconnectedPong.getMOTD({
       line1, line2, maxPlayers,
-      numPlayers: this.clients.size,
+      numPlayers: this.players.size,
     })
   }
 
@@ -141,6 +152,18 @@ export class Server {
 
   public removeClient(address: IAddress): void {
     this.clients.delete(Server.getAddrId(address))
+  }
+
+  public addPlayer(player: Player): void {
+    this.players.set(player.id, player)
+  }
+
+  public getPlayer(id: bigint): Player | null {
+    return this.players.get(id) || null
+  }
+
+  public removePlayer(id: bigint): void {
+    this.players.delete(id)
   }
 
   public send({ packet, socket, address }: ISendPacketArgs): void {

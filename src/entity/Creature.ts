@@ -1,5 +1,5 @@
-import { Entity } from './Entity'
+import { Living } from './Living'
 
-export abstract class Creature<Events> extends Entity<Events> {
+export abstract class Creature<Events> extends Living<Events> {
 
 }

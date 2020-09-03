@@ -20,8 +20,8 @@ import {
 import { ParserType, Packet } from '../Packet'
 
 interface IStartGameRequired {
-  entityUniqueId: number,
-  entityRuntimeId: number,
+  entityUniqueId: bigint,
+  entityRuntimeId: bigint,
   playerPosition: PlayerPosition,
 }
 

@@ -84,3 +84,30 @@ export enum PlayerPermissions {
   OPERATOR = 2,
   CUSTOM   = 3,
 }
+
+export enum CommandPermissions {
+  NORMAL     = 0,
+  OPERATOR   = 1,
+  HOST       = 2,
+  AUTOMATION = 3,
+  ADMIN      = 4,
+}
+
+export const BITFLAG_SECOND_SET = 1 << 16
+export enum AdventureSettingsFlag {
+  WORLD_IMMUTABLE    = 0x01,
+  NO_PVP             = 0x02,
+  AUTO_JUMP          = 0x20,
+  ALLOW_FLIGHT       = 0x40,
+  NO_CLIP            = 0x80,
+  WORLD_BUILDER      = 0x100,
+  FLYING             = 0x200,
+  MUTED              = 0x400,
+  BUILD_AND_MINE     = 0x01 | BITFLAG_SECOND_SET,
+  DOORS_AND_SWITCHES = 0x02 | BITFLAG_SECOND_SET,
+  OPEN_CONTAINERS    = 0x04 | BITFLAG_SECOND_SET,
+  ATTACK_PLAYERS     = 0x08 | BITFLAG_SECOND_SET,
+  ATTACK_MOBS        = 0x10 | BITFLAG_SECOND_SET,
+  OPERATOR           = 0x20 | BITFLAG_SECOND_SET,
+  TELEPORT           = 0x80 | BITFLAG_SECOND_SET,
+}
