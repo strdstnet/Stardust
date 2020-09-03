@@ -9,10 +9,11 @@ import { Server } from '../Server'
 import { ConnectionRequestAccepted } from './raknet/ConnectionRequestAccepted'
 import { NewIncomingConnection } from './raknet/NewIncomingConnection'
 import { PacketBatch } from './bedrock/PacketBatch'
-import { Disconnect } from './bedrock'
+import { Disconnect, ResourcePacksInfo, Login } from './bedrock'
 import { ConnectedPing } from './raknet/ConnectedPing'
 import { ConnectedPong } from './raknet/ConnectedPong'
 import { PartialPacket } from './custom'
+import { BatchedPacket } from './bedrock/BatchedPacket'
 
 interface SplitQueue {
   [splitId: number]: BundledPacket<any>,
@@ -141,6 +142,13 @@ export class Client {
     })
   }
 
+  // TODO: Add client ticks and send queue
+  private sendBatched(packet: BatchedPacket<any>, sequenceNumber = 0) {
+    this.send(new PacketBatch({
+      packets: [packet],
+    }), sequenceNumber)
+  }
+
   private handleConnectedPing(packet: ConnectedPing) {
     const { time } = packet.props
 
@@ -161,14 +169,17 @@ export class Client {
   }
 
   private handlePacketBatch(packet: PacketBatch) {
-    if(packet instanceof PartialPacket) {
-      console.log(`${packet.props.splitId + 1}/${packet.props.splitCount}`, packet)
-    } else {
-      console.log('PACKET BATCH', packet)
+    if(!(packet instanceof PartialPacket)) {
       const { packets } = packet.props
 
       for(const pk of packets) {
-        console.log(pk)
+        switch(pk.id) {
+          case Packets.LOGIN:
+            this.handleLogin(pk)
+            break
+          default:
+            this.logger.debug(`UNKNOWN BATCHED PACKET ${pk.id}`)
+        }
       }
     }
   }
@@ -177,4 +188,13 @@ export class Client {
     console.log('nic', packet.props)
   }
 
+  private handleLogin(packet: Login) {
+    // TODO: Actually implement packs
+    this.sendBatched(new ResourcePacksInfo({
+      mustAccept: false,
+      hasScripts: false,
+      behaviourPacks: [],
+      resourcePacks: [],
+    }))
+  }
 }
