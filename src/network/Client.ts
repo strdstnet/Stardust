@@ -2,20 +2,35 @@ import { IAddress, IClientArgs, Packets, Protocol, DummyAddress, IBundledPacket,
 import Logger from '@bwatton/logger'
 import { PacketData, BitFlag } from './PacketData'
 import { PacketBundle } from './raknet/PacketBundle'
-import { ConnectionRequest, ACK } from './raknet'
+import { ConnectionRequest, ACK, NAK } from './raknet'
 import { BundledPacket } from './raknet/BundledPacket'
 import { Socket } from 'dgram'
 import { Server } from '../Server'
 import { ConnectionRequestAccepted } from './raknet/ConnectionRequestAccepted'
 import { NewIncomingConnection } from './raknet/NewIncomingConnection'
 import { PacketBatch } from './bedrock/PacketBatch'
-import { Disconnect, ResourcePacksInfo, Login, ResourcePacksStack, PlayStatus, ResourcePacksResponse, StartGame, EntityDefinitionList, BiomeDefinitionList, UpdateAttributes, AvailableCommands, AdventureSettings, SetActorData } from './bedrock'
+import {
+  Disconnect,
+  ResourcePacksInfo,
+  Login,
+  ResourcePacksStack,
+  PlayStatus,
+  ResourcePacksResponse,
+  StartGame,
+  EntityDefinitionList,
+  BiomeDefinitionList,
+  UpdateAttributes,
+  AvailableCommands,
+  AdventureSettings,
+  EntityNotification,
+} from './bedrock'
 import { ConnectedPing } from './raknet/ConnectedPing'
 import { ConnectedPong } from './raknet/ConnectedPong'
 import { PartialPacket } from './custom'
 import { BatchedPacket } from './bedrock/BatchedPacket'
 import { Reliability } from '../utils'
 import { Player } from '../Player'
+import { InventoryNotification } from './bedrock/InventoryNotification'
 
 interface SplitQueue {
   [splitId: number]: BundledPacket<any>,
@@ -66,7 +81,8 @@ export class Client {
     if(flags & BitFlag.ACK) {
       console.log('GOT ACK')
     } else if(flags & BitFlag.NAK) {
-      console.log('GOT NAK')
+      const { props: { sequences } } = new NAK().parse(data)
+      console.log('GOT NAK', sequences)
     } else {
       const { packets, sequenceNumber } = new PacketBundle().decode(data)
 
@@ -205,7 +221,7 @@ export class Client {
   private handleLogin(packet: Login) {
     // TODO: Login verification, already logged in?, ...
 
-    const { displayName } = packet.props
+    const { clientUUID, XUID, displayName } = packet.props
 
     this.player = new Player(displayName)
     this.initPlayerListeners()
@@ -254,10 +270,10 @@ export class Client {
       playerPosition: new PlayerPosition(0, 0, 0, 0, 0),
     }))
 
-    this.sendBatchedMulti([
-      new EntityDefinitionList(),
-      new BiomeDefinitionList(),
-    ])
+    this.logger.debug('Sending EntityDefinitionList:', this.sequenceNumber + 1)
+    this.sendBatched(new EntityDefinitionList())
+    // this.logger.debug('Sending BiomeDefinitionList:', this.sequenceNumber + 1)
+    // this.sendBatched(new BiomeDefinitionList())
 
     this.sendAttributes(true)
 
@@ -282,7 +298,11 @@ export class Client {
       entityUniqueId: this.player.id,
     }))
 
+    // TODO: Potion effects?
+    // https://github.com/pmmp/PocketMine-MP/blob/5910905e954f98fd1b1d24190ca26aa727a54a1d/src/network/mcpe/handler/PreSpawnPacketHandler.php#L96-L96
+
     this.player.notifySelf()
+    this.player.notifyInventories()
   }
 
   private sendAttributes(all = false): void {
@@ -300,9 +320,16 @@ export class Client {
 
   private initPlayerListeners() {
     this.player.on('Client:entityNotification', (entityRuntimeId, metadata) => {
-      this.sendBatched(new SetActorData({
+      this.sendBatched(new EntityNotification({
         entityRuntimeId,
         metadata,
+      }))
+    })
+
+    this.player.on('Client:inventoryNotification', inventory => {
+      this.sendBatched(new InventoryNotification({
+        type: inventory.type,
+        items: inventory.items,
       }))
     })
   }

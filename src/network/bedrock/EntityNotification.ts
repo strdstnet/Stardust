@@ -2,15 +2,15 @@ import { Packets, DataType } from '../../types'
 import { BatchedPacket } from './BatchedPacket'
 import { ParserType } from '../Packet'
 
-interface ISetActorData {
+interface IEntityNotification {
   entityRuntimeId: bigint,
   metadata: any[], // tmp
 }
 
-export class SetActorData extends BatchedPacket<ISetActorData> {
+export class EntityNotification extends BatchedPacket<IEntityNotification> {
 
-  constructor(p?: ISetActorData) {
-    super(Packets.AVAILABLE_COMMANDS, [
+  constructor(p?: IEntityNotification) {
+    super(Packets.ENTITY_NOTIFICATION, [
       { name: 'entityRuntimeId', parser: DataType.U_VARLONG },
       {
         // TODO: Implement metadata

@@ -11,8 +11,8 @@ interface ILoginEncode {
 }
 
 interface ILogin extends ILoginEncode {
-  displayName: string,
-  identity: string,
+  username: string,
+  clientUUID: string,
   XUID: string,
   identityPublicKey: string,
   clientId: bigint,
@@ -60,9 +60,9 @@ export class Login extends BatchedPacket<ILogin> {
               const payload: IToken = decodeJWT(token)
 
               if(payload.extraData) {
-                props.displayName = payload.extraData.displayName
+                props.username = payload.extraData.displayName
                 props.XUID = payload.extraData.XUID
-                props.identity = payload.extraData.identity
+                props.clientUUID = payload.extraData.identity
                 props.identityPublicKey = payload.identityPublicKey
               }
             }

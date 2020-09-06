@@ -1,7 +1,10 @@
-import { Protocol, IAddress, AddressFamily } from '../types'
+import { Protocol, IAddress, AddressFamily, Items } from '../types'
 import zlib from 'zlib'
 import Logger from '@bwatton/logger'
 import { Vector3 } from 'math3d'
+import { Item } from '../item/Item'
+import { Durable } from '../item/Durable'
+import { UUID } from '../utils'
 
 export enum DataLengths {
   BYTE = 1,
@@ -510,6 +513,36 @@ export class PacketData {
   public writeVarLong(v: bigint): void {
     const val = Number(v)
     this.writeUnsignedVarLong(BigInt((val << 1) ^ (val >> 63)))
+  }
+
+  public writeInventoryItem(item: Item): void {
+    this.writeBoolean(!!item.count && item.id !== Items.AIR)
+
+    this.writeVarInt(item.id)
+    if(item.id === Items.AIR) return
+
+    const auxValue = ((item.damage & 0x7fff) << 8) | item.count
+    this.writeVarInt(auxValue)
+
+    if(item.nbt) {
+      // TODO: Compound tags
+      // https://github.com/pmmp/PocketMine-MP/blob/f9c2ed620008a695bef2c4d141c0d26880e77040/src/pocketmine/network/mcpe/NetworkBinaryStream.php#L259
+    } else {
+      this.writeLShort(0)
+    }
+
+    this.writeVarInt(0) // CanPlaceOn
+    this.writeVarInt(0) // CanDestroy
+
+    if(item.id === Items.SHIELD) {
+      this.writeVarInt(0) // some shit
+    }
+  }
+
+  public writeUUID(uuid: UUID): void {
+    for(const part of uuid.parts) {
+      this.writeLInt(part)
+    }
   }
 
 }

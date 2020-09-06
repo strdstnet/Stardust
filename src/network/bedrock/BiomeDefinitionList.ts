@@ -10,7 +10,7 @@ interface IBiomeDefinitionList {
 export class BiomeDefinitionList extends BatchedPacket<IBiomeDefinitionList> {
 
   constructor(p?: Partial<IBiomeDefinitionList>) {
-    super(Packets.CHANGE_DIMENSION, [
+    super(Packets.BIOME_DEFINITION_LIST, [
       {
         parser({ type, data, props, value }) {
           if(type === ParserType.ENCODE) {

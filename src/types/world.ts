@@ -111,3 +111,8 @@ export enum AdventureSettingsFlag {
   OPERATOR           = 0x20 | BITFLAG_SECOND_SET,
   TELEPORT           = 0x80 | BITFLAG_SECOND_SET,
 }
+
+export enum Items {
+  AIR = 0,
+  SHIELD = 513,
+}

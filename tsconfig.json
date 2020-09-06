@@ -2,12 +2,18 @@
   "compilerOptions": {
     "target": "ESNEXT",
     "module": "commonjs",
-    "lib": ["dom"],
+    "lib": [
+      "dom"
+    ],
     "outDir": "lib",
     "rootDir": "./src",
     "moduleResolution": "node",
     "strict": true,
     "esModuleInterop": true,
-    "resolveJsonModule": true
+    "resolveJsonModule": true,
+    "typeRoots": [
+      "./src/@types/",
+      "./node_modules/@types",
+    ]
   }
 }

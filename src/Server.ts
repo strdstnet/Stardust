@@ -75,7 +75,8 @@ export class Server {
 
     this.sockets.forEach(async([id, socket]) => {
       socket.bind(port, address)
-      const logger = new Logger(`${this.logger.moduleName}(${id})`)
+      // const logger = new Logger(`${this.logger.moduleName}(${id})`)
+      const logger = this.logger
 
       socket.on('error', err => {
         logger.error(err)
