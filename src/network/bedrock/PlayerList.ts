@@ -1,7 +1,6 @@
 import { Packets } from '../../types'
 import { ParserType } from '../Packet'
 import { BatchedPacket } from './BatchedPacket'
-import { BedrockData } from '../../data/BedrockData'
 import { Player } from '../../Player'
 
 export enum PlayerListType {
@@ -19,7 +18,7 @@ export class PlayerList extends BatchedPacket<IPlayerList> {
   constructor(p?: IPlayerList) {
     super(Packets.PLAYER_LIST, [
       {
-        parser({ type, data, props, value }) {
+        parser({ type, data, props }) {
           if(type === ParserType.ENCODE) {
             data.writeByte(props.type)
             data.writeByte(props.players.length)
@@ -32,10 +31,12 @@ export class PlayerList extends BatchedPacket<IPlayerList> {
                 data.writeString(player.XUID)
                 data.writeString('') // platformChatId
                 data.writeLInt(-1) // Build platform
-                data.writeSkin($entry->skinData)
+                data.writeSkin(player.skinData)
                 data.writeBoolean(false) // isTeacher
                 data.writeBoolean(false) // isHost
               }
+
+              props.players.forEach(pl => data.writeBoolean(pl.skinData.verified))
             } else {
               props.players.forEach(pl => data.writeUUID(pl.UUID))
             }
@@ -43,7 +44,6 @@ export class PlayerList extends BatchedPacket<IPlayerList> {
             // TODO: Decode
           }
         },
-        resolve: () => BedrockData.BIOME_DEFINITIONS,
       },
     ])
 

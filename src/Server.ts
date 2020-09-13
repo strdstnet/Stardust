@@ -2,13 +2,15 @@ import dgram, { Socket } from 'dgram'
 
 import Logger from '@bwatton/logger'
 import { ServerOpts, IAddress, FamilyStrToInt, IPacketHandlerArgs, Packets, ISendPacketArgs, Protocol } from './types'
-import { API } from './API'
 import { PacketData, Client } from './network'
 import { UnconnectedPing, UnconnectedPong, OpenConnectionRequestOne, IncompatibleProtocol, OpenConnectionReplyOne, OpenConnectionRequestTwo, OpenConnectionReplyTwo } from './network/raknet'
 import { Packet } from './network/Packet'
 import { BedrockData } from './data/BedrockData'
 import { Attribute } from './entity/Attribute'
 import { Player } from './Player'
+import { BatchedPacket } from './network/bedrock/BatchedPacket'
+import { PlayerList, PlayerListType } from './network/bedrock/PlayerList'
+import { Item } from './item/Item'
 
 const DEFAULT_OPTS: ServerOpts = {
   address: '0.0.0.0',
@@ -55,10 +57,9 @@ export class Server {
   }
 
   public static async start(opts?: Partial<ServerOpts>): Promise<Server> {
-    await API.create()
-
     BedrockData.loadData()
     Attribute.initAttributes()
+    Item.registerItems()
 
     return new Server(Object.assign({}, DEFAULT_OPTS, opts))
   }
@@ -73,7 +74,7 @@ export class Server {
       port,
     } = this.opts
 
-    this.sockets.forEach(async([id, socket]) => {
+    this.sockets.forEach(async([, socket]) => {
       socket.bind(port, address)
       // const logger = new Logger(`${this.logger.moduleName}(${id})`)
       const logger = this.logger
@@ -94,6 +95,8 @@ export class Server {
           port: addr.port,
           family: FamilyStrToInt[addr.family],
         }
+
+        console.log('got message')
 
         const data = new PacketData(message)
         const packetId = data.readByte(false)
@@ -157,6 +160,8 @@ export class Server {
 
   public addPlayer(player: Player): void {
     this.players.set(player.id, player)
+
+    this.updatePlayerList()
   }
 
   public getPlayer(id: bigint): Player | null {
@@ -165,10 +170,23 @@ export class Server {
 
   public removePlayer(id: bigint): void {
     this.players.delete(id)
+
+    this.updatePlayerList()
+  }
+
+  private updatePlayerList() {
+    this.broadcast(new PlayerList({
+      type: PlayerListType.ADD,
+      players: Array.from(this.players.values()),
+    }))
   }
 
   public send({ packet, socket, address }: ISendPacketArgs): void {
     socket.send(packet.encode().toBuffer(), address.port, address.ip)
+  }
+
+  private broadcast(packet: BatchedPacket<any>) {
+    this.clients.forEach(async client => client.sendBatched(packet))
   }
 
   private handleUnconnectedPing({ data, socket, address }: IPacketHandlerArgs) {

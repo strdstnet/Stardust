@@ -21,6 +21,10 @@ export class PacketBundle extends Packet<IPacketBundle> {
   public static byteCount: number = DataLengths.L_TRIAD + DataLengths.BYTE
 
   constructor(p?: IPacketBundle, flags: number = BitFlag.Valid) {
+    if(p) {
+      console.log('sending:', p.sequenceNumber)
+    }
+
     super(flags, [
       { name: 'sequenceNumber', parser: DataType.L_TRIAD },
       {

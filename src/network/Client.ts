@@ -18,11 +18,10 @@ import {
   ResourcePacksResponse,
   StartGame,
   EntityDefinitionList,
-  BiomeDefinitionList,
   UpdateAttributes,
   AvailableCommands,
   AdventureSettings,
-  EntityNotification,
+  EntityNotification, ContainerNotification, EntityEquipment, BiomeDefinitionList,
 } from './bedrock'
 import { ConnectedPing } from './raknet/ConnectedPing'
 import { ConnectedPong } from './raknet/ConnectedPong'
@@ -30,7 +29,7 @@ import { PartialPacket } from './custom'
 import { BatchedPacket } from './bedrock/BatchedPacket'
 import { Reliability } from '../utils'
 import { Player } from '../Player'
-import { InventoryNotification } from './bedrock/InventoryNotification'
+import { LevelChunk } from './bedrock/LevelChunk'
 
 interface SplitQueue {
   [splitId: number]: BundledPacket<any>,
@@ -49,6 +48,9 @@ export class Client {
   // private splitQueue: Map<number, BundledPacket<any>> = new Map()
   private splitQueue: SplitQueue = {}
 
+  private sendQueue: BundledPacket<any>[] = []
+  private sentPackets: Map<number, PacketBundle> = new Map()
+
   public sequenceNumber = -1
 
   private player!: Player
@@ -60,6 +62,10 @@ export class Client {
     this.mtuSize = mtuSize
 
     this.logger.info('Created for', `${address.ip}:${address.port}`)
+
+    setInterval(() => {
+      this.processSendQueue()
+    }, 50)
   }
 
   public disconnect(message: string, hideScreen = false): void {
@@ -79,10 +85,19 @@ export class Client {
     const flags = data.readByte(false)
 
     if(flags & BitFlag.ACK) {
-      console.log('GOT ACK')
+      const { props: { sequences } } = new NAK().parse(data)
+
+      console.log('GOT ACK:', sequences)
     } else if(flags & BitFlag.NAK) {
       const { props: { sequences } } = new NAK().parse(data)
-      console.log('GOT NAK', sequences)
+      console.log('GOT NAK, resending:', sequences)
+
+      for(const sequence of sequences) {
+        const bundle = this.sentPackets.get(sequence)
+
+        if(!bundle) console.log(`SEQUENCE ${sequence} NOT FOUND`)
+        else this.resend(bundle)
+      }
     } else {
       const { packets, sequenceNumber } = new PacketBundle().decode(data)
 
@@ -153,27 +168,57 @@ export class Client {
     })
   }
 
-  private send(packet: BundledPacket<any>, sequenceNumber = ++this.sequenceNumber) {
+  // private send(packet: BundledPacket<any>, sequenceNumber = ++this.sequenceNumber) {
+  private send(packet: BundledPacket<any>) {
+    // Server.current.send({
+    //   packet: new PacketBundle({
+    //     sequenceNumber,
+    //     packets: [packet],
+    //   }),
+    //   socket: this.socket,
+    //   address: this.address,
+    // })
+
+    this.sendQueue.push(packet)
+  }
+
+  private resend(packet: PacketBundle) {
     Server.current.send({
-      packet: new PacketBundle({
-        sequenceNumber,
-        packets: [packet],
-      }),
+      packet,
       socket: this.socket,
       address: this.address,
     })
   }
 
+  private processSendQueue() {
+    if(!this.sendQueue.length) return
+
+    const sequenceNumber = ++this.sequenceNumber
+    const packet = new PacketBundle({
+      sequenceNumber,
+      packets: this.sendQueue,
+    })
+
+    Server.current.send({
+      packet,
+      socket: this.socket,
+      address: this.address,
+    })
+
+    this.sentPackets.set(sequenceNumber, packet)
+    this.sendQueue = []
+  }
+
   // TODO: Add client ticks and send queue
-  private sendBatched(packet: BatchedPacket<any>, sequenceNumber?: number) {
+  public sendBatched(packet: BatchedPacket<any>): void {
     this.send(new PacketBatch({
       packets: [packet],
       reliability: Reliability.ReliableOrdered,
-    }), sequenceNumber)
+    }))
   }
 
-  private sendBatchedMulti(packets: BatchedPacket<any>[], sequenceNumber?: number) {
-    this.send(new PacketBatch({ packets }), sequenceNumber)
+  private sendBatchedMulti(packets: BatchedPacket<any>[]) {
+    this.send(new PacketBatch({ packets }))
   }
 
   private handleConnectedPing(packet: ConnectedPing) {
@@ -221,9 +266,7 @@ export class Client {
   private handleLogin(packet: Login) {
     // TODO: Login verification, already logged in?, ...
 
-    const { clientUUID, XUID, displayName } = packet.props
-
-    this.player = new Player(displayName)
+    this.player = Player.createFrom(packet)
     this.initPlayerListeners()
 
     // TODO: Actually implement packs
@@ -240,8 +283,8 @@ export class Client {
     ])
   }
 
-  private handleResourcePacksResponse(packet: ResourcePacksResponse) {
-    const { packIds, status } = packet.props
+  private async handleResourcePacksResponse(packet: ResourcePacksResponse) {
+    const { status } = packet.props
     this.logger.debug(`Got resource pack status: ${packet.props.status}`, packet.props.packIds)
 
     // TODO: Implement other statuses
@@ -272,8 +315,9 @@ export class Client {
 
     this.logger.debug('Sending EntityDefinitionList:', this.sequenceNumber + 1)
     this.sendBatched(new EntityDefinitionList())
-    // this.logger.debug('Sending BiomeDefinitionList:', this.sequenceNumber + 1)
-    // this.sendBatched(new BiomeDefinitionList())
+
+    this.logger.debug('Sending BiomeDefinitionList:', this.sequenceNumber + 1)
+    this.sendBatched(new BiomeDefinitionList())
 
     this.sendAttributes(true)
 
@@ -282,27 +326,26 @@ export class Client {
 
     Server.logger.info(`${this.player.name} logged in from ${this.address.ip}:${this.address.port}`)
 
-    this.sendBatched(new AvailableCommands())
-
-    this.sendBatched(new AdventureSettings({
-      flags: [
-        [AdventureSettingsFlag.WORLD_IMMUTABLE, this.player.isSpectator()],
-        [AdventureSettingsFlag.NO_PVP, this.player.isSpectator()],
-        [AdventureSettingsFlag.AUTO_JUMP, this.player.autoJump],
-        [AdventureSettingsFlag.ALLOW_FLIGHT, this.player.allowFlight],
-        [AdventureSettingsFlag.NO_CLIP, this.player.isSpectator()], // TODO: Disable?
-        [AdventureSettingsFlag.FLYING, this.player.flying],
-      ],
-      commandPermission: CommandPermissions.NORMAL,
-      playerPermission: PlayerPermissions.MEMBER,
-      entityUniqueId: this.player.id,
-    }))
+    this.sendAvailableCommands()
+    this.sendAdventureSettings()
 
     // TODO: Potion effects?
     // https://github.com/pmmp/PocketMine-MP/blob/5910905e954f98fd1b1d24190ca26aa727a54a1d/src/network/mcpe/handler/PreSpawnPacketHandler.php#L96-L96
 
     this.player.notifySelf()
-    this.player.notifyInventories()
+    this.player.notifyContainers()
+    this.player.notifyHeldItem()
+
+    this.logger.debug('Sending PlayerList:', this.sequenceNumber + 1)
+    Server.current.addPlayer(this.player)
+
+    // await nap(500)
+
+    this.sendBatched(LevelChunk.empty)
+
+    this.sendBatched(new PlayStatus({
+      status: PlayStatusType.PLAYER_SPAWN,
+    }))
   }
 
   private sendAttributes(all = false): void {
@@ -318,6 +361,26 @@ export class Client {
     }
   }
 
+  private sendAvailableCommands() {
+    this.sendBatched(new AvailableCommands())
+  }
+
+  private sendAdventureSettings() {
+    this.sendBatched(new AdventureSettings({
+      flags: [
+        [AdventureSettingsFlag.WORLD_IMMUTABLE, this.player.isSpectator()],
+        [AdventureSettingsFlag.NO_PVP, this.player.isSpectator()],
+        [AdventureSettingsFlag.AUTO_JUMP, this.player.autoJump],
+        [AdventureSettingsFlag.ALLOW_FLIGHT, this.player.allowFlight],
+        [AdventureSettingsFlag.NO_CLIP, this.player.isSpectator()], // TODO: Disable?
+        [AdventureSettingsFlag.FLYING, this.player.flying],
+      ],
+      commandPermission: CommandPermissions.NORMAL,
+      playerPermission: PlayerPermissions.MEMBER,
+      entityUniqueId: this.player.id,
+    }))
+  }
+
   private initPlayerListeners() {
     this.player.on('Client:entityNotification', (entityRuntimeId, metadata) => {
       this.sendBatched(new EntityNotification({
@@ -326,10 +389,20 @@ export class Client {
       }))
     })
 
-    this.player.on('Client:inventoryNotification', inventory => {
-      this.sendBatched(new InventoryNotification({
-        type: inventory.type,
-        items: inventory.items,
+    this.player.on('Client:containerNotification', container => {
+      this.sendBatched(new ContainerNotification({
+        type: container.type,
+        items: container.items,
+      }))
+    })
+
+    this.player.on('Client:heldItemNotification', (entityRuntimeId, item, inventorySlot, hotbarSlot, containerId) => {
+      this.sendBatched(new EntityEquipment({
+        entityRuntimeId,
+        item,
+        inventorySlot,
+        hotbarSlot,
+        containerId,
       }))
     })
   }

@@ -1,12 +1,13 @@
 import { EventEmitter, DefaultEventMap } from 'tsee'
 import { AttributeMap } from './AttributeMap'
 import { Player } from '../Player'
+import { Container } from '../containers'
 
 interface IEntityEvents extends DefaultEventMap {
   _: () => void, // TODO: Remove when events are added
 }
 
-export abstract class Entity<Events = unknown> extends EventEmitter<IEntityEvents & Events> {
+export abstract class Entity<Events = unknown, Containers extends Container[] = []> extends EventEmitter<IEntityEvents & Events> {
 
   public static entityCount = 0
 
@@ -14,16 +15,20 @@ export abstract class Entity<Events = unknown> extends EventEmitter<IEntityEvent
 
   public attributeMap = new AttributeMap()
 
+  protected containers: Containers = ([] as any as Containers)
+
   constructor(
     public name: string, // Ex. Zombie
     public gameId: string // Ex. minecraft:zombie
   ) {
     super()
+
+    this.initContainers()
   }
 
-  protected addAttributes(): void {
+  protected initContainers(): void {}
 
-  }
+  protected addAttributes(): void {}
 
   public notifyPlayers(players: Player[], data?: any[]): void {
     const metadata = data || [] // https://github.com/pmmp/PocketMine-MP/blob/e47a711494c20ac86fea567b44998f2e24f3dbc7/src/pocketmine/entity/Entity.php#L2094

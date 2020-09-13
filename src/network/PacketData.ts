@@ -1,10 +1,9 @@
-import { Protocol, IAddress, AddressFamily, Items } from '../types'
+import { Protocol, IAddress, AddressFamily, Items, SkinData, SkinImage } from '../types'
 import zlib from 'zlib'
 import Logger from '@bwatton/logger'
 import { Vector3 } from 'math3d'
 import { Item } from '../item/Item'
-import { Durable } from '../item/Durable'
-import { UUID } from '../utils'
+import { UUID } from '../utils/UUID'
 
 export enum DataLengths {
   BYTE = 1,
@@ -28,6 +27,7 @@ export enum BitFlag {
   NeedsBAndS = 0x04,
 }
 
+// TODO: Make singleton?
 export class PacketData {
 
   public buf: Buffer
@@ -515,7 +515,7 @@ export class PacketData {
     this.writeUnsignedVarLong(BigInt((val << 1) ^ (val >> 63)))
   }
 
-  public writeInventoryItem(item: Item): void {
+  public writeContainerItem(item: Item): void {
     this.writeBoolean(!!item.count && item.id !== Items.AIR)
 
     this.writeVarInt(item.id)
@@ -542,6 +542,50 @@ export class PacketData {
   public writeUUID(uuid: UUID): void {
     for(const part of uuid.parts) {
       this.writeLInt(part)
+    }
+  }
+
+  public writeSkinImage(image: SkinImage): void {
+    this.writeLInt(image.width)
+    this.writeLInt(image.height)
+    this.writeString(image.data)
+  }
+
+  public writeSkin(skin: SkinData): void {
+    this.writeString(skin.id)
+    this.writeString(skin.resourcePatch)
+    this.writeSkinImage(skin.image)
+    this.writeLInt(skin.animations.length)
+    for(const animation of skin.animations) {
+      this.writeSkinImage(animation.image)
+      this.writeLInt(animation.type)
+      this.writeLFloat(animation.frames)
+    }
+    this.writeSkinImage(skin.cape.image)
+    this.writeString(skin.geometryData)
+    this.writeString(skin.animationData)
+    this.writeBoolean(skin.premium)
+    this.writeBoolean(skin.persona)
+    this.writeBoolean(skin.personaCapeOnClassic)
+    this.writeString(skin.cape.id)
+    this.writeString(UUID.random().toString())
+    this.writeString(skin.armSize)
+    this.writeString(skin.color)
+    this.writeLInt(skin.personaPieces.length)
+    for(const piece of skin.personaPieces) {
+      this.writeString(piece.id)
+      this.writeString(piece.type)
+      this.writeString(piece.packId)
+      this.writeBoolean(piece.defaultPiece)
+      this.writeString(piece.productId)
+    }
+    this.writeLInt(skin.personaPieceTints.length)
+    for(const tint of skin.personaPieceTints) {
+      this.writeString(tint.type)
+      this.writeLInt(tint.colors.length)
+      for(const color of tint.colors) {
+        this.writeString(color)
+      }
     }
   }
 

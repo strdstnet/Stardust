@@ -101,6 +101,9 @@ const encodeDataType = (data: PacketData, type: DataType, value: any, p?: string
     case DataType.L_LONG:
       data.writeLLong(value)
       break
+    case DataType.CONTAINER_ITEM:
+      data.writeContainerItem(value)
+      break
   }
 }
 
@@ -146,6 +149,8 @@ const decodeDataType = (data: PacketData, type: DataType) => {
       return data.readLInt()
     case DataType.L_LONG:
       return data.readLLong()
+    case DataType.CONTAINER_ITEM:
+      throw new Error('fuck off u dumb cunt')
   }
 }
 

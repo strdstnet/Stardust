@@ -55,7 +55,7 @@ export enum Packets {
   ENTITY_NOTIFICATION = 0x27, // 39
   SET_SPAWN_POSITION = 0x2b, // 43
   RESPAWN = 0x2d, // 45
-  INVENTORY_NOTIFICATION = 0x31,// 49
+  CONTAINER_NOTIFICATION = 0x31,// 49
   ADVENTURE_SETTINGS = 0x37, // 55
   LEVEL_CHUNK = 0x3a, // 58
   CHANGE_DIMENSION = 0x3d, // 61
@@ -95,4 +95,60 @@ export enum PacketViolationSeverity {
   WARNING = 0,
   FINAL_WARNING = 1,
   TERMINATING_CONNECTION = 2,
+}
+
+export interface IChainData {
+  chain: [string, string, string],
+}
+
+export interface IToken {
+  identityPublicKey: string,
+  exp: number,
+  nbf: number,
+  certificateAuthority?: boolean,
+  randomNonce?: number,
+  iss?: string,
+  iat?: number,
+  extraData?: {
+    XUID: string,
+    identity: string,
+    displayName: string,
+    titleId: string,
+  },
+}
+
+export interface IClientDataPersonaPiece {
+  PieceId: string,
+  PieceType: string,
+  PackId: string,
+  IsDefault: boolean,
+  ProductId: string,
+}
+
+export interface IClientDataPieceTintColor {
+  PieceType: string,
+  Colors: string[],
+}
+
+export interface IClientData {
+  ClientRandomId: number,
+  ServerAddress: string,
+  SkinId: string,
+  SkinResourcePatch: string, // Base64
+  SkinImageHeight: number,
+  SkinImageWidth: number,
+  SkinData: string, // Base64
+  CapeImageHeight: number,
+  CapeImageWidth: number,
+  CapeData: string, // Base64
+  SkinGeometryData: string, // Base64
+  SkinAnimationData: string, // Base64
+  PremiumSkin: boolean,
+  PersonaSkin: boolean,
+  CapeOnClassicSkin: boolean,
+  CapeId: string,
+  ArmSize: string,
+  SkinColor: string,
+  PersonaPieces: IClientDataPersonaPiece[],
+  PieceTintColors: IClientDataPieceTintColor[],
 }

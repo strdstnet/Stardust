@@ -14,16 +14,16 @@ export class Item {
   /**
    * @description Registers a new Item
    */
-  constructor(public id: Items, rawDamage = 0, public name = 'Unknown') {
+  constructor(public id: Items, public name = 'Unknown', rawDamage = 0) {
     this.damage = rawDamage
   }
 
-  private static registerItem(id: Items) {
-    this.items.set(id, new Item(id)) // tmp
+  private static registerItem(id: Items, name?: string) {
+    this.items.set(id, new Item(id, name))
   }
 
   public static registerItems(): void {
-    Item.registerItem(Items.AIR)
+    Item.registerItem(Items.AIR, 'Air')
   }
 
   public static getById(id: number): Item | null {
@@ -41,7 +41,7 @@ export class Item {
   }
 
   public clone(): Item {
-    const item = new Item(this.id, 0, this.name)
+    const item = new Item(this.id, this.name, 0)
     item.damageVal = this.damageVal
 
     return item

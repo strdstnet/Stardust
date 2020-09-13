@@ -1,10 +1,14 @@
 import { Human } from './entity'
-import { Inventory } from './inventory'
-import { UUID } from './utils'
+import { Container } from './containers'
+import { UUID, getSkinData } from './utils'
+import { Login } from './network/bedrock'
+import { ContainerId, SkinData } from './types'
+import { Item } from './item/Item'
 
 interface IPlayerEvents {
   'Client:entityNotification': (id: bigint, meta: any[]) => void,
-  'Client:inventoryNotification': (inventory: Inventory) => void,
+  'Client:containerNotification': (container: Container) => void,
+  'Client:heldItemNotification': (id: bigint, item: Item, inventoySlot: number, hotbarSlot: number, containerId: number) => void,
 }
 
 interface IPlayerCreate {
@@ -13,6 +17,7 @@ interface IPlayerCreate {
   XUID: string,
   identityPublicKey: string,
   clientId: bigint,
+  skinData: SkinData,
 }
 
 export class Player extends Human<IPlayerEvents> {
@@ -21,24 +26,32 @@ export class Player extends Human<IPlayerEvents> {
   public allowFlight = false
   public flying = false
 
-  public inventories: Inventory[] = []
-
-  public username: string
+  public username!: string
   public UUID: UUID
-  public clientUUID: string
-  public XUID: string
-  public identityPublicKey: string
-  public clientId: bigint
+  public clientUUID!: string
+  public XUID!: string
+  public identityPublicKey!: string
+  public clientId!: bigint
+  public skinData!: SkinData
 
   constructor(player: IPlayerCreate) {
     super(player.username, 'stardust:player')
 
-    this.username = player.username
+    Object.assign(this, player)
     this.UUID = new UUID(player.clientUUID)
-    this.clientUUID = player.clientUUID
-    this.XUID = player.XUID
-    this.identityPublicKey = player.identityPublicKey
-    this.clientId = player.clientId
+  }
+
+  public static createFrom(login: Login): Player {
+    const { props } = login
+
+    return new Player({
+      username: props.username,
+      clientUUID: props.clientUUID,
+      XUID: props.XUID,
+      identityPublicKey: props.identityPublicKey,
+      clientId: props.clientId,
+      skinData: getSkinData(props),
+    })
   }
 
   public isSpectator(): boolean {
@@ -49,11 +62,20 @@ export class Player extends Human<IPlayerEvents> {
     this.notifyPlayers([this], data)
   }
 
-  public notifyInventories(players: Player[] = [this]): void {
-    for(const inventory of this.inventories) {
+  public notifyContainers(players: Player[] = [this]): void {
+    for(const container of this.containers) {
       for(const player of players) {
-        player.emit('Client:inventoryNotification', inventory)
+        player.emit('Client:containerNotification', container)
       }
+    }
+  }
+
+  public notifyHeldItem(players: Player[] = [this]): void {
+    const item = this.inventory.itemHolding
+
+    for(const player of players) {
+      const slot = this.inventory.itemInHand
+      player.emit('Client:heldItemNotification', this.id, item, slot, slot, ContainerId.INVENTORY)
     }
   }
 

@@ -27,6 +27,7 @@ export enum DataType {
   U_VARINT,
   VARLONG,
   U_VARLONG,
+  CONTAINER_ITEM,
 }
 
 export class PlayerPosition {

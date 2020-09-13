@@ -1,17 +1,17 @@
-import { Packets, DataType } from '../../types'
+import { Packets, DataType, ContainerType } from '../../types'
 import { BatchedPacket } from './BatchedPacket'
 import { ParserType } from '../Packet'
 import { Item } from '../../item/Item'
 
-interface IInventoryNotification {
-  type: number,
+interface IContainerNotification {
+  type: ContainerType,
   items: Item[],
 }
 
-export class InventoryNotification extends BatchedPacket<IInventoryNotification> {
+export class ContainerNotification extends BatchedPacket<IContainerNotification> {
 
-  constructor(p?: IInventoryNotification) {
-    super(Packets.INVENTORY_NOTIFICATION, [
+  constructor(p?: IContainerNotification) {
+    super(Packets.CONTAINER_NOTIFICATION, [
       { name: 'type', parser: DataType.U_VARINT },
       {
         name: 'items',
@@ -20,7 +20,7 @@ export class InventoryNotification extends BatchedPacket<IInventoryNotification>
             data.writeUnsignedVarInt(props.items.length)
 
             for(const item of props.items) {
-              data.writeInventoryItem(item)
+              data.writeContainerItem(item)
             }
           } else {
             // TODO: DECODE
