@@ -3,7 +3,7 @@ import { Packets } from '../../types'
 import { BatchedPacket } from './BatchedPacket'
 import { ParserType } from '../Packet'
 import { Login } from './Login'
-import { PacketData } from '../PacketData'
+import { BinaryData } from '../../utils/BinaryData'
 import { Transfer } from './Transfer'
 import { ChangeDimension } from './ChangeDimension'
 import { PacketViolationWarning } from './PacketViolationWarning'
@@ -35,13 +35,13 @@ export class PacketBatch extends BundledPacket<IPacketBatch> {
           if(type === ParserType.DECODE) {
             props.packets = []
 
-            const buffer = PacketData.inflate(data.readRemaining())//
+            const buffer = BinaryData.inflate(data.readRemaining())//
 
             while(!buffer.feof) {
               // const posBefore = buffer.pos
 
               const length = buffer.readUnsignedVarInt()
-              const buf = new PacketData(buffer.read(length))
+              const buf = new BinaryData(buffer.read(length))
 
               const header = buf.readUnsignedVarInt()
               const packetId = header & PacketBatch.PID_MASK
@@ -102,7 +102,7 @@ export class PacketBatch extends BundledPacket<IPacketBatch> {
               // buffer.pos = posBefore + length
             }
           } else {
-            const uncompressed = new PacketData()
+            const uncompressed = new BinaryData()
 
             if(!Array.isArray(props.packets)) {
               console.log(props)
@@ -110,7 +110,7 @@ export class PacketBatch extends BundledPacket<IPacketBatch> {
             }
 
             for(const packet of props.packets) {
-              const packetData = new PacketData()
+              const packetData = new BinaryData()
 
               packetData.writeUnsignedVarInt(
                 packet.id |
@@ -123,7 +123,7 @@ export class PacketBatch extends BundledPacket<IPacketBatch> {
               uncompressed.append(packetData.toBuffer())
             }
 
-            data.append(PacketData.deflate(uncompressed.toBuffer()).toBuffer())
+            data.append(BinaryData.deflate(uncompressed.toBuffer()).toBuffer())
           }
         },
       },

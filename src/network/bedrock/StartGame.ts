@@ -101,7 +101,7 @@ export class StartGame extends BatchedPacket<IStartGame> {
               v3.y,
               v3.z,
               data.readLFloat(),
-              data.readLFloat()
+              data.readLFloat(),
             )
           } else {
             const pos = props.playerPosition
@@ -125,7 +125,7 @@ export class StartGame extends BatchedPacket<IStartGame> {
             props.spawnLocation = new Vector3(
               data.readVarInt(),
               data.readUnsignedVarInt(),
-              data.readVarInt()
+              data.readVarInt(),
             )
           } else {
             data.writeVarInt(value.x)
@@ -229,7 +229,7 @@ export class StartGame extends BatchedPacket<IStartGame> {
         },
       },
       { name: 'levelId', parser: DataType.STRING, resolve: def('') },
-      { name: 'worldName', parser: DataType.STRING, resolve: def('Hyperstone Network') },
+      { name: 'worldName', parser: DataType.STRING, resolve: def('') },
       { name: 'premiumWorldTemplateId', parser: DataType.STRING, resolve: def('') },
       { name: 'isTrial', parser: DataType.BOOLEAN, resolve: def(false) },
       { name: 'isMovementServerAuthoritative', parser: DataType.BOOLEAN, resolve: def(false) },

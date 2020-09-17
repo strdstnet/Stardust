@@ -2,7 +2,7 @@ import dgram, { Socket } from 'dgram'
 
 import Logger from '@bwatton/logger'
 import { ServerOpts, IAddress, FamilyStrToInt, IPacketHandlerArgs, Packets, ISendPacketArgs, Protocol } from './types'
-import { PacketData, Client } from './network'
+import { BinaryData, Client } from './network'
 import { UnconnectedPing, UnconnectedPong, OpenConnectionRequestOne, IncompatibleProtocol, OpenConnectionReplyOne, OpenConnectionRequestTwo, OpenConnectionReplyTwo } from './network/raknet'
 import { Packet } from './network/Packet'
 import { BedrockData } from './data/BedrockData'
@@ -11,6 +11,7 @@ import { Player } from './Player'
 import { BatchedPacket } from './network/bedrock/BatchedPacket'
 import { PlayerList, PlayerListType } from './network/bedrock/PlayerList'
 import { Item } from './item/Item'
+import { Level } from './level'
 
 const DEFAULT_OPTS: ServerOpts = {
   address: '0.0.0.0',
@@ -35,6 +36,8 @@ export class Server {
 
   private clients: Map<string, Client> = new Map()
   private players: Map<bigint, Player> = new Map() // Map<Player ID (Entity Runtime ID, Player)>
+
+  public level: Level = Level.TestWorld()
 
   private constructor(public opts: ServerOpts) {
     if(Server.current) {
@@ -96,9 +99,7 @@ export class Server {
           family: FamilyStrToInt[addr.family],
         }
 
-        console.log('got message')
-
-        const data = new PacketData(message)
+        const data = new BinaryData(message)
         const packetId = data.readByte(false)
 
         const client = this.getClient(address)

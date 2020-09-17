@@ -1,6 +1,6 @@
 import { Packet, ParserType } from '../Packet'
 import { Packets } from '../../types'
-import { PacketData } from '../PacketData'
+import { BinaryData } from '../../utils/BinaryData'
 
 interface IAcknowledgement {
   sequences: number[],
@@ -21,7 +21,7 @@ export abstract class Acknowledgement extends Packet<IAcknowledgement> {
 
             const ids = props.sequences.sort((a, b) => a - b)
 
-            const subData = new PacketData()
+            const subData = new BinaryData()
             if(ids.length) {
               let start = ids[0]
               let last = ids[0]
@@ -76,7 +76,7 @@ export abstract class Acknowledgement extends Packet<IAcknowledgement> {
     if(sequences) this.props.sequences = sequences
   }
 
-  private add(data: PacketData, a: number, b: number) {
+  private add(data: BinaryData, a: number, b: number) {
     if(a === b) {
       data.writeBoolean(true)
       data.writeLTriad(a)

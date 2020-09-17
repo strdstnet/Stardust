@@ -2,7 +2,7 @@ import { Packets, DataType, IChainData, IToken, IClientData } from '../../types'
 import { ParserType } from '../Packet'
 import { decodeJWT } from '../../utils'
 import { BatchedPacket } from './BatchedPacket'
-import { PacketData } from '../PacketData'
+import { BinaryData } from '../../utils/BinaryData'
 
 interface ILoginEncode {
   protocol: number,
@@ -50,7 +50,7 @@ export class Login extends BatchedPacket<ILogin> {
 
             Object.assign(props, clientData)
           } else {
-            const sub = new PacketData()
+            const sub = new BinaryData()
             // const pos = data.pos
             sub.writeLInt(props.chainData.length)
             sub.writeString(props.chainData, false)

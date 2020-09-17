@@ -28,6 +28,7 @@ export enum DataType {
   VARLONG,
   U_VARLONG,
   CONTAINER_ITEM,
+  CHUNK,
 }
 
 export class PlayerPosition {
@@ -39,7 +40,7 @@ export class PlayerPosition {
     locationY: number,
     locationZ: number,
     public pitch: number,
-    public yaw: number
+    public yaw: number,
   ) {
     this.location = new Vector3(locationX, locationY, locationZ)
   }

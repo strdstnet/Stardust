@@ -1,3 +1,4 @@
+export * from './BinaryData'
 export * from './JWT'
 export * from './parseBundledPackets'
 export * from './Reliability'

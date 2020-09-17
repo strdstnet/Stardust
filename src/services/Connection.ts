@@ -1,7 +1,7 @@
 import { Socket } from 'dgram'
 import { IAddress, Packets } from '../types'
 import { Stardust } from '../Stardust'
-import { PacketData, BitFlag } from '../network'
+import { BinaryData, BitFlag } from '../network'
 import Logger from '@bwatton/logger'
 import { BedrockPackets, RaknetPackets } from '../network/packets'
 import { ACK, NAK, PacketBundle } from '../network/raknet'
@@ -43,7 +43,7 @@ export abstract class Connection extends EventEmitter<PacketEvent<any, any[]>> {
 
       // if(![Packets.UNCONNECTED_PING, Packets.UNCONNECTED_PONG].includes(msg[0])) this.logger.debug('Received', msg)
 
-      const data = new PacketData(msg)
+      const data = new BinaryData(msg)
 
       const flags = data.readByte(false)
 
@@ -122,7 +122,7 @@ export abstract class Connection extends EventEmitter<PacketEvent<any, any[]>> {
     await this.emit('PacketBatch', event)
   }
 
-  public send(data: PacketData, ip: string = this.addr.ip, port: number = this.addr.port): void {
+  public send(data: BinaryData, ip: string = this.addr.ip, port: number = this.addr.port): void {
     // if(![Packets.UNCONNECTED_PING, Packets.UNCONNECTED_PONG].includes(data.buf[0])) this.logger.debug('Sent    ', data.buf)
 
     // this.logger.debug('sending', data.buf)

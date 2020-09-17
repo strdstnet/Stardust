@@ -1,6 +1,6 @@
 import { Packet, ParserType, PacketProps } from '../Packet'
 import { DataType } from '../../types'
-import { PacketData, BitFlag, DataLengths } from '../PacketData'
+import { BinaryData, BitFlag, DataLengths } from '../../utils/BinaryData'
 import { BundledPacket } from './BundledPacket'
 import { parseBundledPackets, encodeBundledPacket } from '../../utils'
 
@@ -44,7 +44,7 @@ export class PacketBundle extends Packet<IPacketBundle> {
     if(p) this.props = p
   }
 
-  public decode(data: PacketData): PacketBundleDecode {
+  public decode(data: BinaryData): PacketBundleDecode {
     super.decode(data)
 
     return {

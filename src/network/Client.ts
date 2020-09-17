@@ -1,6 +1,6 @@
 import { IAddress, IClientArgs, Packets, Protocol, DummyAddress, IBundledPacket, PlayStatusType, ResourcePackResponseStatus, PlayerPosition, AdventureSettingsFlag, PlayerPermissions, CommandPermissions } from '../types'
 import Logger from '@bwatton/logger'
-import { PacketData, BitFlag } from './PacketData'
+import { BinaryData, BitFlag } from '../utils/BinaryData'
 import { PacketBundle } from './raknet/PacketBundle'
 import { ConnectionRequest, ACK, NAK } from './raknet'
 import { BundledPacket } from './raknet/BundledPacket'
@@ -30,6 +30,7 @@ import { BatchedPacket } from './bedrock/BatchedPacket'
 import { Reliability } from '../utils'
 import { Player } from '../Player'
 import { LevelChunk } from './bedrock/LevelChunk'
+import { Chunk, SubChunk } from '../level'
 
 interface SplitQueue {
   [splitId: number]: BundledPacket<any>,
@@ -81,7 +82,7 @@ export class Client {
     Server.current.removeClient(this.address)
   }
 
-  public handlePacket(data: PacketData): void {
+  public handlePacket(data: BinaryData): void {
     const flags = data.readByte(false)
 
     if(flags & BitFlag.ACK) {
@@ -209,8 +210,9 @@ export class Client {
     this.sendQueue = []
   }
 
-  // TODO: Add client ticks and send queue
   public sendBatched(packet: BatchedPacket<any>): void {
+    console.log(`Sending ${packet.constructor.name}`)
+
     this.send(new PacketBatch({
       packets: [packet],
       reliability: Reliability.ReliableOrdered,
@@ -311,6 +313,7 @@ export class Client {
       entityUniqueId: this.player.id,
       entityRuntimeId: this.player.id,
       playerPosition: new PlayerPosition(0, 0, 0, 0, 0),
+      worldName: Server.current.opts.motd.line1,
     }))
 
     this.logger.debug('Sending EntityDefinitionList:', this.sequenceNumber + 1)
@@ -341,7 +344,24 @@ export class Client {
 
     // await nap(500)
 
-    this.sendBatched(LevelChunk.empty)
+    // this.sendBatched(LevelChunk.empty)
+    // const baseChunk = Server.current.level.baseChunk
+    // this.sendBatched(new LevelChunk({
+    //   chunk: baseChunk,
+    //   cache: false,
+    //   usedHashes: [],
+    // }))
+
+    for(let i = 0; i < 50; i++) {
+      const x = i >> 32
+      const y = (i & 0xFFFFFFFF) << 32 >> 32
+
+      this.sendBatched(new LevelChunk({
+        chunk: new Chunk(x, y, [SubChunk.grassPlatform], [], [], [], []),
+        cache: false,
+        usedHashes: [],
+      }))
+    }
 
     this.sendBatched(new PlayStatus({
       status: PlayStatusType.PLAYER_SPAWN,

@@ -16,4 +16,12 @@ export class CompoundTag extends Tag {
     return this.value.get(name) || null
   }
 
+  public toJSON(): any {
+    return {
+      type: this.type,
+      name: this.name,
+      value: Array.from(this.value),
+    }
+  }
+
 }

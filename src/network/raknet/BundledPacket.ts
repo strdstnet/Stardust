@@ -1,7 +1,7 @@
 import { Packet, PacketProps, IPacketSchemaItem } from '../Packet'
 import { Reliability } from '../../utils/Reliability'
 import { IBundledPacket } from '../../types'
-import { PacketData } from '../PacketData'
+import { BinaryData } from '../../utils/BinaryData'
 
 export type BPacket<T> = T & IBundledPacket
 export type BPacketOpt<T> = T & Partial<IBundledPacket>
@@ -26,14 +26,14 @@ export class BundledPacket<T = unknown> extends Packet<BPacket<T>> {
     super((flags || 0) & 0xff, schema)
   }
 
-  public decode(data: PacketData = this.data, bundledProps?: PacketProps<IBundledPacket>): PacketProps<BPacket<T>> {
+  public decode(data: BinaryData = this.data, bundledProps?: PacketProps<IBundledPacket>): PacketProps<BPacket<T>> {
     return {
       ...(bundledProps || {}),
       ...super.decode(data),
     }
   }
 
-  public append(data: PacketData): void {
+  public append(data: BinaryData): void {
     this.data.append(data.buf, data.pos)
   }
 
@@ -43,7 +43,7 @@ export class BundledPacket<T = unknown> extends Packet<BPacket<T>> {
     return copy
   }
 
-  public encodeBundleHeader(packetData: PacketData, bundle: PacketData = new PacketData()): PacketData {
+  public encodeBundleHeader(packetData: BinaryData, bundle: BinaryData = new BinaryData()): BinaryData {
     if(this.headerEncoded) return this.data
 
     let flags = this.props.reliability << 5

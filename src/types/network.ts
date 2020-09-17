@@ -1,5 +1,5 @@
 import { Socket } from 'dgram'
-import { PacketData } from '../network/PacketData'
+import { BinaryData } from '../utils/BinaryData'
 import { Packet } from '../network/Packet'
 
 export interface IAddress {
@@ -35,7 +35,7 @@ export interface ISendPacketArgs {
 }
 
 export interface IPacketHandlerArgs {
-  data: PacketData,
+  data: BinaryData,
   socket: Socket,
   address: IAddress,
 }

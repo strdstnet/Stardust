@@ -1,4 +1,4 @@
-import { PacketData } from './PacketData'
+import { BinaryData } from '../utils/BinaryData'
 import { DataType } from '../types'
 import Logger from '@bwatton/logger'
 
@@ -9,7 +9,7 @@ export enum ParserType {
 
 export interface IParserArgs<T> {
   type: ParserType,
-  data: PacketData,
+  data: BinaryData,
   props: T,
   value: any,
   self: Packet<T>,
@@ -29,7 +29,7 @@ interface IPacket {
 
 export type PacketProps<T> = IPacket & T
 
-const encodeDataType = (data: PacketData, type: DataType, value: any, p?: string) => {
+const encodeDataType = (data: BinaryData, type: DataType, value: any, p?: string) => {
   if(type === DataType.MAGIC) {
     return data.writeMagic()
   }
@@ -104,10 +104,15 @@ const encodeDataType = (data: PacketData, type: DataType, value: any, p?: string
     case DataType.CONTAINER_ITEM:
       data.writeContainerItem(value)
       break
+    case DataType.CHUNK:
+      data.writeChunk(value)
+      break
+    default:
+      console.error('Unknown DataType on write:', type)
   }
 }
 
-const decodeDataType = (data: PacketData, type: DataType) => {
+const decodeDataType = (data: BinaryData, type: DataType) => {
   switch(type) {
     case DataType.BYTE:
       return data.readByte()
@@ -149,8 +154,8 @@ const decodeDataType = (data: PacketData, type: DataType) => {
       return data.readLInt()
     case DataType.L_LONG:
       return data.readLLong()
-    case DataType.CONTAINER_ITEM:
-      throw new Error('fuck off u dumb cunt')
+    default:
+      console.error('Unknown DataType on read:', type)
   }
 }
 
@@ -163,7 +168,7 @@ export abstract class Packet<T> {
 
   public props: T = ({} as T)
 
-  public data!: PacketData
+  public data!: BinaryData
 
   constructor(public id: number, protected schema: Array<IPacketSchemaItem<T>>) {
 
@@ -173,8 +178,8 @@ export abstract class Packet<T> {
     return Packet.logger
   }
 
-  public encode(props: T = {} as T): PacketData {
-    const data = new PacketData()
+  public encode(props: T = {} as T): BinaryData {
+    const data = new BinaryData()
     if(this.encodeId) data.writeByte(this.id)
 
     if(!this.props) this.props = ({} as T)
@@ -205,7 +210,7 @@ export abstract class Packet<T> {
   /**
    * @deprecated Use Packet.parse() instead
    */
-  public decode(data: PacketData): PacketProps<T> {
+  public decode(data: BinaryData): PacketProps<T> {
     this.data = data
     const props: T = this.props || ({} as T)
 
@@ -237,7 +242,7 @@ export abstract class Packet<T> {
     }
   }
 
-  public parse(data: PacketData): this {
+  public parse(data: BinaryData): this {
     // eslint-disable-next-line deprecation/deprecation
     this.decode(data)
 

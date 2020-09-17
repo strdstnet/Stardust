@@ -1,4 +1,4 @@
-import { PacketData } from '../network'
+import { BinaryData } from '../network'
 import { IBundledPacket, Packets, Protocol, Props } from '../types'
 import {
   ConnectedPing,
@@ -13,11 +13,11 @@ import {
   DisconnectionNotification,
 } from '../network/bedrock'
 import {
-  PartialPacket, UnknownBundledPacket, ReassembledPacket,
+  PartialPacket, UnknownBundledPacket,
 } from '../network/custom'
 import { BPacket, BundledPacket } from '../network/raknet/BundledPacket'
 
-export function decodeBundledPacket<T extends IBundledPacket = BPacket<any>>(data: PacketData): [T, number] {
+export function decodeBundledPacket<T extends IBundledPacket = BPacket<any>>(data: BinaryData): [T, number] {
   const flags = data.readByte()
   const length = Math.ceil(data.readShort() / 8)
   const props = {
@@ -51,8 +51,8 @@ export function decodeBundledPacket<T extends IBundledPacket = BPacket<any>>(dat
   return [(props as unknown as T), length]
 }
 
-export function encodeBundledPacket(packet: BundledPacket<Props>): PacketData {
-  const data = new PacketData()
+export function encodeBundledPacket(packet: BundledPacket<Props>): BinaryData {
+  const data = new BinaryData()
 
   const packetData = packet.data || packet.encode(packet.props)
 
@@ -106,7 +106,7 @@ export function bundlePackets(packets: Array<BundledPacket<any>>, _sequenceNumbe
   return [bundles, sequenceNumber, lastSplitId]
 }
 
-export function parseBundledPackets(data: PacketData): Array<BundledPacket<any>> {
+export function parseBundledPackets(data: BinaryData): Array<BundledPacket<any>> {
   const packets: Array<BundledPacket<any>> = []
 
   while(!data.feof) {
@@ -159,7 +159,7 @@ export function parseBundledPackets(data: PacketData): Array<BundledPacket<any>>
     if(props.hasSplit) {
       packet.data = data.readByteArray(length)
     } else {
-      packet.decode(new PacketData(data.read(length)), props)
+      packet.decode(new BinaryData(data.read(length)), props)
     }
 
     packets.push(packet)

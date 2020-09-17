@@ -27,7 +27,7 @@ describe('Splitting', () => {
 
     // const buf = Buffer.alloc(1)
     // buf[0] = byte
-    // const data = new PacketData(buf)
+    // const data = new BinaryData(buf)
 
     // expect(data.readByte()).toEqual(byte)
   })

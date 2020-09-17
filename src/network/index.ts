@@ -1,2 +1,2 @@
 export * from './Client'
-export * from './PacketData'
+export * from '../utils/BinaryData' // TODO: No, lol

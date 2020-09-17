@@ -1,32 +1,33 @@
 import { BatchedPacket } from './BatchedPacket'
 import { Packets, DataType } from '../../types'
 import { ParserType } from '../Packet'
+import { Chunk } from '../../level'
 
 interface ILevelChunk {
-  chunkX: number,
-  chunkY: number,
-  subChunks: number,
+  chunk: Chunk,
   cache: boolean,
   usedHashes: Array<bigint>,
-  extra: string,
 }
 
 export class LevelChunk extends BatchedPacket<ILevelChunk> {
 
   public static empty = new LevelChunk({
-    chunkX: 0,
-    chunkY: 0,
-    subChunks: 0,
+    chunk: new Chunk(0, 0, [], [], [], [], []),
     cache: false,
     usedHashes: [],
-    extra: '',
   })
 
   constructor(p?: ILevelChunk) {
     super(Packets.LEVEL_CHUNK, [
-      { name: 'chunkX', parser: DataType.VARINT },
-      { name: 'chunkY', parser: DataType.VARINT },
-      { name: 'subChunks', parser: DataType.U_VARINT },
+      {
+        parser({ type, data, props }) {
+          if(type === ParserType.ENCODE) {
+            data.writeVarInt(props.chunk.x)
+            data.writeVarInt(props.chunk.y)
+            data.writeUnsignedVarInt(props.chunk.subChunks.length)
+          }
+        },
+      },
       { name: 'cache', parser: DataType.BOOLEAN },
       {
         parser({ type, data, props }) {
@@ -49,7 +50,7 @@ export class LevelChunk extends BatchedPacket<ILevelChunk> {
           }
         },
       },
-      { name: 'extra', parser: DataType.STRING },
+      { name: 'chunk', parser: DataType.CHUNK },
     ])
 
     if(p) this.props = p
