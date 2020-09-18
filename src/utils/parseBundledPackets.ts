@@ -58,7 +58,7 @@ export function encodeBundledPacket(packet: BundledPacket<Props>): BinaryData {
 
   packet.encodeBundleHeader(packetData, data)
 
-  return data
+  return packet.data
 }
 
 /**
@@ -90,15 +90,14 @@ export function bundlePackets(packets: Array<BundledPacket<any>>, _sequenceNumbe
         partial.encodeBundleHeader(dataPart)
 
         bundles.push(new PacketBundle({
-          sequenceNumber: sequenceNumber++,
+          sequenceNumber: ++sequenceNumber,
           packets: [partial],
         }))
       }
     } else {
-      const sqN = sequenceNumber++
       packet.encodeBundleHeader(packetData)
       bundles.push(new PacketBundle({
-        sequenceNumber: sqN,
+        sequenceNumber: ++sequenceNumber,
         packets: [packet],
       }))
     }

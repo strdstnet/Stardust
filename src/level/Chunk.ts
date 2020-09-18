@@ -15,7 +15,7 @@ export class Chunk {
 
   constructor(
     public x: number,
-    public y: number,
+    public z: number,
     subChunks: SubChunk[],
     public entityTags: CompoundTag[],
     public tileTags: CompoundTag[],
@@ -31,6 +31,16 @@ export class Chunk {
     for(let i = 0; i < Chunk.HEIGHT_MAP_SIZE; i++) {
       this.heightMap[i] = heightMap[i] || (this.height * 16)
     }
+  }
+
+  public highestNonEmptySubChunk(): number {
+    for(let y = this.subChunks.length - 1; y >= 0; y--) {
+      if(this.subChunks[y].empty) continue
+
+      return y
+    }
+
+    return -1
   }
 
 }

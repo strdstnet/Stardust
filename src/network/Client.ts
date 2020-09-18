@@ -1,4 +1,4 @@
-import { IAddress, IClientArgs, Packets, Protocol, DummyAddress, IBundledPacket, PlayStatusType, ResourcePackResponseStatus, PlayerPosition, AdventureSettingsFlag, PlayerPermissions, CommandPermissions } from '../types'
+import { IAddress, IClientArgs, Packets, Protocol, DummyAddress, IBundledPacket, PlayStatusType, ResourcePackResponseStatus, PlayerPosition, AdventureSettingsFlag, PlayerPermissions, CommandPermissions, Difficulty } from '../types'
 import Logger from '@bwatton/logger'
 import { BinaryData, BitFlag } from '../utils/BinaryData'
 import { PacketBundle } from './raknet/PacketBundle'
@@ -27,11 +27,10 @@ import { ConnectedPing } from './raknet/ConnectedPing'
 import { ConnectedPong } from './raknet/ConnectedPong'
 import { PartialPacket } from './custom'
 import { BatchedPacket } from './bedrock/BatchedPacket'
-import { Reliability } from '../utils'
+import { bundlePackets, Reliability } from '../utils'
 import { Player } from '../Player'
 import { LevelChunk } from './bedrock/LevelChunk'
 import { Chunk, SubChunk } from '../level'
-import { NetworkChunkPublisher } from './bedrock/NetworkChunkPublisher'
 import { Vector3 } from 'math3d'
 
 interface SplitQueue {
@@ -55,6 +54,8 @@ export class Client {
   private sentPackets: Map<number, PacketBundle> = new Map()
 
   public sequenceNumber = -1
+
+  private lastSplitId = -1
 
   private player!: Player
 
@@ -196,33 +197,32 @@ export class Client {
   private processSendQueue() {
     if(!this.sendQueue.length) return
 
-    const sequenceNumber = ++this.sequenceNumber
-    const packet = new PacketBundle({
-      sequenceNumber,
-      packets: this.sendQueue,
-    })
+    const [bundles, sequenceNumber, lastSplitId] = bundlePackets(this.sendQueue, this.sequenceNumber, this.lastSplitId, this.mtuSize)
 
-    Server.current.send({
-      packet,
-      socket: this.socket,
-      address: this.address,
-    })
+    for(const packet of bundles) {
+      this.sentPackets.set(packet.props.sequenceNumber, packet)
 
-    this.sentPackets.set(sequenceNumber, packet)
+      Server.current.send({
+        packet,
+        socket: this.socket,
+        address: this.address,
+      })
+    }
+
     this.sendQueue = []
+    this.sequenceNumber = sequenceNumber
+    this.lastSplitId = lastSplitId
   }
 
-  public sendBatched(packet: BatchedPacket<any>): void {
-    console.log(`Sending ${packet.constructor.name}`)
-
+  public sendBatched(packet: BatchedPacket<any>, reliability = Reliability.ReliableOrdered): void {
     this.send(new PacketBatch({
       packets: [packet],
-      reliability: Reliability.ReliableOrdered,
+      reliability,
     }))
   }
 
-  private sendBatchedMulti(packets: BatchedPacket<any>[]) {
-    this.send(new PacketBatch({ packets }))
+  private sendBatchedMulti(packets: BatchedPacket<any>[], reliability = Reliability.ReliableOrdered) {
+    this.send(new PacketBatch({ packets, reliability }))
   }
 
   private handleConnectedPing(packet: ConnectedPing) {
@@ -291,7 +291,9 @@ export class Client {
         behaviourPacks: [],
         resourcePacks: [],
       }),
-    ])
+    ], Reliability.Unreliable)
+    // this.sendBatched()
+    // this.sendBatched()
   }
 
   private async handleResourcePacksResponse(packet: ResourcePacksResponse) {
@@ -320,13 +322,25 @@ export class Client {
   private handleChunkRadiusRequest(packet: RequestChunkRadius) {
   }
 
-  private completeLogin() {
+  private async completeLogin() {
     this.sendBatched(new StartGame({
       entityUniqueId: this.player.id,
       entityRuntimeId: this.player.id,
-      playerPosition: new PlayerPosition(5, 5, 0, 0, 0),
-      worldName: Server.current.opts.motd.line1,
-      spawnLocation: new Vector3(5, 5, 5),
+      playerPosition: new PlayerPosition(0, 0, 0, 0, 0),
+      spawnLocation: new Vector3(0, 0, 0),
+
+      playerGamemode: 0,
+      seed: -1,
+      worldGamemode: 0,
+      difficulty: Difficulty.PEACEFUL,
+      achievementsDisabled: true,
+      time: 1500,
+      eduEditionOffer: 0,
+      rainLevel: 0,
+      lightningLevel: 0,
+      commandsEnabled: true,
+      levelId: '',
+      worldName: 'world',
     }))
 
     // TODO: Name tag visible, can climb, immobile
@@ -334,54 +348,47 @@ export class Client {
 
     Server.logger.info(`${this.player.name} logged in from ${this.address.ip}:${this.address.port}`)
 
-    this.logger.debug('Sending EntityDefinitionList:', this.sequenceNumber + 1)
-    this.sendBatched(new EntityDefinitionList())
+    // this.logger.debug('Sending EntityDefinitionList:', this.sequenceNumber + 1)
+    // this.sendBatched(new EntityDefinitionList())
 
     this.logger.debug('Sending BiomeDefinitionList:', this.sequenceNumber + 1)
     this.sendBatched(new BiomeDefinitionList())
 
-    this.sendAttributes(true)
+    // this.sendAttributes(true)
 
-    this.sendAvailableCommands()
-    this.sendAdventureSettings()
+    // this.sendAvailableCommands()
+    // this.sendAdventureSettings()
 
     // TODO: Potion effects?
     // https://github.com/pmmp/PocketMine-MP/blob/5910905e954f98fd1b1d24190ca26aa727a54a1d/src/network/mcpe/handler/PreSpawnPacketHandler.php#L96-L96
 
-    for(let i = 0; i < 1; i++) {
+    // this.logger.debug('Sending PlayerList:', this.sequenceNumber + 1)
+    // Server.current.addPlayer(this.player)
+
+    // this.player.notifySelf()
+    // this.player.notifyContainers()
+    // this.player.notifyHeldItem()
+
+    const neededChunks: [number, number][] = []
+    for(let i = 0; i < 15; i++) {
+      const x = i >> 32
+      const z = (i & 0xFFFFFFFF) << 32 >> 32
+
+      neededChunks[i] = [x, z]
+    }
+
+    for await(const [x, z] of neededChunks) {
+      const chunk = await Server.current.level.getChunkAt(x, z)
+
       this.sendBatched(new LevelChunk({
-        chunk: new Chunk(5, 5, [SubChunk.grassPlatform], [], [], [], []),
+        chunk,
         cache: false,
         usedHashes: [],
       }))
     }
-
-    // await nap(500)
-
-    // this.sendBatched(LevelChunk.empty)
-    // const baseChunk = Server.current.level.baseChunk
-    // this.sendBatched(new LevelChunk({
-    //   chunk: baseChunk,
-    //   cache: false,
-    //   usedHashes: [],
-    // }))
-
-    // this.sendBatched(new NetworkChunkPublisher({
-    //   x: 5,
-    //   y: 5,
-    //   z: 5,
-    //   radius: 12 << 4,
-    // }))
     this.sendBatched(new PlayStatus({
       status: PlayStatusType.PLAYER_SPAWN,
     }))
-
-    this.logger.debug('Sending PlayerList:', this.sequenceNumber + 1)
-    Server.current.addPlayer(this.player)
-
-    this.player.notifySelf()
-    this.player.notifyContainers()
-    this.player.notifyHeldItem()
   }
 
   private sendAttributes(all = false): void {

@@ -19,7 +19,7 @@ export abstract class Entity<Events = unknown, Containers extends Container[] = 
 
   constructor(
     public name: string, // Ex. Zombie
-    public gameId: string // Ex. minecraft:zombie
+    public gameId: string, // Ex. minecraft:zombie
   ) {
     super()
 

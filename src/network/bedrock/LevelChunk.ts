@@ -23,7 +23,7 @@ export class LevelChunk extends BatchedPacket<ILevelChunk> {
         parser({ type, data, props }) {
           if(type === ParserType.ENCODE) {
             data.writeVarInt(props.chunk.x)
-            data.writeVarInt(props.chunk.y)
+            data.writeVarInt(props.chunk.z)
             data.writeUnsignedVarInt(props.chunk.subChunks.length)
           }
         },

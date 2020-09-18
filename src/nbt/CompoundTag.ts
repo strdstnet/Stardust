@@ -1,27 +1,25 @@
 import { Tag, TagType } from './Tag'
 
-export class CompoundTag extends Tag {
+export class CompoundTag<V extends Record<string, Tag> = {
+  [k: string]: Tag,
+}> extends Tag {
 
-  public value: Map<string, Tag> = new Map()
+  public value: V = {} as V
 
   constructor(name?: string) {
     super(TagType.Compound, name)
   }
 
   public add(tag: Tag): void {
-    this.value.set(tag.name, tag)
+    (this.value as any)[tag.name] = tag
   }
 
-  public get(name: string): Tag | null {
-    return this.value.get(name) || null
+  public get<N extends keyof V>(name: N): V[N] {
+    return this.value[name]
   }
 
-  public toJSON(): any {
-    return {
-      type: this.type,
-      name: this.name,
-      value: Array.from(this.value),
-    }
+  public val<N extends keyof V>(name: N): V[N]['value'] {
+    return this.value[name] ? this.value[name].value : null
   }
 
 }

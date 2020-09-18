@@ -603,11 +603,10 @@ export class BinaryData {
   }
 
   public writeChunk(chunk: Chunk): void {
-    for(let y = 0; y < chunk.subChunks.length; y++) {
-      this.writeByte(0)
-    }
+    const nonEmptyCount = chunk.highestNonEmptySubChunk() + 1
+    for(let y = 0; y < nonEmptyCount; y++) {
+      const subChunk = chunk.subChunks[y]
 
-    for(const subChunk of chunk.subChunks) {
       this.writeByte(0)
       subChunk.blockData.forEach(id => this.writeByte(id))
       subChunk.data.forEach(id => this.writeByte(id))

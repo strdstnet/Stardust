@@ -2,11 +2,35 @@ import { Chunk } from './Chunk'
 import { SubChunk } from './SubChunk'
 import PrisAnvil from 'prismarine-provider-anvil'
 import path from 'path'
-import { CompoundTag, IntArrayTag, IntTag, LongTag, StringTag, Tag, TagType, LongArrayTag, ListTag, EndTag, ByteTag, ByteArrayTag } from '../nbt'
+import { CompoundTag, IntArrayTag, IntTag, LongTag, StringTag, Tag, TagType, LongArrayTag, ListTag, EndTag, ByteTag, ByteArrayTag, ShortTag, DoubleTag, FloatTag } from '../nbt'
 
-const Anvil = PrisAnvil.Anvil('1.16')
+const Anvil = PrisAnvil.Anvil('1.8')
 
 const WORLDS_DIR = path.join(__dirname, '..', 'worlds')
+
+type LevelNBT = CompoundTag<{
+  Level: CompoundTag<{
+    LightPopulated: ByteTag,
+    zPos: IntTag,
+    HeightMap: IntArrayTag,
+    LastUpdate: LongTag,
+    Biomes: ByteArrayTag,
+    InhabitedTime: LongTag,
+    xPos: IntTag,
+    TileEntities: ListTag<CompoundTag>,
+    Entities: ListTag<CompoundTag>,
+    TileTicks: ListTag,
+    Sections: ListTag<CompoundTag<{
+      Y: ByteTag,
+      SkyLight: ByteArrayTag,
+      Blocks: ByteArrayTag,
+      BlockLight: ByteArrayTag,
+      Data: ByteArrayTag,
+    }>>,
+    V: ByteTag,
+    TerrainPopulated: ByteTag
+  }>,
+}>
 
 export class Level {
 
@@ -17,20 +41,42 @@ export class Level {
   private chunkCache: Map<string, Chunk> = new Map()
 
   constructor(public name: string, public anvil: PrisAnvil.AnvilClass) {
-    // for(const chunk of chunks) {
-    //   this.chunks.set(Level.getChunkId(chunk.x, chunk.y), chunk)
-    // }
-    // level.loadRaw(0, 0).then(data => console.log('LOADED', data))
     this.loadChunk(0, 0)
   }
 
-  public async loadChunk(x: number, y: number): Promise<void> {
-    const nbt = await this.anvil.loadRaw(x, y)
+  private async loadChunk(x: number, z: number): Promise<Chunk> {
+    const nbt = await this.anvil.loadRaw(x, z)
 
-    const translated = this.translateNBT(nbt)
+    const translated = (this.translateNBT(nbt) as LevelNBT)
 
-    console.log(translated)
-    console.log(JSON.stringify(translated, null, 2))
+    const level = translated.get('Level')
+    const subChunks: SubChunk[] = []
+    for(const section of level.val('Sections')) {
+      if(section.val('Y') === -1) {
+        subChunks.push(SubChunk.empty)
+      } else {
+        subChunks.push(new SubChunk(
+          section.val('Data') || [],
+          section.val('Blocks') || [],
+          section.val('SkyLight') || [],
+          section.val('BlockLight') || [],
+        ))
+      }
+    }
+
+    const chunk = new Chunk(
+      level.val('xPos'),
+      level.val('zPos'),
+      subChunks,
+      level.val('Entities'),
+      level.val('TileEntities'),
+      level.val('Biomes'),
+      level.val('HeightMap'),
+    )
+
+    this.chunkCache.set(Level.getChunkId(x, z), chunk)
+
+    return chunk
   }
 
   public translateNBT(nbt: any, name: string = nbt.name, nbtType: string = nbt.type): Tag {
@@ -74,6 +120,15 @@ export class Level {
       case TagType.ByteArray:
         tag = new ByteArrayTag(name, nbt.value)
         break
+      case TagType.Short:
+        tag = new ShortTag(name, nbt.value)
+        break
+      case TagType.Double:
+        tag = new DoubleTag(name, nbt.value)
+        break
+      case TagType.Float:
+        tag = new FloatTag(name, nbt.value)
+        break
       default:
         throw new Error(`Unknown tag type: ${nbt.type}`)
     }
@@ -103,21 +158,28 @@ export class Level {
         return TagType.Byte
       case 'byteArray':
         return TagType.ByteArray
+      case 'short':
+        return TagType.Short
+      case 'double':
+        return TagType.Double
+      case 'float':
+        return TagType.Float
       default:
         throw new Error(`Unknown tag type: ${type}`)
     }
   }
 
-  public static getChunkId(x: number, y: number): string {
-    return `chunk:${x}:${y}`
+  public static getChunkId(x: number, z: number): string {
+    return `chunk:${x}:${z}`
   }
 
   public static TestWorld(): Level {
     return new Level('TestLevel', new Anvil(path.join(WORLDS_DIR, 'world', 'region')))
   }
 
-  public getChunkAt(x: number, y: number): Chunk | null {
-    return this.chunkCache.get(Level.getChunkId(x, y)) || null
+  public async getChunkAt(x: number, z: number): Promise<Chunk> {
+    const inCache = this.chunkCache.get(Level.getChunkId(x, z))
+    return inCache ? inCache : await this.loadChunk(x, z)
   }
 
   // public get baseChunk(): Chunk {

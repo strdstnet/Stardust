@@ -1,10 +1,11 @@
+import { Items } from '../types'
 import { ensureLength } from '../utils'
 
 export class SubChunk {
 
   constructor(
     public data: number[],
-    public blockData: number[],
+    public blockData: number[], // Block IDs
     public skyLightData: number[],
     public blockLightData: number[],
   ) {
@@ -20,6 +21,12 @@ export class SubChunk {
 
   public static get grassPlatform(): SubChunk {
     return new SubChunk([], [2], [], [])
+  }
+
+  public get empty(): boolean {
+    return this.blockData.every(v => v === 0) &&
+      this.skyLightData.every(v => v === 255) &&
+      this.blockLightData.every(v => v === 0)
   }
 
 }

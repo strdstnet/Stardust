@@ -33,8 +33,7 @@ export class PacketBundle extends Packet<IPacketBundle> {
             props.packets = parseBundledPackets(data)
           } else {
             for(const packet of props.packets) {
-              const packetData = encodeBundledPacket(packet)
-              data.append(packetData.buf)
+              data.append(encodeBundledPacket(packet).buf)
             }
           }
         },
