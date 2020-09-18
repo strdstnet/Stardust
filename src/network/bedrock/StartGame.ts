@@ -20,7 +20,7 @@ import {
 import { ParserType, Packet } from '../Packet'
 import LegacyIdMap from '../../data/legacy_id_map.json'
 import fs from 'fs'
-import path, { dirname } from 'path'
+import path from 'path'
 
 interface IStartGameRequired {
   entityUniqueId: bigint,
@@ -136,7 +136,7 @@ export class StartGame extends BatchedPacket<IStartGame> {
             data.writeVarInt(value.z)
           }
         },
-        resolve: def(new Vector3(5, 5, 5)),
+        resolve: def(new Vector3(0, 0, 0)),
       },
       { name: 'achievementsDisabled', parser: DataType.BOOLEAN, resolve: def(true) },
       { name: 'time', parser: DataType.VARINT, resolve: def(0) },
@@ -158,7 +158,8 @@ export class StartGame extends BatchedPacket<IStartGame> {
           if(type === ParserType.DECODE) {
             props.gameRules = []
 
-            for(let i = 0; i < data.readUnsignedVarInt(); i++) {
+            const count = data.readUnsignedVarInt()
+            for(let i = 0; i < count; i++) {
               const name = data.readString()
               const type = data.readUnsignedVarInt()
               let value: any
@@ -209,7 +210,7 @@ export class StartGame extends BatchedPacket<IStartGame> {
       { name: 'bonusChestEnabled', parser: DataType.BOOLEAN, resolve: def(false) },
       { name: 'startWithMapEnabled', parser: DataType.BOOLEAN, resolve: def(false) },
       { name: 'defaultPlayerPermission', parser: DataType.VARINT, resolve: def(PlayerPermissions.MEMBER) },
-      { name: 'serverChunkTickRadius', parser: DataType.L_INT, resolve: def(32) },
+      { name: 'serverChunkTickRadius', parser: DataType.L_INT, resolve: def(4) },
       { name: 'hasLockedBehaviorPack', parser: DataType.BOOLEAN, resolve: def(false) },
       { name: 'hasLockedResourcePack', parser: DataType.BOOLEAN, resolve: def(false) },
       { name: 'fromLockedWorldTemplate', parser: DataType.BOOLEAN, resolve: def(false) },
@@ -220,7 +221,7 @@ export class StartGame extends BatchedPacket<IStartGame> {
       { name: 'vanillaVersion', parser: DataType.STRING, resolve: def(Protocol.BEDROCK_VERSION) },
       { name: 'limitedWorldWidth', parser: DataType.L_INT, resolve: def(0) },
       { name: 'limitedWorldLength', parser: DataType.L_INT, resolve: def(0) },
-      { name: 'newNether', parser: DataType.BOOLEAN, resolve: def(false) },
+      { name: 'newNether', parser: DataType.BOOLEAN, resolve: def(true) },
       {
         name: 'someExperimentalBullshit',
         parser({ type, data }) {
@@ -243,6 +244,8 @@ export class StartGame extends BatchedPacket<IStartGame> {
         parser({ type, data }) {
           if (type === ParserType.ENCODE) {
             data.append(fs.readFileSync(path.join(__dirname, '..', '..', 'data', 'block_states.nbt')))
+          } else if(type === ParserType.DECODE) {
+            data.pos += 1063028
           }
         },
       },
@@ -252,7 +255,8 @@ export class StartGame extends BatchedPacket<IStartGame> {
           if(type === ParserType.DECODE) {
             props.legacyIdMap = {}
 
-            for(let i = 0; i < data.readUnsignedVarInt(); i++) {
+            const count = data.readUnsignedVarInt()
+            for(let i = 0; i < count; i++) {
               props.legacyIdMap[data.readString()] = data.readSignedLShort()
             }
           } else {

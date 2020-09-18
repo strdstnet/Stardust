@@ -16,7 +16,9 @@ export class ResourcePacksResponse extends BatchedPacket<IResourcePacksResponse>
         parser({ type, data, props }) {
           if(type === ParserType.DECODE) {
             props.packIds = []
-            for(let i = 0; i < data.readLShort(); i++) {
+
+            const count = data.readLShort()
+            for(let i = 0; i < count; i++) {
               props.packIds.push(data.readString())
             }
           } else {

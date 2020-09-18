@@ -1,4 +1,5 @@
 import { CompoundTag } from '../nbt'
+import { PlayerPosition } from '../types'
 import { ensureLength } from '../utils'
 import { SubChunk } from './SubChunk'
 
@@ -41,6 +42,10 @@ export class Chunk {
     }
 
     return -1
+  }
+
+  public static getChunkCoords(pos: PlayerPosition): [number, number] {
+    return [Math.floor(pos.location.x) >> 4, Math.floor(pos.location.z) >> 4]
   }
 
 }

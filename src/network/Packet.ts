@@ -187,7 +187,8 @@ export abstract class Packet<T> {
     Object.assign(this.props, props)
 
     this.schema.forEach(({ name, parser, resolve }) => {
-      const value = resolve ? resolve(this.props) : (name ? (this.props as any)[name] : null)
+      // const value = resolve ? resolve(this.props) : (name ? (this.props as any)[name] : null)
+      const value = name && (this.props as any)[name] ? (this.props as any)[name] : (resolve ? resolve(this.props) : null)
 
       if(typeof parser === 'function') {
         parser({

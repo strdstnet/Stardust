@@ -19,7 +19,8 @@ export class UpdateAttributes extends BatchedPacket<IUpdateAttributes> {
           if(type === ParserType.DECODE) {
             props.entries = []
 
-            for(let i = 0; i < data.readUnsignedVarInt(); i++) {
+            const count = data.readUnsignedVarInt()
+            for(let i = 0; i < count; i++) {
               const min = data.readLFloat()
               const max = data.readLFloat()
               const current = data.readLFloat()

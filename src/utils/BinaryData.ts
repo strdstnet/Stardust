@@ -609,10 +609,13 @@ export class BinaryData {
 
       this.writeByte(0)
       subChunk.blockData.forEach(id => this.writeByte(id))
+      console.log('SBD', subChunk.blockData.length)
       subChunk.data.forEach(id => this.writeByte(id))
+      console.log('SD', subChunk.data.length)
     }
 
     chunk.biomeData.forEach(id => this.writeByte(id))
+    console.log('CBD', chunk.biomeData.length)
     this.writeByte(0)
 
     // TODO: Tiles

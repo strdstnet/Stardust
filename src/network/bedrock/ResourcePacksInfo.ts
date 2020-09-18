@@ -25,7 +25,8 @@ function parsePacks(behaviourPacks: boolean) {
     if(type === ParserType.DECODE) {
       props[prop] = []
 
-      for(let i = 0; i < data.readLShort(); i++) {
+      const count = data.readLShort()
+      for(let i = 0; i < count; i++) {
         props[prop].push({
           id: data.readString(),
           version: data.readString(),

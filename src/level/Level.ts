@@ -174,7 +174,7 @@ export class Level {
   }
 
   public static TestWorld(): Level {
-    return new Level('TestLevel', new Anvil(path.join(WORLDS_DIR, 'world', 'region')))
+    return new Level('TestLevel', new Anvil(path.join(WORLDS_DIR, 'one_eight_yes', 'region')))
   }
 
   public async getChunkAt(x: number, z: number): Promise<Chunk> {

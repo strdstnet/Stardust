@@ -96,12 +96,12 @@ export class Client {
       const { props: { sequences } } = new NAK().parse(data)
       console.log('GOT NAK, resending:', sequences)
 
-      // for(const sequence of sequences) {
-      //   const bundle = this.sentPackets.get(sequence)
+      for(const sequence of sequences) {
+        const bundle = this.sentPackets.get(sequence)
 
-      //   if(!bundle) console.log(`SEQUENCE ${sequence} NOT FOUND`)
-      //   // else this.resend(bundle)
-      // }
+        if(!bundle) console.log(`SEQUENCE ${sequence} NOT FOUND`)
+        else this.resend(bundle)
+      }
     } else {
       const { packets, sequenceNumber } = new PacketBundle().decode(data)
 
@@ -323,30 +323,31 @@ export class Client {
   }
 
   private async completeLogin() {
+    const playerPosition = new PlayerPosition(0, 0, 0, 0, 0)
     this.sendBatched(new StartGame({
       entityUniqueId: this.player.id,
       entityRuntimeId: this.player.id,
-      playerPosition: new PlayerPosition(0, 0, 0, 0, 0),
+      playerPosition,
       spawnLocation: new Vector3(0, 0, 0),
 
-      playerGamemode: 0,
-      seed: -1,
-      worldGamemode: 0,
-      difficulty: Difficulty.PEACEFUL,
-      achievementsDisabled: true,
-      time: 1500,
-      eduEditionOffer: 0,
-      rainLevel: 0,
-      lightningLevel: 0,
-      commandsEnabled: true,
-      levelId: '',
-      worldName: 'world',
+      // playerGamemode: 0,
+      // seed: -1,
+      // worldGamemode: 0,
+      // difficulty: Difficulty.PEACEFUL,
+      // achievementsDisabled: true,
+      // time: 1500,
+      // eduEditionOffer: 0,
+      // rainLevel: 0,
+      // lightningLevel: 0,
+      // commandsEnabled: true,
+      // levelId: '',
+      // worldName: 'world',
     }))
 
-    // TODO: Name tag visible, can climb, immobile
-    // https://github.com/pmmp/PocketMine-MP/blob/e47a711494c20ac86fea567b44998f2e24f3dbc7/src/pocketmine/Player.php#L2255
+    // // TODO: Name tag visible, can climb, immobile
+    // // https://github.com/pmmp/PocketMine-MP/blob/e47a711494c20ac86fea567b44998f2e24f3dbc7/src/pocketmine/Player.php#L2255
 
-    Server.logger.info(`${this.player.name} logged in from ${this.address.ip}:${this.address.port}`)
+    // Server.logger.info(`${this.player.name} logged in from ${this.address.ip}:${this.address.port} with MTU ${this.mtuSize}`)
 
     // this.logger.debug('Sending EntityDefinitionList:', this.sequenceNumber + 1)
     // this.sendBatched(new EntityDefinitionList())
@@ -359,8 +360,8 @@ export class Client {
     // this.sendAvailableCommands()
     // this.sendAdventureSettings()
 
-    // TODO: Potion effects?
-    // https://github.com/pmmp/PocketMine-MP/blob/5910905e954f98fd1b1d24190ca26aa727a54a1d/src/network/mcpe/handler/PreSpawnPacketHandler.php#L96-L96
+    // // TODO: Potion effects?
+    // // https://github.com/pmmp/PocketMine-MP/blob/5910905e954f98fd1b1d24190ca26aa727a54a1d/src/network/mcpe/handler/PreSpawnPacketHandler.php#L96-L96
 
     // this.logger.debug('Sending PlayerList:', this.sequenceNumber + 1)
     // Server.current.addPlayer(this.player)
@@ -370,25 +371,28 @@ export class Client {
     // this.player.notifyHeldItem()
 
     const neededChunks: [number, number][] = []
-    for(let i = 0; i < 15; i++) {
+    for(let i = 0; i < 1; i++) {
       const x = i >> 32
       const z = (i & 0xFFFFFFFF) << 32 >> 32
 
-      neededChunks[i] = [x, z]
+      const [ chunkX, chunkZ ] = Chunk.getChunkCoords(playerPosition)
+
+      neededChunks[i] = [chunkX + x, chunkZ + z]
     }
+    this.sendBatched(new PlayStatus({
+      status: PlayStatusType.PLAYER_SPAWN,
+    }), Reliability.Unreliable)
 
     for await(const [x, z] of neededChunks) {
-      const chunk = await Server.current.level.getChunkAt(x, z)
+      // const chunk = await Server.current.level.getChunkAt(x, z)
+      const chunk = new Chunk(x, z, [SubChunk.grassPlatform], [], [], [], [])
 
       this.sendBatched(new LevelChunk({
         chunk,
         cache: false,
         usedHashes: [],
-      }))
+      }), Reliability.Unreliable)
     }
-    this.sendBatched(new PlayStatus({
-      status: PlayStatusType.PLAYER_SPAWN,
-    }))
   }
 
   private sendAttributes(all = false): void {

@@ -22,7 +22,8 @@ function parsePacks(behaviourPacks: boolean) {
     if(type === ParserType.DECODE) {
       props[prop] = []
 
-      for(let i = 0; i < data.readUnsignedVarInt(); i++) {
+      const count = data.readUnsignedVarInt()
+      for(let i = 0; i < count; i++) {
         props[prop].push({
           id: data.readString(),
           version: data.readString(),

@@ -115,7 +115,7 @@ export class PacketBatch extends BundledPacket<IPacketBatch> {
               packetData.writeUnsignedVarInt(
                 packet.id |
                 (PacketBatch.senderSubId << PacketBatch.SENDER_SUBCLIENT_ID_SHIFT) |
-                (PacketBatch.recipientSubId << PacketBatch.RECIPIENT_SUBCLIENT_ID_SHIFT)
+                (PacketBatch.recipientSubId << PacketBatch.RECIPIENT_SUBCLIENT_ID_SHIFT),
               )
               packetData.append(packet.encode().toBuffer())
 
