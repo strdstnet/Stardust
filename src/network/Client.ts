@@ -21,7 +21,7 @@ import {
   UpdateAttributes,
   AvailableCommands,
   AdventureSettings,
-  EntityNotification, ContainerNotification, EntityEquipment, BiomeDefinitionList,
+  EntityNotification, ContainerNotification, EntityEquipment, BiomeDefinitionList, RequestChunkRadius,
 } from './bedrock'
 import { ConnectedPing } from './raknet/ConnectedPing'
 import { ConnectedPong } from './raknet/ConnectedPong'
@@ -31,6 +31,8 @@ import { Reliability } from '../utils'
 import { Player } from '../Player'
 import { LevelChunk } from './bedrock/LevelChunk'
 import { Chunk, SubChunk } from '../level'
+import { NetworkChunkPublisher } from './bedrock/NetworkChunkPublisher'
+import { Vector3 } from 'math3d'
 
 interface SplitQueue {
   [splitId: number]: BundledPacket<any>,
@@ -93,12 +95,12 @@ export class Client {
       const { props: { sequences } } = new NAK().parse(data)
       console.log('GOT NAK, resending:', sequences)
 
-      for(const sequence of sequences) {
-        const bundle = this.sentPackets.get(sequence)
+      // for(const sequence of sequences) {
+      //   const bundle = this.sentPackets.get(sequence)
 
-        if(!bundle) console.log(`SEQUENCE ${sequence} NOT FOUND`)
-        else this.resend(bundle)
-      }
+      //   if(!bundle) console.log(`SEQUENCE ${sequence} NOT FOUND`)
+      //   // else this.resend(bundle)
+      // }
     } else {
       const { packets, sequenceNumber } = new PacketBundle().decode(data)
 
@@ -254,6 +256,13 @@ export class Client {
           case Packets.RESOURCE_PACKS_RESPONSE:
             this.handleResourcePacksResponse(pk)
             break
+          case Packets.REQUEST_CHUNK_RADIUS:
+            this.logger.debug('GOT CHUNK REQUEST RADIUS')
+            this.handleChunkRadiusRequest(pk)
+            break
+          case Packets.CHUNK_RADIUS_UPDATED:
+            this.logger.debug('GOT CHUNK_RADIUS_UPDATED')
+            break
           default:
             this.logger.debug(`UNKNOWN BATCHED PACKET ${pk.id}`)
         }
@@ -308,13 +317,22 @@ export class Client {
     }
   }
 
+  private handleChunkRadiusRequest(packet: RequestChunkRadius) {
+  }
+
   private completeLogin() {
     this.sendBatched(new StartGame({
       entityUniqueId: this.player.id,
       entityRuntimeId: this.player.id,
-      playerPosition: new PlayerPosition(0, 0, 0, 0, 0),
+      playerPosition: new PlayerPosition(5, 5, 0, 0, 0),
       worldName: Server.current.opts.motd.line1,
+      spawnLocation: new Vector3(5, 5, 5),
     }))
+
+    // TODO: Name tag visible, can climb, immobile
+    // https://github.com/pmmp/PocketMine-MP/blob/e47a711494c20ac86fea567b44998f2e24f3dbc7/src/pocketmine/Player.php#L2255
+
+    Server.logger.info(`${this.player.name} logged in from ${this.address.ip}:${this.address.port}`)
 
     this.logger.debug('Sending EntityDefinitionList:', this.sequenceNumber + 1)
     this.sendBatched(new EntityDefinitionList())
@@ -324,23 +342,19 @@ export class Client {
 
     this.sendAttributes(true)
 
-    // TODO: Name tag visible, can climb, immobile
-    // https://github.com/pmmp/PocketMine-MP/blob/e47a711494c20ac86fea567b44998f2e24f3dbc7/src/pocketmine/Player.php#L2255
-
-    Server.logger.info(`${this.player.name} logged in from ${this.address.ip}:${this.address.port}`)
-
     this.sendAvailableCommands()
     this.sendAdventureSettings()
 
     // TODO: Potion effects?
     // https://github.com/pmmp/PocketMine-MP/blob/5910905e954f98fd1b1d24190ca26aa727a54a1d/src/network/mcpe/handler/PreSpawnPacketHandler.php#L96-L96
 
-    this.player.notifySelf()
-    this.player.notifyContainers()
-    this.player.notifyHeldItem()
-
-    this.logger.debug('Sending PlayerList:', this.sequenceNumber + 1)
-    Server.current.addPlayer(this.player)
+    for(let i = 0; i < 1; i++) {
+      this.sendBatched(new LevelChunk({
+        chunk: new Chunk(5, 5, [SubChunk.grassPlatform], [], [], [], []),
+        cache: false,
+        usedHashes: [],
+      }))
+    }
 
     // await nap(500)
 
@@ -352,20 +366,22 @@ export class Client {
     //   usedHashes: [],
     // }))
 
-    for(let i = 0; i < 50; i++) {
-      const x = i >> 32
-      const y = (i & 0xFFFFFFFF) << 32 >> 32
-
-      this.sendBatched(new LevelChunk({
-        chunk: new Chunk(x, y, [SubChunk.grassPlatform], [], [], [], []),
-        cache: false,
-        usedHashes: [],
-      }))
-    }
-
+    // this.sendBatched(new NetworkChunkPublisher({
+    //   x: 5,
+    //   y: 5,
+    //   z: 5,
+    //   radius: 12 << 4,
+    // }))
     this.sendBatched(new PlayStatus({
       status: PlayStatusType.PLAYER_SPAWN,
     }))
+
+    this.logger.debug('Sending PlayerList:', this.sequenceNumber + 1)
+    Server.current.addPlayer(this.player)
+
+    this.player.notifySelf()
+    this.player.notifyContainers()
+    this.player.notifyHeldItem()
   }
 
   private sendAttributes(all = false): void {
