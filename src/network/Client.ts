@@ -371,7 +371,7 @@ export class Client {
     // this.player.notifyHeldItem()
 
     const neededChunks: [number, number][] = []
-    for(let i = 0; i < 30; i++) {
+    for(let i = 0; i < 1; i++) {
       const x = i >> 32
       const z = (i & 0xFFFFFFFF) << 32 >> 32
 
@@ -383,8 +383,8 @@ export class Client {
     console.log(neededChunks)
 
     for await(const [x, z] of neededChunks) {
-      const chunk = await Server.current.level.getChunkAt(x, z)
-      // const chunk = new Chunk(x, z, [SubChunk.grassPlatform], [], [], [], [])
+      // const chunk = await Server.current.level.getChunkAt(x, z)
+      const chunk = new Chunk(x, z, [SubChunk.grassPlatform], [], [], [], [])
 
       this.sendBatched(new LevelChunk({
         chunk,
