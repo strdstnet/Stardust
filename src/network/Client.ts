@@ -17,11 +17,16 @@ import {
   PlayStatus,
   ResourcePacksResponse,
   StartGame,
-  EntityDefinitionList,
   UpdateAttributes,
   AvailableCommands,
   AdventureSettings,
-  EntityNotification, ContainerNotification, EntityEquipment, BiomeDefinitionList, RequestChunkRadius,
+  EntityNotification,
+  ContainerNotification,
+  EntityEquipment,
+  BiomeDefinitionList,
+  RequestChunkRadius,
+  ChunkRadiusUpdated,
+  PacketViolationWarning,
 } from './bedrock'
 import { ConnectedPing } from './raknet/ConnectedPing'
 import { ConnectedPong } from './raknet/ConnectedPong'
@@ -260,8 +265,10 @@ export class Client {
             this.logger.debug('GOT CHUNK REQUEST RADIUS')
             this.handleChunkRadiusRequest(pk)
             break
-          case Packets.CHUNK_RADIUS_UPDATED:
-            this.logger.debug('GOT CHUNK_RADIUS_UPDATED')
+          case Packets.PACKET_VIOLATION_WARNING:
+            const { type, severity, packetId, message } = (pk as PacketViolationWarning).props
+
+            this.logger.error('Packet Violation:', { type, severity, packetId, message })
             break
           default:
             this.logger.debug(`UNKNOWN BATCHED PACKET ${pk.id}`)
@@ -320,6 +327,11 @@ export class Client {
   }
 
   private handleChunkRadiusRequest(packet: RequestChunkRadius) {
+    const { radius } = packet.props
+
+    this.sendBatched(new ChunkRadiusUpdated({
+      radius,
+    }))
   }
 
   private async completeLogin() {
@@ -390,7 +402,7 @@ export class Client {
         chunk,
         cache: false,
         usedHashes: [],
-      }), Reliability.Unreliable)
+      }))
     }
 
     this.sendBatched(new PlayStatus({
