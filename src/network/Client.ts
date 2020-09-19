@@ -38,6 +38,7 @@ import { Player } from '../Player'
 import { LevelChunk } from './bedrock/LevelChunk'
 import { Chunk, SubChunk } from '../level'
 import { Vector3 } from 'math3d'
+import { MovePlayer } from './bedrock/MovePlayer'
 
 interface SplitQueue {
   [splitId: number]: BundledPacket<any>,
@@ -270,6 +271,9 @@ export class Client {
           case Packets.TEXT:
             this.handleText(pk)
             break
+          case Packets.MOVE_PLAYER:
+            this.handleMove(pk)
+            break
           case Packets.PACKET_VIOLATION_WARNING:
             const { type, severity, packetId, message } = (pk as PacketViolationWarning).props
 
@@ -350,6 +354,18 @@ export class Client {
     }
   }
 
+  private handleMove(packet: MovePlayer) {
+    const {
+      positionX,
+      positionY,
+      positionZ,
+      pitch,
+      yaw,
+      headYaw,
+    } = packet.props
+    this.player.move(new PlayerPosition(positionX, positionY, positionZ, pitch, yaw, headYaw))
+  }
+
   private async completeLogin() {
     const playerPosition = new PlayerPosition(0, 0, 0, 0, 0)
     this.sendBatched(new StartGame({
@@ -357,19 +373,6 @@ export class Client {
       entityRuntimeId: this.player.id,
       playerPosition,
       spawnLocation: new Vector3(0, 0, 0),
-
-      // playerGamemode: 0,
-      // seed: -1,
-      // worldGamemode: 0,
-      // difficulty: Difficulty.PEACEFUL,
-      // achievementsDisabled: true,
-      // time: 1500,
-      // eduEditionOffer: 0,
-      // rainLevel: 0,
-      // lightningLevel: 0,
-      // commandsEnabled: true,
-      // levelId: '',
-      // worldName: 'world',
     }), Reliability.Unreliable)
 
     // // TODO: Name tag visible, can climb, immobile
@@ -386,7 +389,7 @@ export class Client {
     this.sendAttributes(true)
 
     this.sendAvailableCommands()
-    this.sendAdventureSettings()
+    //this.sendAdventureSettings()
 
     // // TODO: Potion effects?
     // // https://github.com/pmmp/PocketMine-MP/blob/5910905e954f98fd1b1d24190ca26aa727a54a1d/src/network/mcpe/handler/PreSpawnPacketHandler.php#L96-L96
@@ -398,28 +401,28 @@ export class Client {
     this.player.notifyContainers()
     this.player.notifyHeldItem()
 
-    const neededChunks: [number, number][] = []
-    for(let i = 0; i < 15; i++) {
-      const x = i >> 32
-      const z = (i & 0xFFFFFFFF) << 32 >> 32
+    // const neededChunks: [number, number][] = []
+    // for(let i = 0; i < 1; i++) {
+    //   const x = i >> 32
+    //   const z = (i & 0xFFFFFFFF) << 32 >> 32
 
-      const [ chunkX, chunkZ ] = Chunk.getChunkCoords(playerPosition)
+    //   const [ chunkX, chunkZ ] = Chunk.getChunkCoords(playerPosition)
 
-      neededChunks[i] = [chunkX + x, chunkZ + z]
-    }
+    //   neededChunks[i] = [chunkX + x, chunkZ + z]
+    // }
 
-    console.log(neededChunks)
+    // for await(const [x, z] of neededChunks) {
+    //   const chunk = await Server.current.level.getChunkAt(x, z)
+    //   // const chunk = new Chunk(x, z, [SubChunk.grassPlatform], [], [], [], [])
 
-    for await(const [x, z] of neededChunks) {
-      const chunk = await Server.current.level.getChunkAt(x, z)
-      // const chunk = new Chunk(x, z, [SubChunk.grassPlatform], [], [], [], [])
+    //   // console.log(Server.current.level.getChunkAt(x, z))
 
-      this.sendBatched(new LevelChunk({
-        chunk,
-        cache: false,
-        usedHashes: [],
-      }))
-    }
+    //   this.sendBatched(new LevelChunk({
+    //     chunk: chunk,
+    //     cache: false,
+    //     usedHashes: [],
+    //   }), Reliability.Unreliable)
+    // }
 
     this.sendBatched(new PlayStatus({
       status: PlayStatusType.PLAYER_SPAWN,
@@ -431,7 +434,7 @@ export class Client {
         y: playerPosition.location.y,
         z: playerPosition.location.z,
         radius: this.viewDistance * 16,
-      }))
+      }), Reliability.Unreliable)
     }, 250)
   }
 
@@ -449,7 +452,7 @@ export class Client {
   }
 
   private sendAvailableCommands() {
-    this.sendBatched(new AvailableCommands())
+    this.sendBatched(new AvailableCommands(), Reliability.Unreliable)
   }
 
   private sendAdventureSettings() {
@@ -473,14 +476,14 @@ export class Client {
       this.sendBatched(new EntityNotification({
         entityRuntimeId,
         metadata,
-      }))
+      }), Reliability.Unreliable)
     })
 
     this.player.on('Client:containerNotification', container => {
       this.sendBatched(new ContainerNotification({
         type: container.type,
         items: container.items,
-      }))
+      }), Reliability.Unreliable)
     })
 
     this.player.on('Client:heldItemNotification', (entityRuntimeId, item, inventorySlot, hotbarSlot, containerId) => {
