@@ -1,5 +1,7 @@
-import { Packets, DataType, ContainerType } from '../../types'
-import { BatchedPacket } from './BatchedPacket'
+import { Packets } from '../../types/protocol'
+import { ContainerType } from '../../types/containers'
+import { DataType } from '../../types/data'
+import { BatchedPacket } from '../bedrock/BatchedPacket'
 import { ParserType } from '../Packet'
 import { Item } from '../../item/Item'
 

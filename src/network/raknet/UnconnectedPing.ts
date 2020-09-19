@@ -1,5 +1,6 @@
 import { Packet } from '../Packet'
-import { Packets, DataType } from '../../types'
+import { Packets } from '../../types/protocol'
+import { DataType } from '../../types/data'
 
 export interface IUnconnectedPing {
   pingId: bigint,

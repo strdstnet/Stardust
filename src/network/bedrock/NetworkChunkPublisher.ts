@@ -1,5 +1,6 @@
-import { BatchedPacket } from './BatchedPacket'
-import { Packets, DataType } from '../../types'
+import { BatchedPacket } from '../bedrock/BatchedPacket'
+import { Packets } from '../../types/protocol'
+import { DataType } from '../../types/data'
 
 interface INetworkChunkPublisher {
   x: number,

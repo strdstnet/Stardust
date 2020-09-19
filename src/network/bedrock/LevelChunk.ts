@@ -1,7 +1,8 @@
-import { BatchedPacket } from './BatchedPacket'
-import { Packets, DataType } from '../../types'
+import { BatchedPacket } from '../bedrock/BatchedPacket'
+import { Packets } from '../../types/protocol'
+import { DataType } from '../../types/data'
 import { ParserType } from '../Packet'
-import { Chunk } from '../../level'
+import { Chunk } from '../../level/Chunk'
 
 interface ILevelChunk {
   chunk: Chunk,
@@ -18,6 +19,8 @@ export class LevelChunk extends BatchedPacket<ILevelChunk> {
   })
 
   constructor(p?: ILevelChunk) {
+    let subChunkCount = p ? p.chunk.subChunks.length : 0
+
     super(Packets.LEVEL_CHUNK, [
       {
         parser({ type, data, props }) {
@@ -26,6 +29,14 @@ export class LevelChunk extends BatchedPacket<ILevelChunk> {
             data.writeVarInt(props.chunk.z)
             data.writeUnsignedVarInt(props.chunk.highestNonEmptySubChunk() + 1)
             // data.writeUnsignedVarInt(1)
+          } else {
+            props.chunk = new Chunk(
+              data.readVarInt(),
+              data.readVarInt(),
+              [], [], [], [], [],
+            )
+            subChunkCount = data.readUnsignedVarInt()
+            console.log('NUM SUB CHUNKS', subChunkCount)
           }
         },
       },
@@ -51,7 +62,15 @@ export class LevelChunk extends BatchedPacket<ILevelChunk> {
           }
         },
       },
-      { name: 'chunk', parser: DataType.CHUNK },
+      {
+        parser({ type, data, props }) {
+          if(type === ParserType.ENCODE) {
+            data.writeChunk(props.chunk)
+          } else {
+            data.readChunkData(props.chunk, subChunkCount)
+          }
+        },
+      },
     ])
 
     if(p) this.props = p

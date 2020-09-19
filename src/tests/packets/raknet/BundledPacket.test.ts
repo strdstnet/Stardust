@@ -1,6 +1,6 @@
-import { ConnectedPing } from '../../../network/raknet'
-import { bundlePackets } from '../../../utils'
-import { Protocol } from '../../../types'
+import { ConnectedPing } from '../../../network/raknet/ConnectedPing'
+import { bundlePackets } from '../../../utils/parseBundledPackets'
+import { Protocol } from '../../../types/protocol'
 
 // describe('BundledPacket', () => {
 //   it('encodes & decodes single packet correctly', () => {

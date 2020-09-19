@@ -1,5 +1,5 @@
 import { BundledPacket } from '../raknet/BundledPacket'
-import { Packets } from '../../types'
+import { Packets } from '../../types/protocol'
 
 interface ISetSpawnPosition {
   spawnType: number,

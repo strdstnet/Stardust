@@ -1,10 +1,14 @@
-import { PacketBatch, PlayStatus, StartGame } from '../network/bedrock'
-import { PartialPacket } from '../network/custom'
-import { PacketBundle } from '../network/raknet'
+import { PacketBatch } from '../network/bedrock/PacketBatch'
+import { PlayStatus } from '../network/bedrock/PlayStatus'
+import { StartGame } from '../network/bedrock/StartGame'
+import { PacketBundle } from '../network/raknet/PacketBundle'
 import { BundledPacket } from '../network/raknet/BundledPacket'
-import { IBundledPacket, PlayerPosition, PlayStatusType, Protocol } from '../types'
-import { BinaryData } from '../utils'
+import { PlayStatusType } from '../types/world'
+import { Protocol } from '../types/protocol'
 import { bundlePackets } from '../utils/parseBundledPackets'
+import { PlayerPosition } from '../types/data'
+import { BinaryData } from '../utils/BinaryData'
+import { IBundledPacket } from '../types/network'
 
 describe('Splitting', () => {
   it('splits shit correctly', () => {
@@ -43,12 +47,12 @@ describe('Splitting', () => {
       [splitId: number]: BundledPacket<any>,
     } = {}
 
-    for(const [idx, bundle] of bundles.entries()) {
+    for(const [, bundle] of bundles.entries()) {
       const encoded = new BinaryData(bundle.encode().toBuffer())
 
       expect(encoded.length).toBeLessThanOrEqual(mtuSize)
 
-      const { packets, sequenceNumber } = new PacketBundle().decode(encoded)
+      const { packets } = new PacketBundle().decode(encoded)
 
       for(const packet of packets) {
         const props = packet.props as IBundledPacket

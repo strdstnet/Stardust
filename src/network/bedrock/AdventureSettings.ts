@@ -1,6 +1,7 @@
-import { Packets, AdventureSettingsFlag, BITFLAG_SECOND_SET } from '../../types'
+import { Packets } from '../../types/protocol'
+import { AdventureSettingsFlag, BITFLAG_SECOND_SET } from '../../types/world'
 import { ParserType } from '../Packet'
-import { BatchedPacket } from './BatchedPacket'
+import { BatchedPacket } from '../bedrock/BatchedPacket'
 
 interface IAdventureSettings {
   flags: Array<[AdventureSettingsFlag, boolean]>,

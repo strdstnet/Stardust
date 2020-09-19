@@ -1,4 +1,4 @@
-import { ContainerType } from '../types'
+import { ContainerType } from '../types/containers'
 import { Container } from './Container'
 
 export class Armor extends Container {

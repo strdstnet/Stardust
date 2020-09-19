@@ -1,5 +1,6 @@
 import { Item } from '../item/Item'
-import { ContainerType, Items } from '../types'
+import { ContainerType } from '../types/containers'
+import { Items } from '../types/world'
 
 export abstract class Container {
 

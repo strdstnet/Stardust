@@ -1,5 +1,5 @@
-import { Items } from '../types'
-import { CompoundTag } from '../nbt'
+import { Items } from '../types/world'
+import { CompoundTag } from '../nbt/CompoundTag'
 
 export class Item {
 

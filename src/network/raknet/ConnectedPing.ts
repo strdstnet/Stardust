@@ -1,5 +1,6 @@
-import { BundledPacket, BPacketOpt } from '../raknet/BundledPacket'
-import { Packets, DataType } from '../../types'
+import { BundledPacket, BPacketOpt } from './BundledPacket'
+import { Packets } from '../../types/protocol'
+import { DataType } from '../../types/data'
 
 export interface IConnectedPing {
   time: bigint,

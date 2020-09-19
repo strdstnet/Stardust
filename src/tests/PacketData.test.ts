@@ -1,5 +1,5 @@
 import { BinaryData } from '../utils/BinaryData'
-import { Protocol } from '../types'
+import { Protocol } from '../types/protocol'
 
 describe('Bytes', () => {
   it('reads bytes correctly', () => {

@@ -1,7 +1,7 @@
 export interface SkinImage {
   height: number,
   width: number,
-  data: string,
+  data: Buffer,
 }
 
 export enum SkinAnimationType {
@@ -62,12 +62,12 @@ export interface SkinData {
   id: string,
   // fullId: string,
   color: string,
-  resourcePatch: string,
+  resourcePatch: Buffer,
   image: SkinImage,
   animations: SkinAnimation[],
   cape: SkinCape,
-  geometryData: string,
-  animationData: string,
+  geometryData: Buffer,
+  animationData: Buffer,
   persona: boolean,
   premium: boolean,
   personaCapeOnClassic: boolean,

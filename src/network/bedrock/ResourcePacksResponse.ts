@@ -1,6 +1,8 @@
-import { Packets, DataType, ResourcePackResponseStatus } from '../../types'
 import { ParserType } from '../Packet'
-import { BatchedPacket } from './BatchedPacket'
+import { BatchedPacket } from '../bedrock/BatchedPacket'
+import { ResourcePackResponseStatus } from '../../types/world'
+import { Packets } from '../../types/protocol'
+import { DataType } from '../../types/data'
 
 interface IResourcePacksResponse {
   status: ResourcePackResponseStatus,

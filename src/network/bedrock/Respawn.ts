@@ -1,5 +1,7 @@
-import { Packets, DataType, RespawnState } from '../../types'
-import { BatchedPacket } from './BatchedPacket'
+import { Packets } from '../../types/protocol'
+import { DataType } from '../../types/data'
+import { RespawnState } from '../../types/world'
+import { BatchedPacket } from '../bedrock/BatchedPacket'
 import { Vector3 } from 'math3d'
 
 interface IRespawn {

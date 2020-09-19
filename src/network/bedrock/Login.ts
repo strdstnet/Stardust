@@ -1,7 +1,8 @@
-import { Packets, DataType, IChainData, IToken, IClientData } from '../../types'
 import { ParserType } from '../Packet'
-import { decodeJWT } from '../../utils'
-import { BatchedPacket } from './BatchedPacket'
+import { BatchedPacket } from '../bedrock/BatchedPacket'
+import { IChainData, IClientData, IToken, Packets } from '../../types/protocol'
+import { DataType } from '../../types/data'
+import { decodeJWT } from '../../utils/JWT'
 import { BinaryData } from '../../utils/BinaryData'
 
 interface ILoginEncode {

@@ -1,7 +1,19 @@
-import { CompoundTag } from '../nbt'
-import { PlayerPosition } from '../types'
-import { ensureLength } from '../utils'
+import { CompoundTag } from '../nbt/CompoundTag'
+import { PlayerPosition } from '../types/data'
 import { SubChunk } from './SubChunk'
+
+export function ensureLength(arr: number[], length: number, filler = 0): void {
+  if(arr.length === length) return
+
+  if(arr.length > length) {
+    arr.splice(0, length)
+  }
+
+  for(let i = 0; i < length; i++) {
+    const v = arr[i]
+    if(typeof v === 'undefined' || v === null) arr[i] = filler
+  }
+}
 
 export class Chunk {
 
@@ -44,8 +56,14 @@ export class Chunk {
     return -1
   }
 
-  public static getChunkCoords(pos: PlayerPosition): [number, number] {
-    return [Math.floor(pos.location.x) >> 4, Math.floor(pos.location.z) >> 4]
+  public static getChunkCoords(pos: PlayerPosition): [number, number]
+  public static getChunkCoords(blockX: number, blockZ: number): [number, number]
+
+  public static getChunkCoords(...args: any[]): [number, number] {
+    const x = args.length > 1 ? args[0] : args[0].location.x
+    const z = args.length > 1 ? args[1] : args[0].location.z
+
+    return [Math.floor(x) >> 4, Math.floor(z) >> 4]
   }
 
 }

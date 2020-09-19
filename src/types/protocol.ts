@@ -51,7 +51,10 @@ export enum Packets {
   RESOURCE_PACKS_STACK = 0x07, // 7
   RESOURCE_PACKS_RESPONSE = 0x08, // 8
   TEXT = 0x09, // 9
+  SET_TIME = 0x0a, // 10
   START_GAME = 0x0b, // 11
+  MOVE_PLAYER = 0x13, // 19
+  TICK_SYNC = 0x17, // 23
   UPDATE_ATTRIBUTES = 0x1d, // 29
   ENTITY_NOTIFICATION = 0x27, // 39
   SET_SPAWN_POSITION = 0x2b, // 43

@@ -1,4 +1,4 @@
-import { UnconnectedPong } from '../../../network/raknet'
+import { UnconnectedPong } from '../../../network/raknet/UnconnectedPong'
 
 const motdOpts = {
   line1: 'this is',

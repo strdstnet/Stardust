@@ -1,6 +1,6 @@
 import { BundledPacket } from '../network/raknet/BundledPacket'
-import { PacketBundleEvent } from './PacketBundleEvent'
 import { PacketEvent } from './PacketEvent'
+import { PacketBundleEvent } from './PacketBundleEvent'
 
 type EventArgs = [number, PacketBundleEvent] // [bundleIndex, bundleEvent]
 

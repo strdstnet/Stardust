@@ -1,6 +1,7 @@
 import { Vector3 } from 'math3d'
-import { StartGame } from '../../../network/bedrock'
-import { GameRuleType, PlayerPosition } from '../../../types'
+import { StartGame } from '../../../network/bedrock/StartGame'
+import { GameRuleType } from '../../../types/world'
+import { PlayerPosition } from '../../../types/data'
 
 describe('StartGame', () => {
   it('encodes & decodes correctly', () => {

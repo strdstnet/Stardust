@@ -1,5 +1,5 @@
-import { ConnectionRequestAccepted } from '../../../network/raknet'
-import { Protocol } from '../../../types'
+import { ConnectionRequestAccepted } from '../../../network/raknet/ConnectionRequestAccepted'
+import { Protocol } from '../../../types/protocol'
 
 describe('ConnectionRequestAccepted', () => {
   it('encodes & decodes correctly', () => {

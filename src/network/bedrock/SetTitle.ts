@@ -1,5 +1,7 @@
-import { Packets, DataType, TitleCommand } from '../../types'
-import { BatchedPacket } from './BatchedPacket'
+import { Packets } from '../../types/protocol'
+import { DataType } from '../../types/data'
+import { TitleCommand } from '../../types/interface'
+import { BatchedPacket } from '../bedrock/BatchedPacket'
 
 interface ISetTitle {
   command: TitleCommand,

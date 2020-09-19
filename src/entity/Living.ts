@@ -1,6 +1,7 @@
-import { Entity } from './Entity'
 import { Attribute, Attr } from './Attribute'
-import { Container, Armor } from '../containers'
+import { Entity } from './Entity'
+import { Container } from '../containers/Container'
+import { Armor } from '../containers/Armor'
 
 type LivingContainers = [Armor]
 

@@ -1,5 +1,7 @@
-import { BundledPacket } from '../raknet/BundledPacket'
-import { Packets, IAddress, DataType, Protocol } from '../../types'
+import { BundledPacket } from './BundledPacket'
+import { Packets, Protocol } from '../../types/protocol'
+import { DataType } from '../../types/data'
+import { IAddress } from '../../types/network'
 import { ParserType } from '../Packet'
 
 interface IConnectionRequestAccepted {

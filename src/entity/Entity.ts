@@ -1,7 +1,7 @@
 import { EventEmitter, DefaultEventMap } from 'tsee'
 import { AttributeMap } from './AttributeMap'
 import { Player } from '../Player'
-import { Container } from '../containers'
+import { Container } from '../containers/Container'
 
 interface IEntityEvents extends DefaultEventMap {
   _: () => void, // TODO: Remove when events are added

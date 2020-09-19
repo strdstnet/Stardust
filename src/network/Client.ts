@@ -1,43 +1,48 @@
-import { IAddress, IClientArgs, Packets, Protocol, DummyAddress, IBundledPacket, PlayStatusType, ResourcePackResponseStatus, PlayerPosition, AdventureSettingsFlag, PlayerPermissions, CommandPermissions, Difficulty } from '../types'
 import Logger from '@bwatton/logger'
-import { BinaryData, BitFlag } from '../utils/BinaryData'
-import { PacketBundle } from './raknet/PacketBundle'
-import { ConnectionRequest, ACK, NAK } from './raknet'
-import { BundledPacket } from './raknet/BundledPacket'
 import { Socket } from 'dgram'
 import { Server } from '../Server'
-import { ConnectionRequestAccepted } from './raknet/ConnectionRequestAccepted'
-import { NewIncomingConnection } from './raknet/NewIncomingConnection'
-import { PacketBatch } from './bedrock/PacketBatch'
-import {
-  Disconnect,
-  ResourcePacksInfo,
-  Login,
-  ResourcePacksStack,
-  PlayStatus,
-  ResourcePacksResponse,
-  StartGame,
-  UpdateAttributes,
-  AvailableCommands,
-  AdventureSettings,
-  EntityNotification,
-  ContainerNotification,
-  EntityEquipment,
-  BiomeDefinitionList,
-  RequestChunkRadius,
-  ChunkRadiusUpdated,
-  PacketViolationWarning,
-  NetworkChunkPublisher, Text, TextType, EntityDefinitionList,
-} from './bedrock'
-import { ConnectedPing } from './raknet/ConnectedPing'
-import { ConnectedPong } from './raknet/ConnectedPong'
-import { PartialPacket } from './custom'
-import { BatchedPacket } from './bedrock/BatchedPacket'
-import { bundlePackets, Reliability } from '../utils'
 import { Player } from '../Player'
-import { LevelChunk } from './bedrock/LevelChunk'
-import { Chunk, SubChunk } from '../level'
 import { Vector3 } from 'math3d'
+import { Disconnect } from './bedrock/Disconnect'
+import { BinaryData, BitFlag } from '../utils/BinaryData'
+import { PacketBatch } from './bedrock/PacketBatch'
+import { bundlePackets } from '../utils/parseBundledPackets'
+import { BatchedPacket } from './bedrock/BatchedPacket'
+import { Reliability } from '../utils/Reliability'
+import { PartialPacket } from './custom/PartialPacket'
+import { PacketViolationWarning } from './bedrock/PacketViolationWarning'
+import { Login } from './bedrock/Login'
+import { PlayStatus } from './bedrock/PlayStatus'
+import { ResourcePacksInfo } from './bedrock/ResourcePacksInfo'
+import { ResourcePacksResponse } from './bedrock/ResourcePacksResponse'
+import { ResourcePacksStack } from './bedrock/ResourcePacksStack'
+import { RequestChunkRadius } from './bedrock/RequestChunkRadius'
+import { ChunkRadiusUpdated } from './bedrock/ChunkRadiusUpdated'
+import { Text, TextType } from './bedrock/Text'
+import { StartGame } from './bedrock/StartGame'
+import { EntityDefinitionList } from './bedrock/EntityDefinitionList'
+import { BiomeDefinitionList } from './bedrock/BiomeDefinitionList'
+import { Chunk } from '../level/Chunk'
+import { LevelChunk } from './bedrock/LevelChunk'
+import { UpdateAttributes } from './bedrock/UpdateAttributes'
+import { AvailableCommands } from './bedrock/AvailableCommands'
+import { AdventureSettings } from './bedrock/AdventureSettings'
+import { EntityNotification } from './bedrock/EntityNotification'
+import { ContainerNotification } from './bedrock/ContainerNotification'
+import { EntityEquipment } from './bedrock/EntityEquipment'
+import { BundledPacket } from './raknet/BundledPacket'
+import { IAddress, IBundledPacket, IClientArgs } from '../types/network'
+import { PacketBundle } from './raknet/PacketBundle'
+import { NAK } from './raknet/NAK'
+import { DummyAddress, Packets, Protocol } from '../types/protocol'
+import { ConnectionRequest } from './raknet/ConnectionRequest'
+import { NewIncomingConnection } from './raknet/NewIncomingConnection'
+import { ConnectedPing } from './raknet/ConnectedPing'
+import { ACK } from './raknet/ACK'
+import { ConnectedPong } from './raknet/ConnectedPong'
+import { ConnectionRequestAccepted } from './raknet/ConnectionRequestAccepted'
+import { AdventureSettingsFlag, CommandPermissions, PlayerPermissions, PlayStatusType, ResourcePackResponseStatus } from '../types/world'
+import { PlayerPosition } from '../types/data'
 
 interface SplitQueue {
   [splitId: number]: BundledPacket<any>,
@@ -222,7 +227,7 @@ export class Client {
     this.lastSplitId = lastSplitId
   }
 
-  public sendBatched(packet: BatchedPacket<any>, reliability = Reliability.ReliableOrdered): void {
+  public sendBatched(packet: BatchedPacket<any>, reliability = Reliability.Unreliable): void {
     this.send(new PacketBatch({
       packets: [packet],
       reliability,
@@ -283,7 +288,7 @@ export class Client {
   }
 
   private handleNewIncomingConnection(packet: NewIncomingConnection) {
-    console.log('nic', packet.props)
+    // console.log('nic', packet.props)
   }
 
   private handleLogin(packet: Login) {
@@ -378,7 +383,7 @@ export class Client {
     Server.logger.info(`${this.player.name} logged in from ${this.address.ip}:${this.address.port} with MTU ${this.mtuSize}`)
 
     // this.logger.debug('Sending EntityDefinitionList:', this.sequenceNumber + 1)
-    this.sendBatched(new EntityDefinitionList())
+    this.sendBatched(new EntityDefinitionList(), Reliability.Unreliable)
 
     this.logger.debug('Sending BiomeDefinitionList:', this.sequenceNumber + 1)
     this.sendBatched(new BiomeDefinitionList(), Reliability.Unreliable)
@@ -386,7 +391,7 @@ export class Client {
     this.sendAttributes(true)
 
     this.sendAvailableCommands()
-    this.sendAdventureSettings()
+    // this.sendAdventureSettings()
 
     // // TODO: Potion effects?
     // // https://github.com/pmmp/PocketMine-MP/blob/5910905e954f98fd1b1d24190ca26aa727a54a1d/src/network/mcpe/handler/PreSpawnPacketHandler.php#L96-L96
@@ -394,9 +399,9 @@ export class Client {
     // this.logger.debug('Sending PlayerList:', this.sequenceNumber + 1)
     Server.current.addPlayer(this.player)
 
-    this.player.notifySelf()
-    this.player.notifyContainers()
-    this.player.notifyHeldItem()
+    // this.player.notifySelf()
+    // this.player.notifyContainers()
+    // this.player.notifyHeldItem()
 
     const neededChunks: [number, number][] = []
     for(let i = 0; i < 15; i++) {
@@ -408,8 +413,6 @@ export class Client {
       neededChunks[i] = [chunkX + x, chunkZ + z]
     }
 
-    console.log(neededChunks)
-
     for await(const [x, z] of neededChunks) {
       const chunk = await Server.current.level.getChunkAt(x, z)
       // const chunk = new Chunk(x, z, [SubChunk.grassPlatform], [], [], [], [])
@@ -418,21 +421,21 @@ export class Client {
         chunk,
         cache: false,
         usedHashes: [],
-      }))
+      }), Reliability.Unreliable)
     }
 
     this.sendBatched(new PlayStatus({
       status: PlayStatusType.PLAYER_SPAWN,
-    }), Reliability.Unreliable)
+    }))
 
-    setTimeout(() => {
-      this.sendBatched(new NetworkChunkPublisher({
-        x: playerPosition.location.x,
-        y: playerPosition.location.y,
-        z: playerPosition.location.z,
-        radius: this.viewDistance * 16,
-      }))
-    }, 250)
+    // setTimeout(() => {
+    //   this.sendBatched(new NetworkChunkPublisher({
+    //     x: playerPosition.location.x,
+    //     y: playerPosition.location.y,
+    //     z: playerPosition.location.z,
+    //     radius: this.viewDistance * 16,
+    //   }), Reliability.Unreliable)
+    // }, 250)
   }
 
   private sendAttributes(all = false): void {
@@ -497,7 +500,7 @@ export class Client {
       this.sendBatched(new Text({
         type,
         message,
-      }), Reliability.Unreliable)
+      }))
     })
   }
 

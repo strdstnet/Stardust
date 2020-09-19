@@ -2,7 +2,6 @@ import './types/protocol'
 import './types/server'
 
 import Logger from '@bwatton/logger'
-import gcWatch from 'gc-watch'
 
 Logger.defaults.showMilliseconds = true
 

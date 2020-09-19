@@ -1,8 +1,14 @@
-import { BatchedPacket } from './BatchedPacket'
+import { BatchedPacket } from '../bedrock/BatchedPacket'
 import { Vector3 } from 'math3d'
 import {
   Packets,
+  Protocol,
+} from '../../types/protocol'
+import {
   DataType,
+  PlayerPosition,
+} from '../../types/data'
+import {
   Gamemode,
   BiomeType,
   Dimension,
@@ -12,11 +18,11 @@ import {
   IBoolGameRule,
   IIntGameRule,
   IFloatGameRule,
-  PlayerPosition,
-  Protocol,
   PlayerPermissions,
+} from '../../types/world'
+import {
   MultiplayerVisibility,
-} from '../../types'
+} from '../../types/network'
 import { ParserType, Packet } from '../Packet'
 import LegacyIdMap from '../../data/legacy_id_map.json'
 import fs from 'fs'

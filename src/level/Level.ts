@@ -2,11 +2,24 @@ import { Chunk } from './Chunk'
 import { SubChunk } from './SubChunk'
 import PrisAnvil from 'prismarine-provider-anvil'
 import path from 'path'
-import { CompoundTag, IntArrayTag, IntTag, LongTag, StringTag, Tag, TagType, LongArrayTag, ListTag, EndTag, ByteTag, ByteArrayTag, ShortTag, DoubleTag, FloatTag } from '../nbt'
+import { CompoundTag } from '../nbt/CompoundTag'
+import { IntArrayTag } from '../nbt/IntArrayTag'
+import { IntTag } from '../nbt/IntTag'
+import { LongTag } from '../nbt/LongTag'
+import { StringTag } from '../nbt/StringTag'
+import { Tag, TagType } from '../nbt/Tag'
+import { LongArrayTag } from '../nbt/LongArrayTag'
+import { ListTag } from '../nbt/ListTag'
+import { EndTag } from '../nbt/EndTag'
+import { ByteTag } from '../nbt/ByteTag'
+import { ByteArrayTag } from '../nbt/ByteArrayTag'
+import { ShortTag } from '../nbt/ShortTag'
+import { DoubleTag } from '../nbt/DoubleTag'
+import { FloatTag } from '../nbt/FloatTag'
 
 const Anvil = PrisAnvil.Anvil('1.8')
 
-const WORLDS_DIR = path.join(__dirname, '..', 'worlds')
+const WORLDS_DIR = path.join(__dirname, '..', '..', 'worlds')
 
 type LevelNBT = CompoundTag<{
   Level: CompoundTag<{

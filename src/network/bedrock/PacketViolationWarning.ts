@@ -1,5 +1,6 @@
-import { Packets, DataType, PacketViolationType, PacketViolationSeverity } from '../../types'
-import { BatchedPacket } from './BatchedPacket'
+import { DataType } from '../../types/data'
+import { Packets, PacketViolationSeverity, PacketViolationType } from '../../types/protocol'
+import { BatchedPacket } from '../bedrock/BatchedPacket'
 
 interface IPacketViolationWarning {
   type: PacketViolationType,

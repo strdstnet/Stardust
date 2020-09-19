@@ -1,21 +1,18 @@
-import { BinaryData } from '../network'
-import { IBundledPacket, Packets, Protocol, Props } from '../types'
-import {
-  ConnectedPing,
-  ConnectionRequest,
-  NewIncomingConnection,
-  ConnectionRequestAccepted,
-  PacketBundle,
-  ConnectedPong,
-} from '../network/raknet'
-import {
-  PacketBatch,
-  DisconnectionNotification,
-} from '../network/bedrock'
-import {
-  PartialPacket, UnknownBundledPacket,
-} from '../network/custom'
+import { DisconnectionNotification } from '../network/bedrock/DisconnectionNotification'
+import { PacketBatch } from '../network/bedrock/PacketBatch'
+import { PartialPacket } from '../network/custom/PartialPacket'
+import { UnknownBundledPacket } from '../network/custom/UnknownBundledPacket'
 import { BPacket, BundledPacket } from '../network/raknet/BundledPacket'
+import { ConnectedPing } from '../network/raknet/ConnectedPing'
+import { ConnectedPong } from '../network/raknet/ConnectedPong'
+import { ConnectionRequest } from '../network/raknet/ConnectionRequest'
+import { ConnectionRequestAccepted } from '../network/raknet/ConnectionRequestAccepted'
+import { NewIncomingConnection } from '../network/raknet/NewIncomingConnection'
+import { PacketBundle } from '../network/raknet/PacketBundle'
+import { Props } from '../types/data'
+import { IBundledPacket } from '../types/network'
+import { Packets, Protocol } from '../types/protocol'
+import { BinaryData } from './BinaryData'
 
 export function decodeBundledPacket<T extends IBundledPacket = BPacket<any>>(data: BinaryData): [T, number] {
   const flags = data.readByte()

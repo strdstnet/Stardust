@@ -1,6 +1,9 @@
-import { Creature } from './Creature'
 import { Attribute, Attr } from './Attribute'
-import { Inventory, Armor, EnderChest, Container } from '../containers'
+import { Creature } from './Creature'
+import { Armor } from '../containers/Armor'
+import { Container } from '../containers/Container'
+import { EnderChest } from '../containers/EnderChest'
+import { Inventory } from '../containers/Inventory'
 
 type HumanContainers = [Inventory, EnderChest, Armor, ...Container[]]
 

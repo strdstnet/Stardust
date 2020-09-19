@@ -1,5 +1,6 @@
 import { Packet } from '../Packet'
-import { Packets, DataType, Protocol } from '../../types'
+import { Packets, Protocol } from '../../types/protocol'
+import { DataType } from '../../types/data'
 
 interface IIncompatibleProtocol {
   protocol: number,

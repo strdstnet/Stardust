@@ -1,6 +1,7 @@
 import { BundledPacket } from '../raknet/BundledPacket'
-import { Packets, DataType } from '../../types'
-import { BatchedPacket } from './BatchedPacket'
+import { Packets } from '../../types/protocol'
+import { DataType } from '../../types/data'
+import { BatchedPacket } from '../bedrock/BatchedPacket'
 
 interface ISetTime {
   time: number,

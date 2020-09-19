@@ -1,4 +1,4 @@
-import { ACK } from '../../../network/raknet'
+import { ACK } from '../../../network/raknet/ACK'
 
 describe('ACK', () => {
   it('encodes & decodes single sequence correctly', () => {

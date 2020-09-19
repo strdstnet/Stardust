@@ -1,6 +1,6 @@
 import { Packet, PacketProps, IPacketSchemaItem } from '../Packet'
 import { Reliability } from '../../utils/Reliability'
-import { IBundledPacket } from '../../types'
+import { IBundledPacket } from '../../types/network'
 import { BinaryData } from '../../utils/BinaryData'
 
 export type BPacket<T> = T & IBundledPacket

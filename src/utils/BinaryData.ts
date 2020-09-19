@@ -1,10 +1,14 @@
-import { Protocol, IAddress, AddressFamily, Items, SkinData, SkinImage } from '../types'
 import zlib from 'zlib'
 import Logger from '@bwatton/logger'
 import { Vector3 } from 'math3d'
+import { Protocol } from '../types/protocol'
+import { AddressFamily, IAddress } from '../types/network'
 import { Item } from '../item/Item'
+import { Items } from '../types/world'
 import { UUID } from './UUID'
-import { Chunk } from '../level'
+import { SkinData, SkinImage } from '../types/player'
+import { Chunk } from '../level/Chunk'
+import { SubChunk } from '../level/SubChunk'
 
 export enum DataLengths {
   BYTE = 1,
@@ -125,6 +129,11 @@ export class BinaryData {
     buf.copy(this.buf, this.pos)
 
     if(skip) this.pos += input.length
+  }
+
+  public appendWithLength(input: Buffer | Uint8Array | BinaryData): void {
+    this.writeUnsignedVarInt(input.length)
+    this.append(input)
   }
 
   /**
@@ -553,20 +562,23 @@ export class BinaryData {
   }
 
   public writeUUID(uuid: UUID): void {
-    for(const part of uuid.parts) {
-      this.writeLInt(part)
-    }
+    this.writeLInt(uuid.parts[1])
+    this.writeLInt(uuid.parts[0])
+    this.writeLInt(uuid.parts[3])
+    this.writeLInt(uuid.parts[2])
   }
 
   public writeSkinImage(image: SkinImage): void {
     this.writeLInt(image.width)
     this.writeLInt(image.height)
-    this.writeString(image.data)
+    // this.writeString(image.data)
+    this.appendWithLength(image.data)
   }
 
   public writeSkin(skin: SkinData): void {
     this.writeString(skin.id)
-    this.writeString(skin.resourcePatch)
+    // this.writeString(skin.resourcePatch)
+    this.appendWithLength(skin.resourcePatch)
     this.writeSkinImage(skin.image)
     this.writeLInt(skin.animations.length)
     for(const animation of skin.animations) {
@@ -575,8 +587,10 @@ export class BinaryData {
       this.writeLFloat(animation.frames)
     }
     this.writeSkinImage(skin.cape.image)
-    this.writeString(skin.geometryData)
-    this.writeString(skin.animationData)
+    // this.writeString(skin.geometryData)
+    this.appendWithLength(skin.geometryData)
+    // this.writeString(skin.animationData)
+    this.appendWithLength(skin.animationData)
     this.writeBoolean(skin.premium)
     this.writeBoolean(skin.persona)
     this.writeBoolean(skin.personaCapeOnClassic)
@@ -605,34 +619,39 @@ export class BinaryData {
   public writeChunk(chunk: Chunk): void {
     const nonEmptyCount = chunk.highestNonEmptySubChunk() + 1
     for(let y = 0; y < nonEmptyCount; y++) {
+      console.log('WRITE SUB CHUNK')
+
       const subChunk = chunk.subChunks[y]
 
-      this.writeByte(0)
-      subChunk.blockData.forEach(id => this.writeByte(id))
-      console.log('SBD', subChunk.blockData.length)
-      subChunk.data.forEach(id => this.writeByte(id))
-      console.log('SD', subChunk.data.length)
+      this.writeByte(0) // Anvil version
+      this.append(new Uint8Array(subChunk.blockData))
+      this.append(new Uint8Array(subChunk.data))
     }
 
-    chunk.biomeData.forEach(id => this.writeByte(id))
-    console.log('CBD', chunk.biomeData.length)
+    this.append(new Uint8Array(chunk.biomeData))
     this.writeByte(0)
 
     // TODO: Tiles
     // https://github.com/pmmp/PocketMine-MP/blob/9d0ac297bbeb4b9a4330685b24c4045f7fb0c5e9/src/pocketmine/level/format/Chunk.php#L848-L848
   }
 
-}
+  public readChunkData(chunk: Chunk, numSubChunks: number): void {
+    for(let y = 0; y < numSubChunks; y++) {
+      console.log('READ SUB CHUNK')
+      const version = this.readByte()
 
-export function ensureLength(arr: number[], length: number, filler = 0): void {
-  if(arr.length === length) return
+      if(version === 0) {
+        const blockData = this.read(4096)
+        const data = this.read(2048)
 
-  if(arr.length > length) {
-    arr.splice(0, length)
+        chunk.subChunks.push(new SubChunk(Array.from(data), Array.from(blockData), [], []))
+      } else {
+        throw new Error(`Unsupported Anvil version: ${version}`)
+      }
+    }
+
+    chunk.biomeData = Array.from(this.read(256))
+    this.readByte() // no idea what this is
   }
 
-  for(let i = 0; i < length; i++) {
-    const v = arr[i]
-    if(typeof v === 'undefined' || v === null) arr[i] = filler
-  }
 }

@@ -1,6 +1,7 @@
-import { Packets, DataType } from '../../types'
+import { Packets } from '../../types/protocol'
+import { DataType } from '../../types/data'
 import { ParserType } from '../Packet'
-import { BatchedPacket } from './BatchedPacket'
+import { BatchedPacket } from '../bedrock/BatchedPacket'
 
 export enum TextType {
   RAW = 0,

@@ -1,7 +1,9 @@
-import { Packets, DataType, Dimension } from '../../types'
+import { Packets } from '../../types/protocol'
+import { DataType } from '../../types/data'
+import { Dimension } from '../../types/world'
 import { Vector3 } from 'math3d'
 import { ParserType } from '../Packet'
-import { BatchedPacket } from './BatchedPacket'
+import { BatchedPacket } from '../bedrock/BatchedPacket'
 
 interface IChangeDimension {
   dimension: Dimension,

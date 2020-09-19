@@ -1,7 +1,6 @@
 import { PacketEvent } from './PacketEvent'
 import { BatchedPacket } from '../network/bedrock/BatchedPacket'
-import { PacketBatch } from '../network/bedrock'
-
+import { PacketBatch } from '../network/bedrock/PacketBatch'
 
 export class PacketBatchEvent extends PacketEvent<PacketBatch, [Array<BatchedPacket<any>>]> {
 

@@ -1,4 +1,4 @@
-import { ConnectedPong } from '../../../network/raknet'
+import { ConnectedPong } from '../../../network/raknet/ConnectedPong'
 
 describe('ConnectedPong', () => {
   it('encodes & decodes correctly', () => {

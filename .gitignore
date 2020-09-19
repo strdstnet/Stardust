@@ -107,3 +107,4 @@ dist
 .yarn/
 .pnp.js
 .yarnrc.yml
+lib/

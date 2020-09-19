@@ -1,5 +1,7 @@
 import { Packet } from '../Packet'
-import { Packets, DataType, IAddress } from '../../types'
+import { Packets } from '../../types/protocol'
+import { DataType } from '../../types/data'
+import { IAddress } from '../../types/network'
 
 export interface IOpenConnectionRequestTwo {
   address: IAddress,

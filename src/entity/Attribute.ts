@@ -1,4 +1,4 @@
-import { FLOAT_MAX_VAL } from '../types'
+import { FLOAT_MAX_VAL } from '../types/data'
 
 export enum Attr {
   ABSORPTION = 0,
@@ -34,7 +34,7 @@ export class Attribute {
     public maxVal: number,
     public defaultVal: number,
     public shouldSend = true,
-    public value = defaultVal
+    public value = defaultVal,
   ) {}
 
   public static initAttributes(): void {

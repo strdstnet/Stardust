@@ -1,5 +1,5 @@
-import { IncompatibleProtocol } from '../../../network/raknet'
-import { Protocol } from '../../../types'
+import { IncompatibleProtocol } from '../../../network/raknet/IncompatibleProtocol'
+import { Protocol } from '../../../types/protocol'
 
 describe('IncompatibleProtocol', () => {
   it('encodes & decodes correctly', () => {

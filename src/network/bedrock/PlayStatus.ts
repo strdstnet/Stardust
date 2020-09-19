@@ -1,5 +1,7 @@
-import { Packets, DataType, PlayStatusType, Protocol } from '../../types'
-import { BatchedPacket } from './BatchedPacket'
+import { Packets } from '../../types/protocol'
+import { DataType } from '../../types/data'
+import { PlayStatusType } from '../../types/world'
+import { BatchedPacket } from '../bedrock/BatchedPacket'
 
 interface IPlayStatus {
   status: PlayStatusType,

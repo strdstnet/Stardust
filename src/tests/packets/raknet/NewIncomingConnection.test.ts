@@ -1,5 +1,5 @@
-import { NewIncomingConnection } from '../../../network/raknet'
-import { Protocol } from '../../../types'
+import { NewIncomingConnection } from '../../../network/raknet/NewIncomingConnection'
+import { Protocol } from '../../../types/protocol'
 
 describe('NewIncomingConnection', () => {
   it('encodes & decodes correctly', () => {

@@ -1,5 +1,5 @@
 import { BinaryData } from '../utils/BinaryData'
-import { DataType } from '../types'
+import { DataType } from '../types/data'
 import Logger from '@bwatton/logger'
 
 export enum ParserType {

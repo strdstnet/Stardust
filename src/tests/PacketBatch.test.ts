@@ -1,5 +1,7 @@
-import { Dimension, Packets } from '../types'
-import { PacketBatch, ChangeDimension } from '../network/bedrock'
+import { Packets } from '../types/protocol'
+import { Dimension } from '../types/world'
+import { PacketBatch } from '../network/bedrock/PacketBatch'
+import { ChangeDimension } from '../network/bedrock/ChangeDimension'
 import { Vector3 } from 'math3d'
 
 describe('PacketBatch', () => {

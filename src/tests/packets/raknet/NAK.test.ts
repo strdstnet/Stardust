@@ -1,4 +1,4 @@
-import { NAK } from '../../../network/raknet'
+import { NAK } from '../../../network/raknet/NAK'
 
 describe('ACK', () => {
   it('encodes & decodes single sequence correctly', () => {

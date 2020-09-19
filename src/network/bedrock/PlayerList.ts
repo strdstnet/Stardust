@@ -1,6 +1,6 @@
-import { Packets } from '../../types'
+import { Packets } from '../../types/protocol'
 import { ParserType } from '../Packet'
-import { BatchedPacket } from './BatchedPacket'
+import { BatchedPacket } from '../bedrock/BatchedPacket'
 import { Player } from '../../Player'
 
 export enum PlayerListType {
@@ -21,7 +21,7 @@ export class PlayerList extends BatchedPacket<IPlayerList> {
         parser({ type, data, props }) {
           if(type === ParserType.ENCODE) {
             data.writeByte(props.type)
-            data.writeByte(props.players.length)
+            data.writeUnsignedVarInt(props.players.length)
 
             if(props.type === PlayerListType.ADD) {
               for(const player of props.players) {

@@ -1,5 +1,7 @@
-import { Packets, DataType, Gamemode } from '../../types'
-import { BatchedPacket } from './BatchedPacket'
+import { Packets } from '../../types/protocol'
+import { DataType } from '../../types/data'
+import { Gamemode } from '../../types/world'
+import { BatchedPacket } from '../bedrock/BatchedPacket'
 
 interface ISetGamemode {
   mode: Gamemode,

@@ -1,5 +1,6 @@
 import { BundledPacket } from '../raknet/BundledPacket'
-import { Packets, DataType } from '../../types'
+import { Packets } from '../../types/protocol'
+import { DataType } from '../../types/data'
 
 interface IDisconnect {
   hideScreen: boolean,

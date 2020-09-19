@@ -1,4 +1,4 @@
-import { ConnectionRequest } from '../../../network/raknet'
+import { ConnectionRequest } from '../../../network/raknet/ConnectionRequest'
 
 describe('ConnectionRequest', () => {
   it('encodes & decodes correctly', () => {

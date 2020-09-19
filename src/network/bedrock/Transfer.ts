@@ -1,5 +1,6 @@
-import { Packets, DataType } from '../../types'
-import { BatchedPacket } from './BatchedPacket'
+import { Packets } from '../../types/protocol'
+import { DataType } from '../../types/data'
+import { BatchedPacket } from '../bedrock/BatchedPacket'
 
 export interface ITransfer {
   address: string,

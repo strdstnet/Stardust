@@ -1,4 +1,5 @@
-import { Packets, DataType } from '../../types'
+import { Packets } from '../../types/protocol'
+import { DataType } from '../../types/data'
 import { BundledPacket } from './BundledPacket'
 
 export interface IConnectionRequest {

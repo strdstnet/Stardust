@@ -1,8 +1,8 @@
 import { Packet, ParserType, PacketProps } from '../Packet'
-import { DataType } from '../../types'
-import { BinaryData, BitFlag, DataLengths } from '../../utils/BinaryData'
+import { DataType } from '../../types/data'
+import { BinaryData, BitFlag } from '../../utils/BinaryData'
+import { parseBundledPackets, encodeBundledPacket } from '../../utils/parseBundledPackets'
 import { BundledPacket } from './BundledPacket'
-import { parseBundledPackets, encodeBundledPacket } from '../../utils'
 
 export interface IPacketBundle {
   sequenceNumber: number,
@@ -14,11 +14,6 @@ type PacketBundleDecode = PacketProps<IPacketBundle> & {
 }
 
 export class PacketBundle extends Packet<IPacketBundle> {
-
-  /**
-   * @description Number of bytes the header of a PacketBundle occupies (space before packets)
-   */
-  public static byteCount: number = DataLengths.L_TRIAD + DataLengths.BYTE
 
   constructor(p?: IPacketBundle, flags: number = BitFlag.Valid) {
     // if(p) {

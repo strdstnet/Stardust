@@ -1,6 +1,7 @@
 import { Item } from '../../item/Item'
-import { DataType, Packets } from '../../types'
-import { BatchedPacket } from './BatchedPacket'
+import { Packets } from '../../types/protocol'
+import { DataType } from '../../types/data'
+import { BatchedPacket } from '../bedrock/BatchedPacket'
 
 interface IEntityEquipment {
   entityRuntimeId: bigint,

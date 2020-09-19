@@ -1,4 +1,4 @@
-import { UnconnectedPing } from '../../../network/raknet'
+import { UnconnectedPing } from '../../../network/raknet/UnconnectedPing'
 
 describe('UnconnectedPing', () => {
   it('encodes & decodes correctly', () => {

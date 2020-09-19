@@ -1,5 +1,5 @@
 import { Item } from '../item/Item'
-import { ContainerType } from '../types'
+import { ContainerType } from '../types/containers'
 import { Container } from './Container'
 
 export class Inventory extends Container {

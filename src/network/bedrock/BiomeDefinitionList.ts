@@ -1,6 +1,6 @@
-import { Packets } from '../../types'
+import { Packets } from '../../types/protocol'
 import { ParserType } from '../Packet'
-import { BatchedPacket } from './BatchedPacket'
+import { BatchedPacket } from '../bedrock/BatchedPacket'
 import { BedrockData } from '../../data/BedrockData'
 
 interface IBiomeDefinitionList {

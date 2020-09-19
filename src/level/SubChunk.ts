@@ -1,5 +1,4 @@
-import { Items } from '../types'
-import { ensureLength } from '../utils'
+import { ensureLength } from './Chunk'
 
 export class SubChunk {
 

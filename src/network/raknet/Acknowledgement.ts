@@ -1,5 +1,5 @@
 import { Packet, ParserType } from '../Packet'
-import { Packets } from '../../types'
+import { Packets } from '../../types/protocol'
 import { BinaryData } from '../../utils/BinaryData'
 
 interface IAcknowledgement {

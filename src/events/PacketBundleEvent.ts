@@ -1,6 +1,6 @@
 import { BundledPacket } from '../network/raknet/BundledPacket'
+import { PacketBundle } from '../network/raknet/PacketBundle'
 import { PacketEvent } from './PacketEvent'
-import { PacketBundle } from '../network/raknet'
 
 type EventArgs = [number, Array<BundledPacket<any>>] // [sequenceNumber, packets]
 

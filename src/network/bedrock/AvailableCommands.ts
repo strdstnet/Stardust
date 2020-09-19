@@ -1,6 +1,6 @@
-import { Packets } from '../../types'
+import { Packets } from '../../types/protocol'
 import { ParserType } from '../Packet'
-import { BatchedPacket } from './BatchedPacket'
+import { BatchedPacket } from '../bedrock/BatchedPacket'
 
 interface IAvailableCommands {
 }
@@ -11,7 +11,7 @@ export class AvailableCommands extends BatchedPacket<IAvailableCommands> {
   constructor(p?: Partial<IAvailableCommands>) {
     super(Packets.AVAILABLE_COMMANDS, [
       {
-        parser({ type, data, props, value }) {
+        parser({ type, data }) {
           if(type === ParserType.ENCODE) {
             data.writeUnsignedVarInt(0)
             data.writeUnsignedVarInt(0)
