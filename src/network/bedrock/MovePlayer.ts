@@ -11,24 +11,24 @@ export enum MovePlayerMode {
 }
 
 interface IMovePlayer {
-  runtimeEntityId: BigInt
-  positionX: BigInt
-  positionY: BigInt
-  positionZ: BigInt
-  pitch: BigInt
-  yaw: BigInt
-  headYaw: BigInt
-  mode: MovePlayerMode
-  onGround: boolean
-  ridingEntityRuntimeId: BigInt
-  teleportCause: number
-  teleportItemId: number
+  runtimeEntityId: bigint,
+  positionX: number,
+  positionY: number,
+  positionZ: number,
+  pitch: number,
+  yaw: number,
+  headYaw: number,
+  mode?: MovePlayerMode,
+  onGround: boolean,
+  ridingEntityRuntimeId: bigint,
+  teleportCause: number,
+  teleportItemId: number,
 }
 
 const def = (val: any) => () => val
 
 export class MovePlayer extends BatchedPacket<IMovePlayer> {
-  constructor(p?: IMovePlayer) {
+  constructor(p?: Partial<IMovePlayer>) {
     super(Packets.MOVE_PLAYER, [
       { name: 'runtimeEntityId', parser: DataType.U_VARLONG },
       { name: 'positionX', parser: DataType.L_FLOAT },
@@ -57,9 +57,8 @@ export class MovePlayer extends BatchedPacket<IMovePlayer> {
           }
         },
       },
-      { name: 'teleportItemId', parser: DataType.L_INT },
     ])
 
-    if(p) this.props = p
+    if(p) this.props = p as IMovePlayer
   }
 }

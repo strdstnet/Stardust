@@ -41,6 +41,7 @@ export class PlayerPosition {
     locationZ: number,
     public pitch: number,
     public yaw: number,
+    public headYaw: number = 0,
   ) {
     this.location = new Vector3(locationX, locationY, locationZ)
   }

@@ -191,6 +191,19 @@ export class Server {
     }
   }
 
+  public playerMove(source: Player, pos: PlayerPosition): void {
+    this.broadcast(new MovePlayer({
+      positionX: pos.location.x,
+      positionY: pos.location.y,
+      positionZ: pos.location.z,
+      pitch: pos.pitch,
+      yaw: pos.yaw,
+      headYaw: pos.headYaw,
+      onGround: true,
+      ridingEntityRuntimeId: 0n,
+    }))
+  }
+
   private updatePlayerList() {
     this.broadcast(new PlayerList({
       type: PlayerListType.ADD,

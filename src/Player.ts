@@ -71,6 +71,10 @@ export class Player extends Human<IPlayerEvents> {
     this.emit('Client:sendMessage', message, type)
   }
 
+  public move(pos: PlayerPosition): void {
+    Server.current.playerMove(this, pos)
+  }
+
   public notifySelf(data?: any[]): void {
     this.notifyPlayers([this], data)
   }
