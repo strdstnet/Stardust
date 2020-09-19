@@ -233,7 +233,7 @@ export class StartGame extends BatchedPacket<IStartGame> {
         },
       },
       { name: 'levelId', parser: DataType.STRING, resolve: def('') },
-      { name: 'worldName', parser: DataType.STRING, resolve: def('') },
+      { name: 'worldName', parser: DataType.STRING, resolve: def('Hyperstone Network') },
       { name: 'premiumWorldTemplateId', parser: DataType.STRING, resolve: def('') },
       { name: 'isTrial', parser: DataType.BOOLEAN, resolve: def(false) },
       { name: 'isMovementServerAuthoritative', parser: DataType.BOOLEAN, resolve: def(false) },
