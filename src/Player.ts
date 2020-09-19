@@ -2,7 +2,7 @@ import { Human } from './entity'
 import { Container } from './containers'
 import { UUID, getSkinData } from './utils'
 import { Login, TextType } from './network/bedrock'
-import { ContainerId, SkinData } from './types'
+import { ContainerId, PlayerPosition, SkinData } from './types'
 import { Item } from './item/Item'
 import { Server } from './Server'
 
@@ -66,6 +66,10 @@ export class Player extends Human<IPlayerEvents> {
 
   public sendMessage(message: string, type = TextType.CHAT): void {
     this.emit('Client:sendMessage', message, type)
+  }
+
+  public move(pos: PlayerPosition): void {
+    Server.current.playerMove(this, pos)
   }
 
   public notifySelf(data?: any[]): void {

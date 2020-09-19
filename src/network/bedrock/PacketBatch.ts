@@ -15,6 +15,7 @@ import { ChunkRadiusUpdated } from './ChunkRadiusUpdated'
 import { UnknownBatchedPacket } from '../custom'
 import { ResourcePacksResponse } from './ResourcePacksResponse'
 import { Text } from './Text'
+import { MovePlayer } from './MovePlayer'
 
 interface IPacketBatch {
   packets: Array<BatchedPacket<any>>,
@@ -82,6 +83,9 @@ export class PacketBatch extends BundledPacket<IPacketBatch> {
                   break
                 case Packets.TEXT:
                   packet = new Text()
+                  break
+                case Packets.MOVE_PLAYER:
+                  packet = new MovePlayer()
                   break
                 // case Packets.RESOURCE_PACKS_STACK:
                 //   packet = new BatchedPacket(packetId, [])

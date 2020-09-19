@@ -1,7 +1,7 @@
 import dgram, { Socket } from 'dgram'
 
 import Logger from '@bwatton/logger'
-import { ServerOpts, IAddress, FamilyStrToInt, IPacketHandlerArgs, Packets, ISendPacketArgs, Protocol } from './types'
+import { ServerOpts, IAddress, FamilyStrToInt, IPacketHandlerArgs, Packets, ISendPacketArgs, Protocol, PlayerPosition } from './types'
 import { BinaryData, Client } from './network'
 import { UnconnectedPing, UnconnectedPong, OpenConnectionRequestOne, IncompatibleProtocol, OpenConnectionReplyOne, OpenConnectionRequestTwo, OpenConnectionReplyTwo } from './network/raknet'
 import { Packet } from './network/Packet'
@@ -13,6 +13,7 @@ import { PlayerList, PlayerListType } from './network/bedrock/PlayerList'
 import { Item } from './item/Item'
 import { Level } from './level'
 import { TextType } from './network/bedrock'
+import { MovePlayer } from './network/bedrock/MovePlayer'
 
 const DEFAULT_OPTS: ServerOpts = {
   address: '0.0.0.0',
@@ -180,6 +181,19 @@ export class Server {
     for(const [, player ] of this.players) {
       player.sendMessage(`${sender.username}: ${message}`, TextType.RAW)
     }
+  }
+
+  public playerMove(source: Player, pos: PlayerPosition): void {
+    this.broadcast(new MovePlayer({
+      positionX: pos.location.x,
+      positionY: pos.location.y,
+      positionZ: pos.location.z,
+      pitch: pos.pitch,
+      yaw: pos.yaw,
+      headYaw: pos.headYaw,
+      onGround: true,
+      ridingEntityRuntimeId: 0n,
+    }))
   }
 
   private updatePlayerList() {
