@@ -12,6 +12,7 @@ import { BatchedPacket } from './network/bedrock/BatchedPacket'
 import { PlayerList, PlayerListType } from './network/bedrock/PlayerList'
 import { Item } from './item/Item'
 import { Level } from './level'
+import { TextType } from './network/bedrock'
 
 const DEFAULT_OPTS: ServerOpts = {
   address: '0.0.0.0',
@@ -173,6 +174,12 @@ export class Server {
     this.players.delete(id)
 
     this.updatePlayerList()
+  }
+
+  public playerChat(sender: Player, message: string): void {
+    for(const [, player ] of this.players) {
+      player.sendMessage(`${sender.username}: ${message}`, TextType.RAW)
+    }
   }
 
   private updatePlayerList() {
