@@ -24,8 +24,8 @@ export class LevelChunk extends BatchedPacket<ILevelChunk> {
           if(type === ParserType.ENCODE) {
             data.writeVarInt(props.chunk.x)
             data.writeVarInt(props.chunk.z)
-            // data.writeUnsignedVarInt(props.chunk.highestNonEmptySubChunk() + 1)
-            data.writeUnsignedVarInt(1)
+            data.writeUnsignedVarInt(props.chunk.highestNonEmptySubChunk() + 1)
+            // data.writeUnsignedVarInt(1)
           }
         },
       },

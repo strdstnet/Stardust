@@ -342,18 +342,18 @@ export class Client {
       // commandsEnabled: true,
       // levelId: '',
       // worldName: 'world',
-    }))
+    }), Reliability.Unreliable)
 
     // // TODO: Name tag visible, can climb, immobile
     // // https://github.com/pmmp/PocketMine-MP/blob/e47a711494c20ac86fea567b44998f2e24f3dbc7/src/pocketmine/Player.php#L2255
 
-    // Server.logger.info(`${this.player.name} logged in from ${this.address.ip}:${this.address.port} with MTU ${this.mtuSize}`)
+    Server.logger.info(`${this.player.name} logged in from ${this.address.ip}:${this.address.port} with MTU ${this.mtuSize}`)
 
     // this.logger.debug('Sending EntityDefinitionList:', this.sequenceNumber + 1)
     // this.sendBatched(new EntityDefinitionList())
 
     this.logger.debug('Sending BiomeDefinitionList:', this.sequenceNumber + 1)
-    this.sendBatched(new BiomeDefinitionList())
+    this.sendBatched(new BiomeDefinitionList(), Reliability.Unreliable)
 
     // this.sendAttributes(true)
 
@@ -371,7 +371,7 @@ export class Client {
     // this.player.notifyHeldItem()
 
     const neededChunks: [number, number][] = []
-    for(let i = 0; i < 1; i++) {
+    for(let i = 0; i < 30; i++) {
       const x = i >> 32
       const z = (i & 0xFFFFFFFF) << 32 >> 32
 
@@ -379,13 +379,12 @@ export class Client {
 
       neededChunks[i] = [chunkX + x, chunkZ + z]
     }
-    this.sendBatched(new PlayStatus({
-      status: PlayStatusType.PLAYER_SPAWN,
-    }), Reliability.Unreliable)
+
+    console.log(neededChunks)
 
     for await(const [x, z] of neededChunks) {
-      // const chunk = await Server.current.level.getChunkAt(x, z)
-      const chunk = new Chunk(x, z, [SubChunk.grassPlatform], [], [], [], [])
+      const chunk = await Server.current.level.getChunkAt(x, z)
+      // const chunk = new Chunk(x, z, [SubChunk.grassPlatform], [], [], [], [])
 
       this.sendBatched(new LevelChunk({
         chunk,
@@ -393,6 +392,10 @@ export class Client {
         usedHashes: [],
       }), Reliability.Unreliable)
     }
+
+    this.sendBatched(new PlayStatus({
+      status: PlayStatusType.PLAYER_SPAWN,
+    }), Reliability.Unreliable)
   }
 
   private sendAttributes(all = false): void {
