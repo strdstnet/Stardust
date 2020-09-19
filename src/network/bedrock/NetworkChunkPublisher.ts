@@ -5,13 +5,13 @@ interface INetworkChunkPublisher {
   x: number,
   y: number,
   z: number,
-  radius: number,
+  radius: number, // blocks
 }
 
 export class NetworkChunkPublisher extends BatchedPacket<INetworkChunkPublisher> {
 
   constructor(p?: INetworkChunkPublisher) {
-    super(Packets.NETWORK_CHUNK_PUBLISHER_UPDATE, [
+    super(Packets.NETWORK_CHUNK_PUBLISHER, [
       { name: 'x', parser: DataType.VARINT },
       { name: 'y', parser: DataType.VARINT },
       { name: 'z', parser: DataType.VARINT },

@@ -42,6 +42,7 @@
       "exports": "always-multiline",
       "functions": "always-multiline"
     }],
+    "no-fallthrough": "off",
     "deprecation/deprecation": "warn",
     "@typescript-eslint/no-explicit-any": "off",
     "no-case-declarations": "off",

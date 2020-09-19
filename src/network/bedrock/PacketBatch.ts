@@ -14,6 +14,7 @@ import { StartGame } from './StartGame'
 import { ChunkRadiusUpdated } from './ChunkRadiusUpdated'
 import { UnknownBatchedPacket } from '../custom'
 import { ResourcePacksResponse } from './ResourcePacksResponse'
+import { Text } from './Text'
 
 interface IPacketBatch {
   packets: Array<BatchedPacket<any>>,
@@ -78,6 +79,9 @@ export class PacketBatch extends BundledPacket<IPacketBatch> {
                   break
                 case Packets.CHUNK_RADIUS_UPDATED:
                   packet = new ChunkRadiusUpdated()
+                  break
+                case Packets.TEXT:
+                  packet = new Text()
                   break
                 // case Packets.RESOURCE_PACKS_STACK:
                 //   packet = new BatchedPacket(packetId, [])

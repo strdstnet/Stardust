@@ -1,14 +1,16 @@
 import { Human } from './entity'
 import { Container } from './containers'
 import { UUID, getSkinData } from './utils'
-import { Login } from './network/bedrock'
+import { Login, TextType } from './network/bedrock'
 import { ContainerId, SkinData } from './types'
 import { Item } from './item/Item'
+import { Server } from './Server'
 
 interface IPlayerEvents {
   'Client:entityNotification': (id: bigint, meta: any[]) => void,
   'Client:containerNotification': (container: Container) => void,
   'Client:heldItemNotification': (id: bigint, item: Item, inventoySlot: number, hotbarSlot: number, containerId: number) => void,
+  'Client:sendMessage': (message: string, type: TextType) => void,
 }
 
 interface IPlayerCreate {
@@ -56,6 +58,14 @@ export class Player extends Human<IPlayerEvents> {
 
   public isSpectator(): boolean {
     return true
+  }
+
+  public chat(message: string): void {
+    Server.current.playerChat(this, message)
+  }
+
+  public sendMessage(message: string, type = TextType.CHAT): void {
+    this.emit('Client:sendMessage', message, type)
   }
 
   public notifySelf(data?: any[]): void {

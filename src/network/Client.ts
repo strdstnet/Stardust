@@ -27,6 +27,7 @@ import {
   RequestChunkRadius,
   ChunkRadiusUpdated,
   PacketViolationWarning,
+  NetworkChunkPublisher, Text, TextType, EntityDefinitionList,
 } from './bedrock'
 import { ConnectedPing } from './raknet/ConnectedPing'
 import { ConnectedPong } from './raknet/ConnectedPong'
@@ -63,6 +64,8 @@ export class Client {
   private lastSplitId = -1
 
   private player!: Player
+
+  private viewDistance = 4
 
   constructor({ id, address, socket, mtuSize }: IClientArgs) {
     this.id = id
@@ -262,8 +265,10 @@ export class Client {
             this.handleResourcePacksResponse(pk)
             break
           case Packets.REQUEST_CHUNK_RADIUS:
-            this.logger.debug('GOT CHUNK REQUEST RADIUS')
             this.handleChunkRadiusRequest(pk)
+            break
+          case Packets.TEXT:
+            this.handleText(pk)
             break
           case Packets.PACKET_VIOLATION_WARNING:
             const { type, severity, packetId, message } = (pk as PacketViolationWarning).props
@@ -334,6 +339,17 @@ export class Client {
     }))
   }
 
+  private handleText(packet: Text) {
+    const {
+      type,
+      message,
+    } = packet.props
+
+    if(type === TextType.CHAT) {
+      this.player.chat(message)
+    }
+  }
+
   private async completeLogin() {
     const playerPosition = new PlayerPosition(0, 0, 0, 0, 0)
     this.sendBatched(new StartGame({
@@ -362,28 +378,28 @@ export class Client {
     Server.logger.info(`${this.player.name} logged in from ${this.address.ip}:${this.address.port} with MTU ${this.mtuSize}`)
 
     // this.logger.debug('Sending EntityDefinitionList:', this.sequenceNumber + 1)
-    // this.sendBatched(new EntityDefinitionList())
+    this.sendBatched(new EntityDefinitionList())
 
     this.logger.debug('Sending BiomeDefinitionList:', this.sequenceNumber + 1)
     this.sendBatched(new BiomeDefinitionList(), Reliability.Unreliable)
 
-    // this.sendAttributes(true)
+    this.sendAttributes(true)
 
-    // this.sendAvailableCommands()
-    // this.sendAdventureSettings()
+    this.sendAvailableCommands()
+    this.sendAdventureSettings()
 
     // // TODO: Potion effects?
     // // https://github.com/pmmp/PocketMine-MP/blob/5910905e954f98fd1b1d24190ca26aa727a54a1d/src/network/mcpe/handler/PreSpawnPacketHandler.php#L96-L96
 
     // this.logger.debug('Sending PlayerList:', this.sequenceNumber + 1)
-    // Server.current.addPlayer(this.player)
+    Server.current.addPlayer(this.player)
 
-    // this.player.notifySelf()
-    // this.player.notifyContainers()
-    // this.player.notifyHeldItem()
+    this.player.notifySelf()
+    this.player.notifyContainers()
+    this.player.notifyHeldItem()
 
     const neededChunks: [number, number][] = []
-    for(let i = 0; i < 1; i++) {
+    for(let i = 0; i < 15; i++) {
       const x = i >> 32
       const z = (i & 0xFFFFFFFF) << 32 >> 32
 
@@ -395,8 +411,8 @@ export class Client {
     console.log(neededChunks)
 
     for await(const [x, z] of neededChunks) {
-      // const chunk = await Server.current.level.getChunkAt(x, z)
-      const chunk = new Chunk(x, z, [SubChunk.grassPlatform], [], [], [], [])
+      const chunk = await Server.current.level.getChunkAt(x, z)
+      // const chunk = new Chunk(x, z, [SubChunk.grassPlatform], [], [], [], [])
 
       this.sendBatched(new LevelChunk({
         chunk,
@@ -408,6 +424,15 @@ export class Client {
     this.sendBatched(new PlayStatus({
       status: PlayStatusType.PLAYER_SPAWN,
     }), Reliability.Unreliable)
+
+    setTimeout(() => {
+      this.sendBatched(new NetworkChunkPublisher({
+        x: playerPosition.location.x,
+        y: playerPosition.location.y,
+        z: playerPosition.location.z,
+        radius: this.viewDistance * 16,
+      }))
+    }, 250)
   }
 
   private sendAttributes(all = false): void {
@@ -466,6 +491,13 @@ export class Client {
         hotbarSlot,
         containerId,
       }))
+    })
+
+    this.player.on('Client:sendMessage', (message, type) => {
+      this.sendBatched(new Text({
+        type,
+        message,
+      }), Reliability.Unreliable)
     })
   }
 
