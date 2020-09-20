@@ -41,7 +41,7 @@ export class Player extends Human<IPlayerEvents> {
   public clientId!: bigint
   public skinData!: SkinData
 
-  public position: PlayerPosition = new PlayerPosition(0, 70, 0, 0, 0, 0)
+  public position: PlayerPosition = new PlayerPosition(0, 80, 0, 0, 0, 0)
 
   constructor(player: IPlayerCreate) {
     super(player.username, 'stardust:player')

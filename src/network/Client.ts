@@ -81,6 +81,9 @@ export class Client {
 
   private viewDistance = 4
 
+  private lastPlayerChunk: string | null = null // 'x:z' last chunk we generated nearby chunks from
+  private recentlySentChunks: string[] = [] // ['x:z']
+
   constructor({ id, address, socket, mtuSize }: IClientArgs) {
     this.id = id
     this.address = address
@@ -111,9 +114,9 @@ export class Client {
     const flags = data.readByte(false)
 
     if(flags & BitFlag.ACK) {
-      const { props: { sequences } } = new NAK().parse(data)
+      // const { props: { sequences } } = new ACK().parse(data)
 
-      console.log('GOT ACK:', sequences)
+      // console.log('GOT ACK:', sequences)
     } else if(flags & BitFlag.NAK) {
       const { props: { sequences } } = new NAK().parse(data)
       console.log('GOT NAK, resending:', sequences)
@@ -358,13 +361,6 @@ export class Client {
       radius,
     }))
 
-    this.sendBatched(new NetworkChunkPublisher({
-      x: this.player.position.x,
-      y: this.player.position.y,
-      z: this.player.position.z,
-      radius: this.viewDistance * 16,
-    }))
-
     this.sendBatched(new PlayStatus({
       status: PlayStatusType.PLAYER_SPAWN,
     }))
@@ -400,6 +396,8 @@ export class Client {
     //   headYaw,
     // })
     this.player.move(new PlayerPosition(positionX, positionY, positionZ, pitch, yaw, headYaw))
+
+    this.sendNearbyChunks()
   }
 
   private handlePlayerSpawned(packet: SetLocalPlayerInitialized) {
@@ -455,47 +453,62 @@ export class Client {
     // this.player.notifyContainers()
     // this.player.notifyHeldItem()
 
+    this.sendNearbyChunks()
+  }
+
+  private async sendNearbyChunks(): Promise<void> {
     const [ chunkX, chunkZ ] = Chunk.getChunkCoords(this.player.position)
 
-    const neededChunks: [number, number][] = [
-      [ chunkX, chunkZ ],
-    ]
-    // for(let i = 0; i < sections; i++) {
+    const chunkXZ = `${chunkX}:${chunkZ}`
+    if(chunkXZ === this.lastPlayerChunk) return
+    this.lastPlayerChunk = chunkXZ
+
+    const neededChunks: [number, number][] = []
+    const chunkCoords: string[] = []
+
+    const maybePush = (x: number, z: number) => {
+      const coords = `${x}:${z}`
+      if(!this.recentlySentChunks.includes(coords)) {
+        neededChunks.push([x, z])
+        chunkCoords.push(coords)
+        this.recentlySentChunks.push(coords)
+      }
+    }
+    maybePush(chunkX, chunkZ)
+
     for(let d = 1; d <= this.viewDistance; d++) { // x+
-      neededChunks.push([chunkX + d, chunkZ])
+      maybePush(chunkX + d, chunkZ)
 
       for(let d2 = 1; d2 <= this.viewDistance; d2++) {
-        neededChunks.push([chunkX + d, chunkZ - d2])
+        maybePush(chunkX + d, chunkZ - d2)
       }
     }
 
     for(let d = 1; d <= this.viewDistance; d++) { // x-
-      neededChunks.push([chunkX - d, chunkZ])
+      maybePush(chunkX - d, chunkZ)
 
       for(let d2 = 1; d2 <= this.viewDistance; d2++) {
-        neededChunks.push([chunkX + d, chunkZ + d2])
+        maybePush(chunkX - d, chunkZ + d2)
       }
     }
 
     for(let d = 1; d <= this.viewDistance; d++) { // z+
-      neededChunks.push([chunkX, chunkZ + d])
+      maybePush(chunkX, chunkZ + d)
 
       for(let d2 = 1; d2 <= this.viewDistance; d2++) {
-        neededChunks.push([chunkX - d2, chunkZ + d])
+        maybePush(chunkX + d2, chunkZ + d)
       }
     }
 
     for(let d = 1; d <= this.viewDistance; d++) { // z-
-      neededChunks.push([chunkX, chunkZ - d])
+      maybePush(chunkX, chunkZ - d)
 
       for(let d2 = 1; d2 <= this.viewDistance; d2++) {
-        neededChunks.push([chunkX + d2, chunkZ + d])
+        maybePush(chunkX - d2, chunkZ - d)
       }
     }
-    // }
 
-    // console.log(neededChunks)
-    // if(!process.poo) process.exit()
+    console.log(neededChunks)
 
     for await(const [x, z] of neededChunks) {
       const chunk = await Server.i.level.getChunkAt(x, z)
@@ -507,6 +520,22 @@ export class Client {
         usedHashes: [],
       }), Reliability.Unreliable)
     }
+
+    this.sendBatched(new NetworkChunkPublisher({
+      x: this.player.position.x,
+      y: this.player.position.y,
+      z: this.player.position.z,
+      radius: this.viewDistance * 16,
+    }))
+
+    if(this.recentlySentChunks.length > (this.nearbyChunkCount * 2)) {
+      // console.log(this.recentlySentChunks)
+      this.recentlySentChunks.splice(0, this.nearbyChunkCount)
+    }
+  }
+
+  private get nearbyChunkCount() {
+    return ((this.viewDistance * this.viewDistance) + this.viewDistance) * 4
   }
 
   private sendAttributes(all = false): void {
