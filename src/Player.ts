@@ -76,7 +76,9 @@ export class Player extends Human<IPlayerEvents> {
   }
 
   public move(pos: PlayerPosition): void {
-    Server.i.playerMove(this, pos)
+    this.position.update(pos)
+
+    Server.i.updatePlayerLocation(this)
   }
 
   public notifySelf(data?: any[]): void {

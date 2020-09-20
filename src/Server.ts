@@ -194,9 +194,11 @@ export class Server implements IServer {
     this.updatePlayerList()
   }
 
-  public playerMove(source: Player, pos: PlayerPosition): void {
+  public updatePlayerLocation(player: Player): void {
+    const pos = player.position
+
     this.broadcast(new MovePlayer({
-      runtimeEntityId: source.id,
+      runtimeEntityId: player.id,
       positionX: pos.location.x,
       positionY: pos.location.y,
       positionZ: pos.location.z,
@@ -205,7 +207,7 @@ export class Server implements IServer {
       headYaw: pos.headYaw,
       onGround: true,
       ridingEntityRuntimeId: 0n,
-    }), source.clientId)
+    }), player.clientId)
   }
 
   private updatePlayerList() {

@@ -104,7 +104,7 @@ export class Client {
   }
 
   private destroy() {
-    Server.current.removeClient(this.address)
+    Server.i.removeClient(this.address)
   }
 
   public handlePacket(data: BinaryData): void {
@@ -187,7 +187,7 @@ export class Client {
   }
 
   private sendACK(sequenceNumber: number) {
-    Server.current.send({
+    Server.i.send({
       packet: new ACK([sequenceNumber]),
       socket: this.socket,
       address: this.address,
@@ -209,7 +209,7 @@ export class Client {
   }
 
   private resend(packet: PacketBundle) {
-    Server.current.send({
+    Server.i.send({
       packet,
       socket: this.socket,
       address: this.address,
@@ -224,7 +224,7 @@ export class Client {
     for(const packet of bundles) {
       this.sentPackets.set(packet.props.sequenceNumber, packet)
 
-      Server.current.send({
+      Server.i.send({
         packet,
         socket: this.socket,
         address: this.address,
@@ -262,7 +262,7 @@ export class Client {
       systemIndex: 0,
       systemAddresses: new Array<IAddress>(Protocol.SYSTEM_ADDRESSES).fill(DummyAddress),
       requestTime: packet.props.sendPingTime,
-      time: Server.current.runningTime,
+      time: Server.i.runningTime,
     }))
   }
 
@@ -289,6 +289,7 @@ export class Client {
             break
           case Packets.SET_LOCAL_PLAYER_INITIALIZED:
             this.handlePlayerSpawned(pk)
+            break
           case Packets.PACKET_VIOLATION_WARNING:
             const { type, severity, packetId, message } = (pk as PacketViolationWarning).props
 
@@ -358,9 +359,9 @@ export class Client {
     }))
 
     this.sendBatched(new NetworkChunkPublisher({
-      x: this.player.position.location.x,
-      y: this.player.position.location.y,
-      z: this.player.position.location.z,
+      x: this.player.position.x,
+      y: this.player.position.y,
+      z: this.player.position.z,
       radius: this.viewDistance * 16,
     }))
 
@@ -439,7 +440,7 @@ export class Client {
     this.sendBatched(new BiomeDefinitionList(), Reliability.Unreliable)
 
     this.sendAttributes(true)
-    this.sendMetadata()
+    // this.sendMetadata()
 
     this.sendAvailableCommands()
     // this.sendAdventureSettings()
@@ -497,7 +498,7 @@ export class Client {
     // if(!process.poo) process.exit()
 
     for await(const [x, z] of neededChunks) {
-      const chunk = await Server.current.level.getChunkAt(x, z)
+      const chunk = await Server.i.level.getChunkAt(x, z)
       // const chunk = new Chunk(x, z, [SubChunk.grassPlatform], [], [], [], [])
 
       this.sendBatched(new LevelChunk({

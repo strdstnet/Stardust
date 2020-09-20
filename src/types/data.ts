@@ -34,18 +34,33 @@ export enum DataType {
 
 export class PlayerPosition {
 
-  public location: Vector3
-
   constructor(
-    locationX: number,
-    locationY: number,
-    locationZ: number,
+    public x: number,
+    public y: number,
+    public z: number,
     public pitch: number,
     public yaw: number,
     public headYaw: number = 0,
     public motion = new Vector3(0, 0, 0),
-  ) {
-    this.location = new Vector3(locationX, locationY, locationZ)
+  ) {}
+
+  public get coords(): Vector3 {
+    return new Vector3(this.x, this.y, this.z)
+  }
+
+  /** @deprecated Use pos.x, pos.y & pos.z instead, or pos.coords if you ***need*** a Vector3 */
+  public get location(): Vector3 {
+    return this.coords
+  }
+
+  public update(newPos: PlayerPosition): void {
+    this.x = newPos.x
+    this.y = newPos.y
+    this.z = newPos.z
+    this.pitch = newPos.pitch
+    this.yaw = newPos.yaw
+    this.headYaw = newPos.headYaw
+    this.motion = newPos.motion
   }
 
 }
