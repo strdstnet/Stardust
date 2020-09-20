@@ -52,6 +52,9 @@ import { AddPlayer } from './bedrock/AddPlayer'
 import { Attribute } from '../entity/Attribute'
 import { EntityMetadata } from './bedrock/EntityMetadata'
 import { MetadataFlag, MetadataType } from '../types/player'
+import { CommandRequest } from './bedrock/CommandRequest'
+import { ICommand } from '../types/commands'
+import { Metadata } from '../entity/Metadata'
 
 interface SplitQueue {
   [splitId: number]: BundledPacket<any>,
@@ -293,6 +296,9 @@ export class Client {
           case Packets.SET_LOCAL_PLAYER_INITIALIZED:
             this.handlePlayerSpawned(pk)
             break
+          case Packets.COMMAND_REQUEST:
+            this.handleCommandRequest(pk)
+            break
           case Packets.PACKET_VIOLATION_WARNING:
             const { type, severity, packetId, message } = (pk as PacketViolationWarning).props
 
@@ -418,6 +424,20 @@ export class Client {
     Chat.i.broadcastPlayerJoined(this.player)
   }
 
+  private handleCommandRequest(packet: CommandRequest) {
+    const { command } = packet.props
+
+    const [ trigger, ...args ] = command.substr(1, command.length - 1).split(' ')
+
+    if(Server.i.commands.has(trigger)) {
+      (Server.i.commands.get(trigger) as ICommand).execute({
+        trigger,
+        args,
+        sender: this.player,
+      })
+    }
+  }
+
   private async completeLogin() {
     this.sendBatched(new StartGame({
       entityUniqueId: this.player.id,
@@ -438,7 +458,8 @@ export class Client {
     this.sendBatched(new BiomeDefinitionList(), Reliability.Unreliable)
 
     this.sendAttributes(true)
-    // this.sendMetadata()
+
+    this.sendMetadata()
 
     this.sendAvailableCommands()
     // this.sendAdventureSettings()
@@ -510,7 +531,7 @@ export class Client {
 
     console.log(neededChunks)
 
-    for await(const [x, z] of neededChunks) {
+    for(const [x, z] of neededChunks) {
       const chunk = await Server.i.level.getChunkAt(x, z)
       // const chunk = new Chunk(x, z, [SubChunk.grassPlatform], [], [], [], [])
 
@@ -552,10 +573,10 @@ export class Client {
     }
   }
 
-  private sendMetadata() {
+  private sendMetadata(metadata = this.player.metadata) {
     this.sendBatched(new EntityMetadata({
       entityRuntimeId: this.player.id,
-      metadata: this.player.metadata,
+      metadata,
     }))
   }
 

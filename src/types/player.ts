@@ -90,7 +90,9 @@ export interface IPlayer {
   clientId: bigint,
   skinData: SkinData,
   position: PlayerPosition,
-  sendMessage: (message: string, type: TextType) => void,
+  sendMessage: (message: string, type?: TextType) => void,
+  move: (pos: PlayerPosition) => void,
+  teleport: (x: number, y: number, z: number) => void,
 }
 
 export enum MetadataType {
@@ -114,6 +116,7 @@ export enum MetadataFlag {
   ENTITY_OWNER_ID = 5,
   ENTITY_TARGET_ID = 6,
   AIR = 7,
+  BREATHING = 35,
   ENTITY_LEAD_HOLDER_ID = 37,
   SCALE = 38,
   MAX_AIR = 42,

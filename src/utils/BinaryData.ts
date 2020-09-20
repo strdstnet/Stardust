@@ -568,6 +568,15 @@ export class BinaryData {
     this.writeLInt(uuid.parts[2])
   }
 
+  public readUUID(): UUID {
+    const p1 = this.readLInt()
+    const p2 = this.readLInt()
+    const p3 = this.readLInt()
+    const p4 = this.readLInt()
+
+    return new UUID(p1, p2, p3, p4)
+  }
+
   public writeSkinImage(image: SkinImage): void {
     this.writeLInt(image.width)
     this.writeLInt(image.height)

@@ -26,6 +26,9 @@ import { PlayerPosition } from './types/data'
 import { MovePlayer } from './network/bedrock/MovePlayer'
 import { Chat } from './Chat'
 import { AddPlayer } from './network/bedrock/AddPlayer'
+import { CommandMap } from './command/CommandMap'
+import { ICommand } from './types/commands'
+import { Teleport } from './command/defaults/Teleport'
 
 const DEFAULT_OPTS: ServerOpts = {
   address: '0.0.0.0',
@@ -57,6 +60,8 @@ export class Server implements IServer {
   public level: Level = Level.TestWorld()
 
   private chat = new Chat(this)
+
+  public commands = new CommandMap()
 
   private constructor(public opts: ServerOpts) {
     if(Server.i) {
@@ -95,6 +100,8 @@ export class Server implements IServer {
       address,
       port,
     } = this.opts
+
+    this.initCommands()
 
     this.sockets.forEach(async([, socket]) => {
       socket.bind(port, address)
@@ -143,6 +150,18 @@ export class Server implements IServer {
         }
       })
     })
+  }
+
+  public addCommand(command: ICommand): void {
+    for(const trigger of command.triggers) {
+      if(!this.commands.has(trigger)) {
+        this.commands.set(trigger, command)
+      }
+    }
+  }
+
+  private initCommands() {
+    this.addCommand(new Teleport())
   }
 
   private get motd() {
@@ -194,20 +213,20 @@ export class Server implements IServer {
     this.updatePlayerList()
   }
 
-  public updatePlayerLocation(player: Player): void {
+  public updatePlayerLocation(player: Player, includeSelf = false): void {
     const pos = player.position
 
     this.broadcast(new MovePlayer({
       runtimeEntityId: player.id,
-      positionX: pos.location.x,
-      positionY: pos.location.y,
-      positionZ: pos.location.z,
+      positionX: pos.x,
+      positionY: pos.y,
+      positionZ: pos.z,
       pitch: pos.pitch,
       yaw: pos.yaw,
       headYaw: pos.headYaw,
       onGround: true,
       ridingEntityRuntimeId: 0n,
-    }), player.clientId)
+    }), includeSelf ? null : player.clientId)
   }
 
   private updatePlayerList() {
@@ -231,7 +250,7 @@ export class Server implements IServer {
     socket.send(packet.encode().toBuffer(), address.port, address.ip)
   }
 
-  private broadcast(packet: BatchedPacket<any>, excludeClientId?: bigint) {
+  private broadcast(packet: BatchedPacket<any>, excludeClientId: bigint | null = null) {
     this.clients.forEach(async client => {
       if(typeof excludeClientId !== 'undefined' && excludeClientId === client.id) return
 

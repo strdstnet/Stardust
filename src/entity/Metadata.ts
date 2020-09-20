@@ -23,7 +23,7 @@ export class Metadata {
   }
 
   public addGeneric(flag: MetadataFlag, value: boolean): void {
-    this.generics.set(flag >= 64 ? 94 : MetadataFlag.INDEX, [flag, value])
+    this.generics.set(flag >= 64 ? 91 : MetadataFlag.INDEX, [flag % 64, value])
   }
 
   public all(): MetadataRecord[] {
@@ -37,7 +37,7 @@ export class Metadata {
         return {
           flag: property,
           type: MetadataType.LONG,
-          value: BigInt(value ^ (1 << flag)),
+          value: BigInt(value) ^ BigInt(1 << flag),
         }
       })
 

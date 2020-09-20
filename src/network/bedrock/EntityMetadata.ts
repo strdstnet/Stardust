@@ -38,10 +38,40 @@ export class EntityMetadata extends BatchedPacket<IEntityMetadata> {
                   data.writeString(value)
                   break
                 case MetadataType.SHORT:
-                  data.writeLShort(value)
+                  data.writeSignedLShort(value)
+                  break
+                default:
+                  throw new Error(`Unknown MetadataType: ${type}`)
+              }
+            }
+          } else {
+            const metadata = new Metadata()
+
+            const count = data.readUnsignedVarInt()
+            for(let i = 0; i < count; i++) {
+              const flag = data.readUnsignedVarInt()
+              const type = data.readUnsignedVarInt()
+
+              switch(type) {
+                case MetadataType.BYTE:
+                  metadata.add(flag, type, data.readByte())
+                  break
+                case MetadataType.FLOAT:
+                  metadata.add(flag, type, data.readLFloat())
+                  break
+                case MetadataType.LONG:
+                  metadata.add(flag, type, data.readVarLong())
+                  break
+                case MetadataType.STRING:
+                  metadata.add(flag, type, data.readString())
+                  break
+                case MetadataType.SHORT:
+                  metadata.add(flag, type, data.readSignedLShort())
                   break
               }
             }
+
+            props.metadata = metadata
           }
         },
       },

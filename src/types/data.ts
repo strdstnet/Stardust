@@ -53,14 +53,24 @@ export class PlayerPosition {
     return this.coords
   }
 
-  public update(newPos: PlayerPosition): void {
-    this.x = newPos.x
-    this.y = newPos.y
-    this.z = newPos.z
-    this.pitch = newPos.pitch
-    this.yaw = newPos.yaw
-    this.headYaw = newPos.headYaw
-    this.motion = newPos.motion
+  public update(x: number, y: number, z: number): void
+  public update(newPos: PlayerPosition): void
+  public update(...args: any[]): void {
+    if(args.length === 1) {
+      const newPos = args[0] as PlayerPosition
+
+      this.x = newPos.x
+      this.y = newPos.y
+      this.z = newPos.z
+      this.pitch = newPos.pitch
+      this.yaw = newPos.yaw
+      this.headYaw = newPos.headYaw
+      this.motion = newPos.motion
+    } else {
+      this.x = args[0]
+      this.y = args[1]
+      this.z = args[2]
+    }
   }
 
 }

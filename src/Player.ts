@@ -5,7 +5,7 @@ import { getSkinData } from './utils/skins'
 import { Login } from './network/bedrock/Login'
 import { TextType } from './network/bedrock/Text'
 import { ContainerId } from './types/containers'
-import { SkinData } from './types/player'
+import { MetadataFlag, MetadataType, SkinData } from './types/player'
 import { Item } from './item/Item'
 import { Server } from './Server'
 import { PlayerPosition } from './types/data'
@@ -47,7 +47,7 @@ export class Player extends Human<IPlayerEvents> {
     super(player.username, 'stardust:player')
 
     Object.assign(this, player)
-    this.UUID = new UUID(player.clientUUID)
+    this.UUID = UUID.fromString(player.clientUUID)
   }
 
   public static createFrom(login: Login, clientId: bigint): Player {
@@ -63,6 +63,12 @@ export class Player extends Human<IPlayerEvents> {
     })
   }
 
+  protected addMetadata(): void {
+    super.addMetadata()
+
+    this.metadata.add(MetadataFlag.NAMETAG, MetadataType.STRING, this.name)
+  }
+
   public isSpectator(): boolean {
     return true
   }
@@ -71,7 +77,7 @@ export class Player extends Human<IPlayerEvents> {
     Chat.i.playerChat(this, message)
   }
 
-  public sendMessage(message: string, type = TextType.CHAT): void {
+  public sendMessage(message: string, type = TextType.RAW): void {
     this.emit('Client:sendMessage', message, type)
   }
 
@@ -79,6 +85,12 @@ export class Player extends Human<IPlayerEvents> {
     this.position.update(pos)
 
     Server.i.updatePlayerLocation(this)
+  }
+
+  public teleport(x: number, y: number, z: number): void {
+    this.position.update(x, y, z)
+
+    Server.i.updatePlayerLocation(this, true)
   }
 
   public notifySelf(data?: any[]): void {

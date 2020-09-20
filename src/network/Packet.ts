@@ -157,6 +157,8 @@ const decodeDataType = (data: BinaryData, type: DataType) => {
       return data.readLInt()
     case DataType.L_LONG:
       return data.readLLong()
+    case DataType.UUID:
+      return data.readUUID()
     default:
       console.error('Unknown DataType on read:', type)
   }
