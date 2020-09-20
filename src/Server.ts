@@ -1,7 +1,7 @@
 import dgram, { Socket } from 'dgram'
 
 import Logger from '@bwatton/logger'
-import { ServerOpts } from './types/server'
+import { IServer, ServerOpts } from './types/server'
 import { Client } from './network/Client'
 import { Player } from './Player'
 import { Level } from './level/Level'
@@ -22,6 +22,10 @@ import { OpenConnectionReplyTwo } from './network/raknet/OpenConnectionReplyTwo'
 import { OpenConnectionReplyOne } from './network/raknet/OpenConnectionReplyOne'
 import { IncompatibleProtocol } from './network/raknet/IncompatibleProtocol'
 import { Packet } from './network/Packet'
+import { PlayerPosition } from './types/data'
+import { MovePlayer } from './network/bedrock/MovePlayer'
+import { Chat } from './Chat'
+import { AddPlayer } from './network/bedrock/AddPlayer'
 
 const DEFAULT_OPTS: ServerOpts = {
   address: '0.0.0.0',
@@ -34,8 +38,11 @@ const DEFAULT_OPTS: ServerOpts = {
 }
 
 // TODO: Merge with Stardust.ts
-export class Server {
+export class Server implements IServer {
 
+  public static i: Server
+
+  /** @deprecated use Server.i instead */
   public static current: Server
 
   public static logger = new Logger('Server')
@@ -45,16 +52,18 @@ export class Server {
   private startedAt: number = Date.now()
 
   private clients: Map<string, Client> = new Map()
-  private players: Map<bigint, Player> = new Map() // Map<Player ID (Entity Runtime ID, Player)>
+  public players: Map<bigint, Player> = new Map() // Map<Player ID (Entity Runtime ID, Player)>
 
   public level: Level = Level.TestWorld()
 
+  private chat = new Chat(this)
+
   private constructor(public opts: ServerOpts) {
-    if(Server.current) {
+    if(Server.i) {
       this.logger.error('Only one instance of Stardust can run per Node process')
       process.exit(1)
     } else {
-      Server.current = this
+      Server.i = Server.current = this
     }
 
     this.sockets = [
@@ -185,14 +194,9 @@ export class Server {
     this.updatePlayerList()
   }
 
-  public playerChat(sender: Player, message: string): void {
-    for(const [, player ] of this.players) {
-      player.sendMessage(`${sender.username}: ${message}`, TextType.RAW)
-    }
-  }
-
   public playerMove(source: Player, pos: PlayerPosition): void {
     this.broadcast(new MovePlayer({
+      runtimeEntityId: source.id,
       positionX: pos.location.x,
       positionY: pos.location.y,
       positionZ: pos.location.z,
@@ -201,7 +205,7 @@ export class Server {
       headYaw: pos.headYaw,
       onGround: true,
       ridingEntityRuntimeId: 0n,
-    }))
+    }), source.clientId)
   }
 
   private updatePlayerList() {
@@ -211,12 +215,26 @@ export class Server {
     }))
   }
 
+  public spawnToAll(player: Player): void {
+    this.broadcast(new AddPlayer({
+      uuid: player.UUID,
+      username: player.username,
+      entityUniqueId: player.id,
+      entityRuntimeId: player.id,
+      position: player.position,
+    }), player.clientId)
+  }
+
   public send({ packet, socket, address }: ISendPacketArgs): void {
     socket.send(packet.encode().toBuffer(), address.port, address.ip)
   }
 
-  private broadcast(packet: BatchedPacket<any>) {
-    this.clients.forEach(async client => client.sendBatched(packet))
+  private broadcast(packet: BatchedPacket<any>, excludeClientId?: bigint) {
+    this.clients.forEach(async client => {
+      if(typeof excludeClientId !== 'undefined' && excludeClientId === client.id) return
+
+      client.sendBatched(packet)
+    })
   }
 
   private handleUnconnectedPing({ data, socket, address }: IPacketHandlerArgs) {

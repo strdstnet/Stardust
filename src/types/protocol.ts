@@ -53,6 +53,7 @@ export enum Packets {
   TEXT = 0x09, // 9
   SET_TIME = 0x0a, // 10
   START_GAME = 0x0b, // 11
+  ADD_PLAYER = 0x0c, // 12
   MOVE_PLAYER = 0x13, // 19
   TICK_SYNC = 0x17, // 23
   UPDATE_ATTRIBUTES = 0x1d, // 29

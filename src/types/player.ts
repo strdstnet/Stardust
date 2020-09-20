@@ -1,3 +1,7 @@
+import { TextType } from '../network/bedrock/Text'
+import { UUID } from '../utils/UUID'
+import { PlayerPosition } from './data'
+
 export interface SkinImage {
   height: number,
   width: number,
@@ -75,4 +79,16 @@ export interface SkinData {
   personaPieces: PersonaPiece[],
   personaPieceTints: PersonaPieceTint[],
   verified: boolean,
+}
+
+export interface IPlayer {
+  username: string,
+  UUID: UUID,
+  clientUUID: string,
+  XUID: string,
+  identityPublicKey: string,
+  clientId: bigint,
+  skinData: SkinData,
+  position: PlayerPosition,
+  sendMessage: (message: string, type: TextType) => void,
 }

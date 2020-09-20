@@ -107,6 +107,9 @@ const encodeDataType = (data: BinaryData, type: DataType, value: any, p?: string
     case DataType.CHUNK:
       data.writeChunk(value)
       break
+    case DataType.UUID:
+      data.writeUUID(value)
+      break
     default:
       console.error('Unknown DataType on write:', type)
   }

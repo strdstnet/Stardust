@@ -43,6 +43,12 @@ import { ConnectedPong } from './raknet/ConnectedPong'
 import { ConnectionRequestAccepted } from './raknet/ConnectionRequestAccepted'
 import { AdventureSettingsFlag, CommandPermissions, PlayerPermissions, PlayStatusType, ResourcePackResponseStatus } from '../types/world'
 import { PlayerPosition } from '../types/data'
+import { SubChunk } from '../level/SubChunk'
+import { NetworkChunkPublisher } from './bedrock/NetworkChunkPublisher'
+import { MovePlayer } from './bedrock/MovePlayer'
+import { SetLocalPlayerInitialized } from './bedrock/SetLocalPlayerInitialized'
+import { Chat } from '../Chat'
+import { AddPlayer } from './bedrock/AddPlayer'
 
 interface SplitQueue {
   [splitId: number]: BundledPacket<any>,
@@ -278,6 +284,8 @@ export class Client {
           case Packets.MOVE_PLAYER:
             this.handleMove(pk)
             break
+          case Packets.SET_LOCAL_PLAYER_INITIALIZED:
+            this.handlePlayerSpawned(pk)
           case Packets.PACKET_VIOLATION_WARNING:
             const { type, severity, packetId, message } = (pk as PacketViolationWarning).props
 
@@ -297,7 +305,7 @@ export class Client {
   private handleLogin(packet: Login) {
     // TODO: Login verification, already logged in?, ...
 
-    this.player = Player.createFrom(packet)
+    this.player = Player.createFrom(packet, this.id)
     this.initPlayerListeners()
 
     // TODO: Actually implement packs
@@ -345,6 +353,17 @@ export class Client {
     this.sendBatched(new ChunkRadiusUpdated({
       radius,
     }))
+
+    this.sendBatched(new NetworkChunkPublisher({
+      x: this.player.position.location.x,
+      y: this.player.position.location.y,
+      z: this.player.position.location.z,
+      radius: this.viewDistance * 16,
+    }))
+
+    this.sendBatched(new PlayStatus({
+      status: PlayStatusType.PLAYER_SPAWN,
+    }))
   }
 
   private handleText(packet: Text) {
@@ -367,16 +386,42 @@ export class Client {
       yaw,
       headYaw,
     } = packet.props
+
+    // console.log({
+    //   positionX,
+    //   positionY,
+    //   positionZ,
+    //   pitch,
+    //   yaw,
+    //   headYaw,
+    // })
     this.player.move(new PlayerPosition(positionX, positionY, positionZ, pitch, yaw, headYaw))
   }
 
+  private handlePlayerSpawned(packet: SetLocalPlayerInitialized) {
+    Server.i.spawnToAll(this.player)
+
+    Server.i.players.forEach(async player => {
+      if(this.id === player.clientId) return
+
+      this.sendBatched(new AddPlayer({
+        uuid: player.UUID,
+        username: player.username,
+        entityUniqueId: player.id,
+        entityRuntimeId: player.id,
+        position: player.position,
+      }))
+    })
+
+    Chat.i.broadcastPlayerJoined(this.player)
+  }
+
   private async completeLogin() {
-    const playerPosition = new PlayerPosition(0, 0, 0, 0, 0)
     this.sendBatched(new StartGame({
       entityUniqueId: this.player.id,
       entityRuntimeId: this.player.id,
-      playerPosition,
-      spawnLocation: new Vector3(0, 0, 0),
+      playerPosition: this.player.position,
+      spawnLocation: new Vector3(0, 20, 0),
     }), Reliability.Unreliable)
 
     // // TODO: Name tag visible, can climb, immobile
@@ -405,15 +450,50 @@ export class Client {
     // this.player.notifyContainers()
     // this.player.notifyHeldItem()
 
-    // const neededChunks: [number, number][] = []
-    // for(let i = 0; i < 1; i++) {
-    //   const x = i >> 32
-    //   const z = (i & 0xFFFFFFFF) << 32 >> 32
+    const [ chunkX, chunkZ ] = Chunk.getChunkCoords(this.player.position)
+    
 
-    //   const [ chunkX, chunkZ ] = Chunk.getChunkCoords(playerPosition)
+    const neededChunks: [number, number][] = [
+      [ chunkX, chunkZ ],
+    ]
+    // for(let i = 0; i < sections; i++) {
+    for(let d = 1; d <= this.viewDistance; d++) { // x+
+      neededChunks.push([chunkX + d, chunkZ])
 
-    //   neededChunks[i] = [chunkX + x, chunkZ + z]
+      for(let d2 = 1; d2 <= this.viewDistance; d2++) {
+        neededChunks.push([chunkX + d, chunkZ - d2])
+      }
+    }
+
+    for(let d = 1; d <= this.viewDistance; d++) { // x-
+      neededChunks.push([chunkX - d, chunkZ])
+
+      for(let d2 = 1; d2 <= this.viewDistance; d2++) {
+        neededChunks.push([chunkX + d, chunkZ + d2])
+      }
+    }
+
+    for(let d = 1; d <= this.viewDistance; d++) { // z+
+      neededChunks.push([chunkX, chunkZ + d])
+
+      for(let d2 = 1; d2 <= this.viewDistance; d2++) {
+        neededChunks.push([chunkX - d2, chunkZ + d])
+      }
+    }
+
+    for(let d = 1; d <= this.viewDistance; d++) { // z-
+      neededChunks.push([chunkX, chunkZ - d])
+
+      for(let d2 = 1; d2 <= this.viewDistance; d2++) {
+        neededChunks.push([chunkX + d2, chunkZ + d])
+      }
+    }
+
+      
     // }
+
+    // console.log(neededChunks)
+    // if(!process.poo) process.exit()
 
     for await(const [x, z] of neededChunks) {
       const chunk = await Server.current.level.getChunkAt(x, z)
@@ -425,19 +505,6 @@ export class Client {
         usedHashes: [],
       }), Reliability.Unreliable)
     }
-
-    this.sendBatched(new PlayStatus({
-      status: PlayStatusType.PLAYER_SPAWN,
-    }))
-
-    // setTimeout(() => {
-    //   this.sendBatched(new NetworkChunkPublisher({
-    //     x: playerPosition.location.x,
-    //     y: playerPosition.location.y,
-    //     z: playerPosition.location.z,
-    //     radius: this.viewDistance * 16,
-    //   }), Reliability.Unreliable)
-    // }, 250)
   }
 
   private sendAttributes(all = false): void {

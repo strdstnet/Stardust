@@ -29,6 +29,7 @@ export enum DataType {
   U_VARLONG,
   CONTAINER_ITEM,
   CHUNK,
+  UUID,
 }
 
 export class PlayerPosition {
@@ -42,6 +43,7 @@ export class PlayerPosition {
     public pitch: number,
     public yaw: number,
     public headYaw: number = 0,
+    public motion = new Vector3(0, 0, 0),
   ) {
     this.location = new Vector3(locationX, locationY, locationZ)
   }

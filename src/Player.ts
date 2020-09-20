@@ -8,6 +8,8 @@ import { ContainerId } from './types/containers'
 import { SkinData } from './types/player'
 import { Item } from './item/Item'
 import { Server } from './Server'
+import { PlayerPosition } from './types/data'
+import { Chat } from './Chat'
 
 interface IPlayerEvents {
   'Client:entityNotification': (id: bigint, meta: any[]) => void,
@@ -39,6 +41,8 @@ export class Player extends Human<IPlayerEvents> {
   public clientId!: bigint
   public skinData!: SkinData
 
+  public position: PlayerPosition = new PlayerPosition(0, 70, 0, 0, 0, 0)
+
   constructor(player: IPlayerCreate) {
     super(player.username, 'stardust:player')
 
@@ -46,7 +50,7 @@ export class Player extends Human<IPlayerEvents> {
     this.UUID = new UUID(player.clientUUID)
   }
 
-  public static createFrom(login: Login): Player {
+  public static createFrom(login: Login, clientId: bigint): Player {
     const { props } = login
 
     return new Player({
@@ -54,7 +58,7 @@ export class Player extends Human<IPlayerEvents> {
       clientUUID: props.clientUUID,
       XUID: props.XUID,
       identityPublicKey: props.identityPublicKey,
-      clientId: props.clientId,
+      clientId,
       skinData: getSkinData(props),
     })
   }
@@ -64,7 +68,7 @@ export class Player extends Human<IPlayerEvents> {
   }
 
   public chat(message: string): void {
-    Server.current.playerChat(this, message)
+    Chat.i.playerChat(this, message)
   }
 
   public sendMessage(message: string, type = TextType.CHAT): void {
@@ -72,7 +76,7 @@ export class Player extends Human<IPlayerEvents> {
   }
 
   public move(pos: PlayerPosition): void {
-    Server.current.playerMove(this, pos)
+    Server.i.playerMove(this, pos)
   }
 
   public notifySelf(data?: any[]): void {

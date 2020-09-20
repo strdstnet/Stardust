@@ -16,6 +16,7 @@ import { StartGame } from './StartGame'
 import { Text } from './Text'
 import { Transfer } from './Transfer'
 import { MovePlayer } from './MovePlayer'
+import { AddPlayer } from './AddPlayer'
 
 interface IPacketBatch {
   packets: Array<BatchedPacket<any>>,
@@ -86,6 +87,9 @@ export class PacketBatch extends BundledPacket<IPacketBatch> {
                   break
                 case Packets.MOVE_PLAYER:
                   packet = new MovePlayer()
+                  break
+                case Packets.ADD_PLAYER:
+                  packet = new AddPlayer()
                   break
                 // case Packets.RESOURCE_PACKS_STACK:
                 //   packet = new BatchedPacket(packetId, [])

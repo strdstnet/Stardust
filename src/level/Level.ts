@@ -17,7 +17,7 @@ import { ShortTag } from '../nbt/ShortTag'
 import { DoubleTag } from '../nbt/DoubleTag'
 import { FloatTag } from '../nbt/FloatTag'
 
-const Anvil = PrisAnvil.Anvil('1.8')
+const Anvil = PrisAnvil.Anvil('1.12')
 
 const WORLDS_DIR = path.join(__dirname, '..', '..', 'worlds')
 
@@ -68,12 +68,12 @@ export class Level {
       if(section.val('Y') === -1) {
         subChunks.push(SubChunk.empty)
       } else {
-        subChunks.push(new SubChunk(
-          section.val('Data') || [],
-          section.val('Blocks') || [],
-          section.val('SkyLight') || [],
-          section.val('BlockLight') || [],
-        ))
+        subChunks[section.val('Y')] = new SubChunk(
+          SubChunk.reorderNibbles(section.val('Data') || []),
+          SubChunk.reorderBytes(section.val('Blocks') || []),
+          SubChunk.reorderNibbles(section.val('SkyLight') || []),
+          SubChunk.reorderNibbles(section.val('BlockLight') || []),
+        )
       }
     }
 
@@ -187,7 +187,8 @@ export class Level {
   }
 
   public static TestWorld(): Level {
-    return new Level('TestLevel', new Anvil(path.join(WORLDS_DIR, 'one_eight_yes', 'region')))
+    // return new Level('TestLevel', new Anvil(path.join(WORLDS_DIR, 'one_eight_yes', 'region')))
+    return new Level('TestLevel', new Anvil(path.join(WORLDS_DIR, '1_12_2', 'region')))
   }
 
   public async getChunkAt(x: number, z: number): Promise<Chunk> {

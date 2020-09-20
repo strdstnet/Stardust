@@ -28,7 +28,7 @@ export class LevelChunk extends BatchedPacket<ILevelChunk> {
             data.writeVarInt(props.chunk.x)
             data.writeVarInt(props.chunk.z)
             data.writeUnsignedVarInt(props.chunk.highestNonEmptySubChunk() + 1)
-            // data.writeUnsignedVarInt(1)
+            // data.writeUnsignedVarInt(16)
           } else {
             props.chunk = new Chunk(
               data.readVarInt(),
@@ -36,7 +36,6 @@ export class LevelChunk extends BatchedPacket<ILevelChunk> {
               [], [], [], [], [],
             )
             subChunkCount = data.readUnsignedVarInt()
-            console.log('NUM SUB CHUNKS', subChunkCount)
           }
         },
       },

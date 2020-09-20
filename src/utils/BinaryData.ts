@@ -507,9 +507,9 @@ export class BinaryData {
   }
 
   public writeVector3(v3: Vector3): void {
+    this.writeLFloat(v3.x)
     this.writeLFloat(v3.y)
     this.writeLFloat(v3.z)
-    this.writeLFloat(v3.x)
   }
 
   public readVector3(skip = true): Vector3 {
@@ -538,7 +538,7 @@ export class BinaryData {
   }
 
   public writeContainerItem(item: Item): void {
-    this.writeBoolean(!!item.count && item.id !== Items.AIR)
+    // this.writeBoolean(!!item.count && item.id !== Items.AIR)
 
     this.writeVarInt(item.id)
     if(item.id === Items.AIR) return
@@ -557,7 +557,7 @@ export class BinaryData {
     this.writeVarInt(0) // CanDestroy
 
     if(item.id === Items.SHIELD) {
-      this.writeVarInt(0) // some shit
+      this.writeVarLong(0n) // some shit
     }
   }
 
@@ -617,19 +617,23 @@ export class BinaryData {
   }
 
   public writeChunk(chunk: Chunk): void {
+    const data = new BinaryData()
+
     const nonEmptyCount = chunk.highestNonEmptySubChunk() + 1
     for(let y = 0; y < nonEmptyCount; y++) {
-      console.log('WRITE SUB CHUNK')
-
+    // for(let y = 0; y < 16; y++) {
       const subChunk = chunk.subChunks[y]
 
-      this.writeByte(0) // Anvil version
-      this.append(new Uint8Array(subChunk.blockData))
-      this.append(new Uint8Array(subChunk.data))
+      data.writeByte(0) // Anvil version
+      data.append(new Uint8Array(subChunk.blockData))
+      data.append(new Uint8Array(subChunk.data))
     }
 
-    this.append(new Uint8Array(chunk.biomeData))
-    this.writeByte(0)
+    data.append(new Uint8Array(chunk.biomeData))
+    data.writeByte(0)
+
+    this.writeUnsignedVarInt(data.length)
+    this.append(data)
 
     // TODO: Tiles
     // https://github.com/pmmp/PocketMine-MP/blob/9d0ac297bbeb4b9a4330685b24c4045f7fb0c5e9/src/pocketmine/level/format/Chunk.php#L848-L848
@@ -637,14 +641,13 @@ export class BinaryData {
 
   public readChunkData(chunk: Chunk, numSubChunks: number): void {
     for(let y = 0; y < numSubChunks; y++) {
-      console.log('READ SUB CHUNK')
       const version = this.readByte()
 
       if(version === 0) {
         const blockData = this.read(4096)
         const data = this.read(2048)
 
-        chunk.subChunks.push(new SubChunk(Array.from(data), Array.from(blockData), [], []))
+        chunk.subChunks[y] = new SubChunk(Array.from(data), Array.from(blockData), [], [])
       } else {
         throw new Error(`Unsupported Anvil version: ${version}`)
       }

@@ -19,13 +19,18 @@ describe('LevelChunk', () => {
     const decoded = new LevelChunk().parse(new BinaryData(encoded)).props
 
     expect(decoded.cache).toBe(false)
-    console.log(decoded.usedHashes)
     expect(decoded.usedHashes).toEqual([])
 
     expect(decoded.chunk.x).toBe(x)
     expect(decoded.chunk.z).toBe(z)
-    // expect(decoded.chunk).toEqual(chunk)
-    console.log(decoded.chunk.highestNonEmptySubChunk())
     expect(decoded.chunk.highestNonEmptySubChunk() + 1).toBe(chunk.highestNonEmptySubChunk() + 1)
+    expect(decoded.chunk.biomeData).toEqual(chunk.biomeData)
+
+    for(let i = 0; i < decoded.chunk.subChunks.length; i++) {
+      const subChunk = decoded.chunk.subChunks[i]
+
+      expect(subChunk.data).toEqual(chunk.subChunks[i].data)
+      expect(subChunk.blockData).toEqual(chunk.subChunks[i].blockData)
+    }
   })
 })

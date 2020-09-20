@@ -11,6 +11,8 @@ export class Item {
 
   public nbt: CompoundTag | null = null
 
+  public static AIR: Item
+
   /**
    * @description Registers a new Item
    */
@@ -18,12 +20,15 @@ export class Item {
     this.damage = rawDamage
   }
 
-  private static registerItem(id: Items, name?: string) {
-    this.items.set(id, new Item(id, name))
+  private static registerItem(id: Items, name?: string): Item {
+    const item = new Item(id, name)
+    this.items.set(id, item)
+
+    return item
   }
 
   public static registerItems(): void {
-    Item.registerItem(Items.AIR, 'Air')
+    Item.AIR = Item.registerItem(Items.AIR, 'Air')
   }
 
   public static getById(id: number): Item | null {
