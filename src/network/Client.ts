@@ -41,7 +41,7 @@ import { ConnectedPing } from './raknet/ConnectedPing'
 import { ACK } from './raknet/ACK'
 import { ConnectedPong } from './raknet/ConnectedPong'
 import { ConnectionRequestAccepted } from './raknet/ConnectionRequestAccepted'
-import { AdventureSettingsFlag, CommandPermissions, PlayerPermissions, PlayStatusType, ResourcePackResponseStatus } from '../types/world'
+import { AdventureSettingsFlag, CommandPermissions, Gamemode, PlayerPermissions, PlayStatusType, ResourcePackResponseStatus } from '../types/world'
 import { PlayerPosition } from '../types/data'
 import { SubChunk } from '../level/SubChunk'
 import { NetworkChunkPublisher } from './bedrock/NetworkChunkPublisher'
@@ -51,10 +51,13 @@ import { Chat } from '../Chat'
 import { AddPlayer } from './bedrock/AddPlayer'
 import { Attribute } from '../entity/Attribute'
 import { EntityMetadata } from './bedrock/EntityMetadata'
-import { MetadataFlag, MetadataType } from '../types/player'
+import { InteractAction, MetadataFlag, MetadataType } from '../types/player'
+import { Interact } from './bedrock/Interact'
+import { ContainerOpen } from './bedrock/ContainerOpen'
+import { LevelEvent } from './bedrock/LevelEvent'
+import { PlayerAction } from './bedrock/PlayerAction'
 import { CommandRequest } from './bedrock/CommandRequest'
 import { ICommand } from '../types/commands'
-import { Metadata } from '../entity/Metadata'
 
 interface SplitQueue {
   [splitId: number]: BundledPacket<any>,
@@ -82,7 +85,7 @@ export class Client {
 
   private player!: Player
 
-  private viewDistance = 4
+  private viewDistance = 12
 
   private lastPlayerChunk: string | null = null // 'x:z' last chunk we generated nearby chunks from
   private recentlySentChunks: string[] = [] // ['x:z']
@@ -304,6 +307,12 @@ export class Client {
 
             this.logger.error('Packet Violation:', { type, severity, packetId, message })
             break
+          case Packets.INTERACT:
+            this.handleInteract(pk)
+            break
+          case Packets.PLAYER_ACTION:
+            this.handlePlayerAction(pk)
+            break
           default:
             this.logger.debug(`UNKNOWN BATCHED PACKET ${pk.id}`)
         }
@@ -339,7 +348,6 @@ export class Client {
 
   private async handleResourcePacksResponse(packet: ResourcePacksResponse) {
     const { status } = packet.props
-    this.logger.debug(`Got resource pack status: ${packet.props.status}`, packet.props.packIds)
 
     // TODO: Implement other statuses
     switch(status) {
@@ -365,6 +373,13 @@ export class Client {
 
     this.sendBatched(new ChunkRadiusUpdated({
       radius,
+    }))
+
+    this.sendBatched(new NetworkChunkPublisher({
+      x: this.player.position.x,
+      y: this.player.position.y,
+      z: this.player.position.z,
+      radius: this.viewDistance * 16,
     }))
 
     this.sendBatched(new PlayStatus({
@@ -424,6 +439,31 @@ export class Client {
     Chat.i.broadcastPlayerJoined(this.player)
   }
 
+  private handleInteract(packet: Interact) {
+    const { action } = packet.props
+
+    switch(action) {
+      case InteractAction.OPEN_INVENTORY:
+        this.sendBatched(new ContainerOpen({
+          windowId: 1,
+          containerType: 1,
+          containerX: 0,
+          containerY: 0,
+          containerZ: 0,
+          containerEntityId: this.player.id,
+        }))
+        break
+      default:
+        this.logger.error(`Unknown interact ID: ${action}`)
+    }
+  }
+
+  private handlePlayerAction(packet: PlayerAction) {
+    const { action } = packet.props
+
+    console.log(`PLAYER ACTION ID: ${action}`)
+  }
+
   private handleCommandRequest(packet: CommandRequest) {
     const { command } = packet.props
 
@@ -451,14 +491,10 @@ export class Client {
 
     Server.logger.info(`${this.player.name} logged in from ${this.address.ip}:${this.address.port} with MTU ${this.mtuSize}`)
 
-    // this.logger.debug('Sending EntityDefinitionList:', this.sequenceNumber + 1)
     this.sendBatched(new EntityDefinitionList(), Reliability.Unreliable)
-
-    this.logger.debug('Sending BiomeDefinitionList:', this.sequenceNumber + 1)
     this.sendBatched(new BiomeDefinitionList(), Reliability.Unreliable)
 
     this.sendAttributes(true)
-
     this.sendMetadata()
 
     this.sendAvailableCommands()
@@ -467,10 +503,9 @@ export class Client {
     // // TODO: Potion effects?
     // // https://github.com/pmmp/PocketMine-MP/blob/5910905e954f98fd1b1d24190ca26aa727a54a1d/src/network/mcpe/handler/PreSpawnPacketHandler.php#L96-L96
 
-    // this.logger.debug('Sending PlayerList:', this.sequenceNumber + 1)
     Server.i.addPlayer(this.player)
 
-    // this.player.notifySelf()
+    this.player.notifySelf()
     // this.player.notifyContainers()
     // this.player.notifyHeldItem()
 

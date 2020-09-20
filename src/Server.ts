@@ -224,7 +224,7 @@ export class Server implements IServer {
       pitch: pos.pitch,
       yaw: pos.yaw,
       headYaw: pos.headYaw,
-      onGround: true,
+      onGround: false,
       ridingEntityRuntimeId: 0n,
     }), includeSelf ? null : player.clientId)
   }

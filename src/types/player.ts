@@ -125,3 +125,16 @@ export enum MetadataFlag {
   BOUNDING_BOX_WIDTH = 53,
   BOUNDING_BOX_HEIGHT = 54,
 }
+
+export enum InteractAction {
+  LEAVE_VEHICLE = 3,
+  MOUSE_OVER = 4,
+  OPEN_NPC = 5,
+  OPEN_INVENTORY = 6,
+}
+
+export enum PlayerAction {
+  START_BREAK = 0,
+  ABORT_BREAK = 1,
+  STOP_BREAK = 2
+}
