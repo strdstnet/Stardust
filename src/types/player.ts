@@ -92,3 +92,33 @@ export interface IPlayer {
   position: PlayerPosition,
   sendMessage: (message: string, type: TextType) => void,
 }
+
+export enum MetadataType {
+  BYTE = 0,
+  SHORT = 1,
+  INT = 2,
+  FLOAT = 3,
+  STRING = 4,
+  ITEM = 5,
+  POSITION = 6,
+  LONG = 7,
+  VECTOR = 8,
+}
+
+export enum MetadataFlag {
+  INDEX = 0,
+  HEALTH = 1,
+  VARIANT = 2,
+  COLOR = 3,
+  NAMETAG = 4,
+  ENTITY_OWNER_ID = 5,
+  ENTITY_TARGET_ID = 6,
+  AIR = 7,
+  ENTITY_LEAD_HOLDER_ID = 37,
+  SCALE = 38,
+  MAX_AIR = 42,
+  HAS_COLLISION = 47,
+  AFFECTED_BY_GRAVITY = 48,
+  BOUNDING_BOX_WIDTH = 53,
+  BOUNDING_BOX_HEIGHT = 54,
+}

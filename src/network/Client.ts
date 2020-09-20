@@ -49,6 +49,9 @@ import { MovePlayer } from './bedrock/MovePlayer'
 import { SetLocalPlayerInitialized } from './bedrock/SetLocalPlayerInitialized'
 import { Chat } from '../Chat'
 import { AddPlayer } from './bedrock/AddPlayer'
+import { Attribute } from '../entity/Attribute'
+import { EntityMetadata } from './bedrock/EntityMetadata'
+import { MetadataFlag, MetadataType } from '../types/player'
 
 interface SplitQueue {
   [splitId: number]: BundledPacket<any>,
@@ -436,6 +439,7 @@ export class Client {
     this.sendBatched(new BiomeDefinitionList(), Reliability.Unreliable)
 
     this.sendAttributes(true)
+    this.sendMetadata()
 
     this.sendAvailableCommands()
     // this.sendAdventureSettings()
@@ -451,7 +455,6 @@ export class Client {
     // this.player.notifyHeldItem()
 
     const [ chunkX, chunkZ ] = Chunk.getChunkCoords(this.player.position)
-    
 
     const neededChunks: [number, number][] = [
       [ chunkX, chunkZ ],
@@ -488,8 +491,6 @@ export class Client {
         neededChunks.push([chunkX + d2, chunkZ + d])
       }
     }
-
-      
     // }
 
     // console.log(neededChunks)
@@ -510,6 +511,7 @@ export class Client {
   private sendAttributes(all = false): void {
     const entries = all ? this.player.attributeMap.all() : this.player.attributeMap.needSend()
 
+
     if(entries.length) {
       this.sendBatched(new UpdateAttributes({
         entityRuntimeId: this.player.id,
@@ -518,6 +520,23 @@ export class Client {
 
       entries.forEach(e => e.markSynchronized())
     }
+  }
+
+  private sendMetadata() {
+    const metadata: [MetadataType, any][] = []
+
+    metadata[MetadataFlag.INDEX] = [MetadataType.LONG, 0]
+    metadata[MetadataFlag.MAX_AIR] = [MetadataType.SHORT, 400]
+    metadata[MetadataFlag.ENTITY_LEAD_HOLDER_ID] = [MetadataType.LONG, -1]
+    metadata[MetadataFlag.SCALE] = [MetadataType.FLOAT, 5]
+    metadata[MetadataFlag.BOUNDING_BOX_WIDTH] = [MetadataType.FLOAT, 0.6]
+    metadata[MetadataFlag.BOUNDING_BOX_HEIGHT] = [MetadataType.FLOAT, 1.8]
+    metadata[MetadataFlag.AIR] = [MetadataType.SHORT, 0]
+
+    this.sendBatched(new EntityMetadata({
+      entityRuntimeId: this.player.id,
+      metadata,
+    }))
   }
 
   private sendAvailableCommands() {

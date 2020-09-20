@@ -56,6 +56,7 @@ export enum Packets {
   ADD_PLAYER = 0x0c, // 12
   MOVE_PLAYER = 0x13, // 19
   TICK_SYNC = 0x17, // 23
+  ENTITY_METADATA = 0x1b, // 27
   UPDATE_ATTRIBUTES = 0x1d, // 29
   ENTITY_NOTIFICATION = 0x27, // 39
   SET_SPAWN_POSITION = 0x2b, // 43

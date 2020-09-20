@@ -108,3 +108,4 @@ dist
 .pnp.js
 .yarnrc.yml
 lib/
+nodemon.json
