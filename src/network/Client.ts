@@ -448,7 +448,7 @@ export class Client {
     // // https://github.com/pmmp/PocketMine-MP/blob/5910905e954f98fd1b1d24190ca26aa727a54a1d/src/network/mcpe/handler/PreSpawnPacketHandler.php#L96-L96
 
     // this.logger.debug('Sending PlayerList:', this.sequenceNumber + 1)
-    Server.current.addPlayer(this.player)
+    Server.i.addPlayer(this.player)
 
     // this.player.notifySelf()
     // this.player.notifyContainers()
@@ -523,19 +523,9 @@ export class Client {
   }
 
   private sendMetadata() {
-    const metadata: [MetadataType, any][] = []
-
-    metadata[MetadataFlag.INDEX] = [MetadataType.LONG, 0]
-    metadata[MetadataFlag.MAX_AIR] = [MetadataType.SHORT, 400]
-    metadata[MetadataFlag.ENTITY_LEAD_HOLDER_ID] = [MetadataType.LONG, -1]
-    metadata[MetadataFlag.SCALE] = [MetadataType.FLOAT, 5]
-    metadata[MetadataFlag.BOUNDING_BOX_WIDTH] = [MetadataType.FLOAT, 0.6]
-    metadata[MetadataFlag.BOUNDING_BOX_HEIGHT] = [MetadataType.FLOAT, 1.8]
-    metadata[MetadataFlag.AIR] = [MetadataType.SHORT, 0]
-
     this.sendBatched(new EntityMetadata({
       entityRuntimeId: this.player.id,
-      metadata,
+      metadata: this.player.metadata,
     }))
   }
 

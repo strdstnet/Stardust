@@ -3,10 +3,11 @@ import { DataType } from '../../types/data'
 import { BatchedPacket } from '../bedrock/BatchedPacket'
 import { ParserType } from '../Packet'
 import { MetadataType } from '../../types/player'
+import { Metadata } from '../../entity/Metadata'
 
 interface IEntityMetadata {
   entityRuntimeId: bigint,
-  metadata: [MetadataType, any][]
+  metadata: Metadata,
 }
 
 export class EntityMetadata extends BatchedPacket<IEntityMetadata> {
@@ -17,11 +18,11 @@ export class EntityMetadata extends BatchedPacket<IEntityMetadata> {
       {
         parser({ type, props, data }) {
           if(type === ParserType.ENCODE) {
-            data.writeUnsignedVarInt(props.metadata.length)
-            for(const [index, tag] of Array.from(props.metadata.entries())) {
-              if(!tag) continue
-              const [type, value] = tag
-              data.writeUnsignedVarInt(index)
+            data.writeUnsignedVarInt(props.metadata.size)
+            for(const { flag, type, value } of props.metadata.all()) {
+              console.log(`${flag} (${type}) => ${value}`)
+
+              data.writeUnsignedVarInt(flag)
               data.writeUnsignedVarInt(type)
               switch(type) {
                 case MetadataType.BYTE:

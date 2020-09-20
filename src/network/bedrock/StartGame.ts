@@ -211,7 +211,10 @@ export class StartGame extends BatchedPacket<IStartGame> {
             }
           }
         },
-        resolve: def([{ name: 'naturalregeneration', type: GameRuleType.BOOL, value: false }]),
+        resolve: def([
+          { name: 'naturalregeneration', type: GameRuleType.BOOL, value: false },
+          { name: 'showCoordinates', type: GameRuleType.BOOL, value: true },
+        ]),
       },
       { name: 'bonusChestEnabled', parser: DataType.BOOLEAN, resolve: def(false) },
       { name: 'startWithMapEnabled', parser: DataType.BOOLEAN, resolve: def(false) },
