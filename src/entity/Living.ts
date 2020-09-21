@@ -8,6 +8,9 @@ type LivingContainers = [Armor]
 
 export abstract class Living<Events, Containers extends Container[] = []> extends Entity<Events, [...LivingContainers, ...Containers]> {
 
+  protected gravity = 0.08
+  protected drag = 0.02
+
   protected initContainers(): void {
     this.containers.push(new Armor())
   }

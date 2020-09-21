@@ -5,14 +5,15 @@ import { getSkinData } from './utils/skins'
 import { Login } from './network/bedrock/Login'
 import { TextType } from './network/bedrock/Text'
 import { ContainerId } from './types/containers'
-import { MetadataFlag, MetadataGeneric, MetadataType, SkinData } from './types/player'
+import { MetadataFlag, MetadataType, SkinData } from './types/player'
 import { Item } from './item/Item'
 import { Server } from './Server'
 import { Chat } from './Chat'
 import { PosUpdateType } from './entity/EntityPosition'
+import { Metadata } from './entity/Metadata'
 
 interface IPlayerEvents {
-  'Client:entityNotification': (id: bigint, meta: any[]) => void,
+  'Client:entityNotification': (id: bigint, meta: Metadata) => void,
   'Client:containerNotification': (container: Container) => void,
   'Client:heldItemNotification': (id: bigint, item: Item, inventoySlot: number, hotbarSlot: number, containerId: number) => void,
   'Client:sendMessage': (message: string, type: TextType) => void,

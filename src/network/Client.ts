@@ -386,10 +386,6 @@ export class Client {
     //   z: this.player.position.z,
     //   radius: this.viewDistance * 16,
     // }))
-
-    this.sendBatched(new PlayStatus({
-      status: PlayStatusType.PLAYER_SPAWN,
-    }))
   }
 
   private handleText(packet: Text) {
@@ -529,7 +525,11 @@ export class Client {
     // // this.player.notifyContainers()
     // // this.player.notifyHeldItem()
 
-    this.sendNearbyChunks()
+    await this.sendNearbyChunks()
+
+    this.sendBatched(new PlayStatus({
+      status: PlayStatusType.PLAYER_SPAWN,
+    }))
   }
 
   private async sendNearbyChunks(): Promise<void> {
@@ -595,14 +595,15 @@ export class Client {
         cache: false,
         usedHashes: [],
       }), Reliability.Unreliable)
-      setTimeout(() => {
-        this.sendBatched(new NetworkChunkPublisher({
-          x: this.player.position.x,
-          y: this.player.position.y,
-          z: this.player.position.z,
-          radius: this.viewDistance * 16,
-        }))
-      }, Math.round(Math.random() * 100))
+    }
+
+    if(neededChunks.length > 1) {
+      this.sendBatched(new NetworkChunkPublisher({
+        x: this.player.position.x,
+        y: this.player.position.y,
+        z: this.player.position.z,
+        radius: this.viewDistance * 16,
+      }))
     }
 
     if(this.recentlySentChunks.length > (this.nearbyChunkCount * 2)) {

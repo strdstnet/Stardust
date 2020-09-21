@@ -38,7 +38,7 @@ export class MovePlayer extends BatchedPacket<IMovePlayer> {
       { name: 'yaw', parser: DataType.L_FLOAT },
       { name: 'headYaw', parser: DataType.L_FLOAT },
       { name: 'mode', parser: DataType.BYTE, resolve: def(MovePlayerMode.NORMAL) },
-      { name: 'onGround', parser: DataType.U_VARLONG },
+      { name: 'onGround', parser: DataType.BOOLEAN },
       { name: 'ridingEntityRuntimeId', parser: DataType.U_VARLONG },
       {
         parser({ type, data, props }) {

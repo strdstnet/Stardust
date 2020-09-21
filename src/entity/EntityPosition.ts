@@ -8,7 +8,7 @@ export enum PosUpdateType {
 
 export class EntityPosition {
 
-  public updateType = PosUpdateType.NONE
+  public updateType = PosUpdateType.OTHER
 
   constructor(
     public x: number,
@@ -18,6 +18,7 @@ export class EntityPosition {
     public yaw: number,
     public headYaw: number = 0,
     public motion = new Vector3(0, 0, 0),
+    public onGround = false,
   ) {}
 
   public get coords(): Vector3 {
@@ -55,10 +56,12 @@ export class EntityPosition {
 
   public get hasUpdate(): boolean {
     return this.updateType !== PosUpdateType.NONE
+    // return this.motion.x !== 0 || this.motion.y !== 0 || this.motion.z !== 0 || !this.onGround
   }
 
   public acknowledgeUpdate(): void {
     this.updateType = PosUpdateType.NONE
+    // this.updateType = PosUpdateType.OTHER
   }
 
 }

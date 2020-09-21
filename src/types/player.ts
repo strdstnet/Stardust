@@ -127,6 +127,8 @@ export enum MetadataFlag {
 export enum MetadataGeneric {
   ON_FIRE = 0,
   SNEAKING = 1,
+  IMMOBILE = 16,
+  CAN_FLY = 21,
   HAS_COLLISION = 47,
   AFFECTED_BY_GRAVITY = 48,
 }

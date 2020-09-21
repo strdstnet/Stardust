@@ -218,6 +218,10 @@ export class Server implements IServer {
   public updatePlayerLocation(player: Player, includeSelf = false): void {
     const pos = player.position
 
+    if(includeSelf) {
+      console.log('SENDING MOVE TO SELF')
+    }
+
     this.broadcast(new MovePlayer({
       runtimeEntityId: player.id,
       positionX: pos.x,
@@ -226,7 +230,7 @@ export class Server implements IServer {
       pitch: pos.pitch,
       yaw: pos.yaw,
       headYaw: pos.headYaw,
-      onGround: true,
+      onGround: false,
       ridingEntityRuntimeId: 0n,
     }), includeSelf ? null : player.clientId)
   }

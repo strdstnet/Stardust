@@ -5,14 +5,18 @@ import { Container } from '../containers/Container'
 import { Metadata } from './Metadata'
 import { MetadataFlag, MetadataGeneric, MetadataType } from '../types/player'
 import { GlobalTick } from '../tick/GlobalTick'
-import { EntityPosition } from './EntityPosition'
+import { EntityPosition, PosUpdateType } from './EntityPosition'
 import { Server } from '../Server'
+import { Vector3 } from 'math3d'
 
 interface IEntityEvents extends DefaultEventMap {
   _: () => void, // TODO: Remove when events are added
 }
 
 export abstract class Entity<Events = unknown, Containers extends Container[] = []> extends EventEmitter<IEntityEvents & Events> {
+
+  protected gravity = 0
+  protected drag = 0
 
   public static entityCount = 0
 
@@ -24,6 +28,8 @@ export abstract class Entity<Events = unknown, Containers extends Container[] = 
   protected containers: Containers = ([] as any as Containers)
 
   public position = new EntityPosition(0, 80, 0, 0, 0, 0)
+
+  protected dragBeforeGravity = false
 
   constructor(
     public name: string, // Ex. Zombie
@@ -40,9 +46,27 @@ export abstract class Entity<Events = unknown, Containers extends Container[] = 
 
   public onTick(): void {
     if(this.position.hasUpdate) {
+      // this.applyForces()
       this.updateLocation()
       this.position.acknowledgeUpdate()
     }
+  }
+
+  protected applyForces(): void {
+    const friction = 1 - this.drag
+
+    if(this.dragBeforeGravity) this.position.motion.y *= friction
+
+    this.position.motion.y -= this.gravity
+
+    if(!this.dragBeforeGravity) this.position.motion.y *= friction
+
+    if(this.position.onGround) {
+      // TODO: Block friction
+    }
+
+    this.position.motion.x *= friction
+    this.position.motion.z *= friction
   }
 
   public updateLocation(): void {
@@ -67,13 +91,12 @@ export abstract class Entity<Events = unknown, Containers extends Container[] = 
     this.metadata.add(MetadataFlag.AIR, MetadataType.SHORT, 0)
 
 
-    // this.metadata.addGeneric(MetadataGeneric.ON_FIRE, true)
     this.metadata.addGeneric(MetadataGeneric.AFFECTED_BY_GRAVITY, true)
-    this.metadata.addGeneric(MetadataGeneric.HAS_COLLISION, true)
+    // this.metadata.addGeneric(MetadataGeneric.HAS_COLLISION, true)
   }
 
-  public notifyPlayers(players: Player[], data?: any[]): void {
-    const metadata = data || [] // https://github.com/pmmp/PocketMine-MP/blob/e47a711494c20ac86fea567b44998f2e24f3dbc7/src/pocketmine/entity/Entity.php#L2094
+  public notifyPlayers(players: Player[], data?: Metadata): void {
+    const metadata = data || this.metadata // https://github.com/pmmp/PocketMine-MP/blob/e47a711494c20ac86fea567b44998f2e24f3dbc7/src/pocketmine/entity/Entity.php#L2094
 
     for(const player of players) {
       player.emit('Client:entityNotification', this.id, metadata)
