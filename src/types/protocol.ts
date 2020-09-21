@@ -57,7 +57,7 @@ export enum Packets {
   MOVE_PLAYER = 0x13, // 19
   TICK_SYNC = 0x17, // 23
   LEVEL_EVENT = 0x19, // 25
-  ENTITY_METADATA = 0x1b, // 27
+  ENTITY_METADATA = 0x27, // 27
   UPDATE_ATTRIBUTES = 0x1d, // 29
   INTERACT = 0x21, // 33
   PLAYER_ACTION = 0x24, // 36

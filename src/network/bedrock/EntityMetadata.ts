@@ -19,8 +19,10 @@ export class EntityMetadata extends BatchedPacket<IEntityMetadata> {
         parser({ type, props, data }) {
           if(type === ParserType.ENCODE) {
             data.writeUnsignedVarInt(props.metadata.size)
+
+            console.log(props.metadata.size)
             for(const { flag, type, value } of props.metadata.all()) {
-              console.log(`${flag} (${type}) => ${value}`)
+              // console.log(`${flag} (${type}) => ${value}`)
 
               data.writeUnsignedVarInt(flag)
               data.writeUnsignedVarInt(type)
