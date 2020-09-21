@@ -433,6 +433,7 @@ export class Client {
         entityUniqueId: player.id,
         entityRuntimeId: player.id,
         position: player.position,
+        metadata: player.metadata,
       }))
     })
 

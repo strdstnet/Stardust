@@ -108,7 +108,7 @@ export enum MetadataType {
 }
 
 export enum MetadataFlag {
-  INDEX = 0,
+  FLAGS = 0,
   HEALTH = 1,
   VARIANT = 2,
   COLOR = 3,
@@ -120,10 +120,15 @@ export enum MetadataFlag {
   ENTITY_LEAD_HOLDER_ID = 37,
   SCALE = 38,
   MAX_AIR = 42,
-  HAS_COLLISION = 47,
-  AFFECTED_BY_GRAVITY = 48,
   BOUNDING_BOX_WIDTH = 53,
   BOUNDING_BOX_HEIGHT = 54,
+  FLAGS_EXTENDED = 91,
+}
+
+export enum MetadataGeneric {
+  ON_FIRE = 0,
+  HAS_COLLISION = 47,
+  AFFECTED_BY_GRAVITY = 48,
 }
 
 export enum InteractAction {

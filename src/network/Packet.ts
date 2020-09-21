@@ -110,6 +110,9 @@ const encodeDataType = (data: BinaryData, type: DataType, value: any, p?: string
     case DataType.UUID:
       data.writeUUID(value)
       break
+    case DataType.ENTITY_METADATA:
+      data.writeEntityMetadata(value)
+      break
     default:
       console.error('Unknown DataType on write:', type)
   }
@@ -159,6 +162,8 @@ const decodeDataType = (data: BinaryData, type: DataType) => {
       return data.readLLong()
     case DataType.UUID:
       return data.readUUID()
+    case DataType.ENTITY_METADATA:
+      return data.readEntityMetadata()
     default:
       console.error('Unknown DataType on read:', type)
   }

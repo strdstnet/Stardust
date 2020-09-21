@@ -1,3 +1,4 @@
+import { Metadata } from '../../entity/Metadata'
 import { Item } from '../../item/Item'
 import { DataType, PlayerPosition } from '../../types/data'
 import { Packets } from '../../types/protocol'
@@ -18,6 +19,7 @@ interface IAddPlayerOptional {
   item: Item,
   deviceId: string,
   buildPlatform: number,
+  metadata: Metadata,
 }
 
 type IAddPlayer = IAddPlayerRequired & IAddPlayerOptional
@@ -34,7 +36,7 @@ export class AddPlayer extends BatchedPacket<IAddPlayer> {
       {
         parser({ type, props, data }) {
           if(type === ParserType.ENCODE) {
-            data.writeVector3(props.position.location)
+            data.writeVector3(props.position.coords)
             data.writeVector3(props.position.motion)
             data.writeLFloat(props.position.pitch)
             data.writeLFloat(props.position.yaw)
@@ -43,14 +45,7 @@ export class AddPlayer extends BatchedPacket<IAddPlayer> {
         },
       },
       { name: 'item', parser: DataType.CONTAINER_ITEM, resolve: () => Item.AIR },
-      {
-        name: 'metadata',
-        parser({ type, data }) {
-          if(type === ParserType.ENCODE) {
-            data.writeUnsignedVarInt(0) // TODO: _
-          }
-        },
-      },
+      { name: 'metadata', parser: DataType.ENTITY_METADATA, resolve: () => new Metadata() },
       { parser: DataType.U_VARINT, resolve: () => 0 },
       { parser: DataType.U_VARINT, resolve: () => 0 },
       { parser: DataType.U_VARINT, resolve: () => 0 },

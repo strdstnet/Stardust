@@ -30,6 +30,7 @@ export enum DataType {
   CONTAINER_ITEM,
   CHUNK,
   UUID,
+  ENTITY_METADATA,
 }
 
 export class PlayerPosition {

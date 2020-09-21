@@ -6,9 +6,10 @@ import { AddressFamily, IAddress } from '../types/network'
 import { Item } from '../item/Item'
 import { Items } from '../types/world'
 import { UUID } from './UUID'
-import { SkinData, SkinImage } from '../types/player'
+import { MetadataType, SkinData, SkinImage } from '../types/player'
 import { Chunk } from '../level/Chunk'
 import { SubChunk } from '../level/SubChunk'
+import { Metadata } from '../entity/Metadata'
 
 export enum DataLengths {
   BYTE = 1,
@@ -664,6 +665,64 @@ export class BinaryData {
 
     chunk.biomeData = Array.from(this.read(256))
     this.readByte() // no idea what this is
+  }
+
+  public writeEntityMetadata(metadata: Metadata): void {
+    this.writeUnsignedVarInt(metadata.size)
+
+    for(const { flag, type, value } of metadata.all()) {
+      this.writeUnsignedVarInt(flag)
+      this.writeUnsignedVarInt(type)
+      switch(type) {
+        case MetadataType.BYTE:
+          this.writeByte(value)
+          break
+        case MetadataType.FLOAT:
+          this.writeLFloat(value)
+          break
+        case MetadataType.LONG:
+          this.writeVarLong(value)
+          break
+        case MetadataType.STRING:
+          this.writeString(value)
+          break
+        case MetadataType.SHORT:
+          this.writeSignedLShort(value)
+          break
+        default:
+          throw new Error(`Unknown MetadataType: ${type}`)
+      }
+    }
+  }
+
+  public readEntityMetadata(): Metadata {
+    const metadata = new Metadata()
+
+    const count = this.readUnsignedVarInt()
+    for(let i = 0; i < count; i++) {
+      const flag = this.readUnsignedVarInt()
+      const type = this.readUnsignedVarInt()
+
+      switch(type) {
+        case MetadataType.BYTE:
+          metadata.add(flag, type, this.readByte())
+          break
+        case MetadataType.FLOAT:
+          metadata.add(flag, type, this.readLFloat())
+          break
+        case MetadataType.LONG:
+          metadata.add(flag, type, this.readVarLong())
+          break
+        case MetadataType.STRING:
+          metadata.add(flag, type, this.readString())
+          break
+        case MetadataType.SHORT:
+          metadata.add(flag, type, this.readSignedLShort())
+          break
+      }
+    }
+
+    return metadata
   }
 
 }
