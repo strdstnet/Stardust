@@ -51,7 +51,7 @@ import { Chat } from '../Chat'
 import { AddPlayer } from './bedrock/AddPlayer'
 import { Attribute } from '../entity/Attribute'
 import { EntityMetadata } from './bedrock/EntityMetadata'
-import { InteractAction, MetadataFlag, MetadataType, PlayerEventAction } from '../types/player'
+import { InteractAction, MetadataFlag, MetadataGeneric, MetadataType, PlayerEventAction } from '../types/player'
 import { Interact } from './bedrock/Interact'
 import { ContainerOpen } from './bedrock/ContainerOpen'
 import { LevelEvent } from './bedrock/LevelEvent'
@@ -466,7 +466,7 @@ export class Client {
     switch(action) {
       case PlayerEventAction.START_SNEAK:
         this.logger.debug('Player is now sneaking')
-        // this.player.metadata.addDataFlag(PlayerEventAction.START_SNEAK, MetadataFlag.FLAGS, true, MetadataType.FLOAT )
+        this.player.metadata.addGeneric(MetadataGeneric.SNEAKING, true )
         break
       default:
         this.logger.error(`Unhandled PlayerAction ID: ${action}`)
