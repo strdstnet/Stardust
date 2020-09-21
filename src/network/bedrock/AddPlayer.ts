@@ -1,6 +1,7 @@
+import { EntityPosition } from '../../entity/EntityPosition'
 import { Metadata } from '../../entity/Metadata'
 import { Item } from '../../item/Item'
-import { DataType, PlayerPosition } from '../../types/data'
+import { DataType } from '../../types/data'
 import { Packets } from '../../types/protocol'
 import { UUID } from '../../utils/UUID'
 import { BatchedPacket } from '../bedrock/BatchedPacket'
@@ -11,7 +12,7 @@ interface IAddPlayerRequired {
   username: string,
   entityUniqueId: bigint,
   entityRuntimeId: bigint,
-  position: PlayerPosition,
+  position: EntityPosition,
 }
 
 interface IAddPlayerOptional {

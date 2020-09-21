@@ -6,7 +6,6 @@ import {
 } from '../../types/protocol'
 import {
   DataType,
-  PlayerPosition,
 } from '../../types/data'
 import {
   Gamemode,
@@ -27,11 +26,12 @@ import { ParserType, Packet } from '../Packet'
 import LegacyIdMap from '../../data/legacy_id_map.json'
 import fs from 'fs'
 import path from 'path'
+import { EntityPosition } from '../../entity/EntityPosition'
 
 interface IStartGameRequired {
   entityUniqueId: bigint,
   entityRuntimeId: bigint,
-  playerPosition: PlayerPosition,
+  playerPosition: EntityPosition,
 }
 
 interface IStartGameOptional {
@@ -105,7 +105,7 @@ export class StartGame extends BatchedPacket<IStartGame> {
           if(type === ParserType.DECODE) {
             const v3 = data.readVector3()
 
-            props.playerPosition = new PlayerPosition(
+            props.playerPosition = new EntityPosition(
               v3.x,
               v3.y,
               v3.z,
@@ -114,7 +114,7 @@ export class StartGame extends BatchedPacket<IStartGame> {
             )
           } else {
             const pos = props.playerPosition
-            data.writeVector3(pos.location)
+            data.writeVector3(pos.coords)
             data.writeLFloat(pos.pitch)
             data.writeLFloat(pos.yaw)
           }

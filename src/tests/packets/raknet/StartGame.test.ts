@@ -1,16 +1,16 @@
 import { Vector3 } from 'math3d'
+import { EntityPosition } from '../../../entity/EntityPosition'
 import { StartGame } from '../../../network/bedrock/StartGame'
 import { GameRuleType } from '../../../types/world'
-import { PlayerPosition } from '../../../types/data'
 
 describe('StartGame', () => {
   it('encodes & decodes correctly', () => {
     const props = {
       entityUniqueId: 1n,
       entityRuntimeId: 1n,
-      playerPosition: new PlayerPosition(0, 0, 0, 0, 0),
+      playerPosition: new EntityPosition(0, 0, 0, 0, 0),
     }
-    
+
     const encoded = new StartGame(props).encode()
 
     const decoded = new StartGame().parse(encoded.clone()).props

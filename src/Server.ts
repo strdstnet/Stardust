@@ -27,6 +27,7 @@ import { AddPlayer } from './network/bedrock/AddPlayer'
 import { CommandMap } from './command/CommandMap'
 import { ICommand } from './types/commands'
 import { Teleport } from './command/defaults/Teleport'
+import { GlobalTick } from './tick/GlobalTick'
 
 const DEFAULT_OPTS: ServerOpts = {
   address: '0.0.0.0',
@@ -40,6 +41,8 @@ const DEFAULT_OPTS: ServerOpts = {
 
 // TODO: Merge with Stardust.ts
 export class Server implements IServer {
+
+  public static TPS = 500
 
   public static i: Server
 
@@ -85,6 +88,7 @@ export class Server implements IServer {
     BedrockData.loadData()
     Attribute.initAttributes()
     Item.registerItems()
+    GlobalTick.start(Server.TPS)
 
     return new Server(Object.assign({}, DEFAULT_OPTS, opts))
   }
@@ -241,6 +245,7 @@ export class Server implements IServer {
       entityUniqueId: player.id,
       entityRuntimeId: player.id,
       position: player.position,
+      metadata: player.metadata,
     }), player.clientId)
   }
 

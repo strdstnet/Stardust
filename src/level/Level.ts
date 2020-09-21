@@ -60,6 +60,8 @@ export class Level {
   private async loadChunk(x: number, z: number): Promise<Chunk> {
     const nbt = await this.anvil.loadRaw(x, z)
 
+    if(!nbt) return new Chunk(x, z, [SubChunk.grassPlatform], [], [], [], [])
+
     const translated = (this.translateNBT(nbt) as LevelNBT)
 
     const level = translated.get('Level')
@@ -192,8 +194,9 @@ export class Level {
   }
 
   public async getChunkAt(x: number, z: number): Promise<Chunk> {
-    const inCache = this.chunkCache.get(Level.getChunkId(x, z))
-    return inCache ? inCache : await this.loadChunk(x, z)
+    // const inCache = this.chunkCache.get(Level.getChunkId(x, z))
+    // return inCache ? inCache : await this.loadChunk(x, z)
+    return this.loadChunk(x, z)
   }
 
   // public get baseChunk(): Chunk {

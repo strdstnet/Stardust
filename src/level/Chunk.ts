@@ -1,5 +1,5 @@
+import { EntityPosition } from '../entity/EntityPosition'
 import { CompoundTag } from '../nbt/CompoundTag'
-import { PlayerPosition } from '../types/data'
 import { SubChunk } from './SubChunk'
 
 export function ensureLength(arr: number[], length: number, filler = 0): void {
@@ -56,12 +56,11 @@ export class Chunk {
     return -1
   }
 
-  public static getChunkCoords(pos: PlayerPosition): [number, number]
+  public static getChunkCoords(pos: EntityPosition): [number, number]
   public static getChunkCoords(blockX: number, blockZ: number): [number, number]
-
   public static getChunkCoords(...args: any[]): [number, number] {
-    const x = args.length > 1 ? args[0] : args[0].location.x
-    const z = args.length > 1 ? args[1] : args[0].location.z
+    const x = args.length > 1 ? args[0] : args[0].x
+    const z = args.length > 1 ? args[1] : args[0].z
 
     return [Math.floor(x) >> 4, Math.floor(z) >> 4]
   }

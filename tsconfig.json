@@ -2,9 +2,7 @@
   "compilerOptions": {
     "target": "ESNEXT",
     "module": "commonjs",
-    "lib": [
-      "dom"
-    ],
+    "lib": [],
     "outDir": "lib",
     "rootDir": "./src",
     "moduleResolution": "node",

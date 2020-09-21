@@ -8,8 +8,8 @@ import { ContainerId } from './types/containers'
 import { MetadataFlag, MetadataGeneric, MetadataType, SkinData } from './types/player'
 import { Item } from './item/Item'
 import { Server } from './Server'
-import { PlayerPosition } from './types/data'
 import { Chat } from './Chat'
+import { PosUpdateType } from './entity/EntityPosition'
 
 interface IPlayerEvents {
   'Client:entityNotification': (id: bigint, meta: any[]) => void,
@@ -40,8 +40,6 @@ export class Player extends Human<IPlayerEvents> {
   public identityPublicKey!: string
   public clientId!: bigint
   public skinData!: SkinData
-
-  public position: PlayerPosition = new PlayerPosition(0, 67, 0, 0, 0, 0)
 
   constructor(player: IPlayerCreate) {
     super(player.username, 'stardust:player')
@@ -81,16 +79,12 @@ export class Player extends Human<IPlayerEvents> {
     this.emit('Client:sendMessage', message, type)
   }
 
-  public move(pos: PlayerPosition): void {
-    this.position.update(pos)
-
-    Server.i.updatePlayerLocation(this)
-  }
-
   public teleport(x: number, y: number, z: number): void {
     this.position.update(x, y, z)
+  }
 
-    Server.i.updatePlayerLocation(this, true)
+  public updateLocation(): void {
+    Server.i.updatePlayerLocation(this, this.position.updateType !== PosUpdateType.PLAYER_MOVEMENT)
   }
 
   public notifySelf(data?: any[]): void {

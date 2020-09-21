@@ -6,9 +6,9 @@ import { BundledPacket } from '../network/raknet/BundledPacket'
 import { PlayStatusType } from '../types/world'
 import { Protocol } from '../types/protocol'
 import { bundlePackets } from '../utils/parseBundledPackets'
-import { PlayerPosition } from '../types/data'
 import { BinaryData } from '../utils/BinaryData'
 import { IBundledPacket } from '../types/network'
+import { EntityPosition } from '../entity/EntityPosition'
 
 describe('Splitting', () => {
   it('splits shit correctly', () => {
@@ -31,7 +31,7 @@ describe('Splitting', () => {
         new StartGame({
           entityUniqueId: 1n,
           entityRuntimeId: 1n,
-          playerPosition: new PlayerPosition(0, 0, 0, 0, 0),
+          playerPosition: new EntityPosition(0, 0, 0, 0, 0),
           enableNewInventorySystem: true,
           playerGamemode: 2,
         }),

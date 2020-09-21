@@ -19,7 +19,7 @@ export class SubChunk {
   }
 
   public static get grassPlatform(): SubChunk {
-    return new SubChunk([], [2], [], [])
+    return new SubChunk([], [2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2], [], [])
   }
 
   public static reorderBytes(bytes: number[]): number[] {

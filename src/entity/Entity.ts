@@ -4,6 +4,9 @@ import { Player } from '../Player'
 import { Container } from '../containers/Container'
 import { Metadata } from './Metadata'
 import { MetadataFlag, MetadataGeneric, MetadataType } from '../types/player'
+import { GlobalTick } from '../tick/GlobalTick'
+import { EntityPosition } from './EntityPosition'
+import { Server } from '../Server'
 
 interface IEntityEvents extends DefaultEventMap {
   _: () => void, // TODO: Remove when events are added
@@ -20,15 +23,34 @@ export abstract class Entity<Events = unknown, Containers extends Container[] = 
 
   protected containers: Containers = ([] as any as Containers)
 
+  public position = new EntityPosition(0, 80, 0, 0, 0, 0)
+
   constructor(
     public name: string, // Ex. Zombie
     public gameId: string, // Ex. minecraft:zombie
   ) {
     super()
 
+    GlobalTick.attach(this)
+
     this.initContainers()
     this.addAttributes()
     this.addMetadata()
+  }
+
+  public onTick(): void {
+    if(this.position.hasUpdate) {
+      this.updateLocation()
+      this.position.acknowledgeUpdate()
+    }
+  }
+
+  public updateLocation(): void {
+    // TODO: Actually send entity movement
+  }
+
+  public destroy(): void {
+    GlobalTick.detach(this)
   }
 
   protected initContainers(): void {}

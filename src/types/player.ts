@@ -1,6 +1,6 @@
+import { EntityPosition } from '../entity/EntityPosition'
 import { TextType } from '../network/bedrock/Text'
 import { UUID } from '../utils/UUID'
-import { PlayerPosition } from './data'
 
 export interface SkinImage {
   height: number,
@@ -89,9 +89,8 @@ export interface IPlayer {
   identityPublicKey: string,
   clientId: bigint,
   skinData: SkinData,
-  position: PlayerPosition,
+  position: EntityPosition,
   sendMessage: (message: string, type?: TextType) => void,
-  move: (pos: PlayerPosition) => void,
   teleport: (x: number, y: number, z: number) => void,
 }
 

@@ -42,7 +42,6 @@ import { ACK } from './raknet/ACK'
 import { ConnectedPong } from './raknet/ConnectedPong'
 import { ConnectionRequestAccepted } from './raknet/ConnectionRequestAccepted'
 import { AdventureSettingsFlag, CommandPermissions, Gamemode, PlayerPermissions, PlayStatusType, ResourcePackResponseStatus } from '../types/world'
-import { PlayerPosition } from '../types/data'
 import { SubChunk } from '../level/SubChunk'
 import { NetworkChunkPublisher } from './bedrock/NetworkChunkPublisher'
 import { MovePlayer } from './bedrock/MovePlayer'
@@ -59,6 +58,7 @@ import { PlayerAction } from './bedrock/PlayerAction'
 import { CommandRequest } from './bedrock/CommandRequest'
 import { ICommand } from '../types/commands'
 import { Metadata } from '../entity/Metadata'
+import { EntityPosition, PosUpdateType } from '../entity/EntityPosition'
 
 interface SplitQueue {
   [splitId: number]: BundledPacket<any>,
@@ -99,6 +99,7 @@ export class Client {
 
     this.logger.info('Created for', `${address.ip}:${address.port}`)
 
+    // TODO: Migrate to GlobalTick
     setInterval(() => {
       this.processSendQueue()
     }, 50)
@@ -115,6 +116,9 @@ export class Client {
 
   private destroy() {
     Server.i.removeClient(this.address)
+    Server.i.removePlayer(this.player.id)
+
+    this.player.destroy()
   }
 
   public handlePacket(data: BinaryData): void {
@@ -376,12 +380,12 @@ export class Client {
       radius,
     }))
 
-    this.sendBatched(new NetworkChunkPublisher({
-      x: this.player.position.x,
-      y: this.player.position.y,
-      z: this.player.position.z,
-      radius: this.viewDistance * 16,
-    }))
+    // this.sendBatched(new NetworkChunkPublisher({
+    //   x: this.player.position.x,
+    //   y: this.player.position.y,
+    //   z: this.player.position.z,
+    //   radius: this.viewDistance * 16,
+    // }))
 
     this.sendBatched(new PlayStatus({
       status: PlayStatusType.PLAYER_SPAWN,
@@ -401,9 +405,9 @@ export class Client {
 
   private handleMove(packet: MovePlayer) {
     const {
-      positionX,
-      positionY,
-      positionZ,
+      positionX: x,
+      positionY: y,
+      positionZ: z,
       pitch,
       yaw,
       headYaw,
@@ -417,12 +421,19 @@ export class Client {
     //   yaw,
     //   headYaw,
     // })
-    this.player.move(new PlayerPosition(positionX, positionY, positionZ, pitch, yaw, headYaw))
+    this.player.position.update(new EntityPosition(x, y, z, pitch, yaw, headYaw), PosUpdateType.PLAYER_MOVEMENT)
 
     this.sendNearbyChunks()
   }
 
   private handlePlayerSpawned(packet: SetLocalPlayerInitialized) {
+    this.sendBatched(new NetworkChunkPublisher({
+      x: this.player.position.x,
+      y: this.player.position.y,
+      z: this.player.position.z,
+      radius: this.viewDistance * 16,
+    }))
+
     Server.i.spawnToAll(this.player)
 
     Server.i.players.forEach(async player => {
@@ -584,14 +595,15 @@ export class Client {
         cache: false,
         usedHashes: [],
       }), Reliability.Unreliable)
+      setTimeout(() => {
+        this.sendBatched(new NetworkChunkPublisher({
+          x: this.player.position.x,
+          y: this.player.position.y,
+          z: this.player.position.z,
+          radius: this.viewDistance * 16,
+        }))
+      }, Math.round(Math.random() * 100))
     }
-
-    this.sendBatched(new NetworkChunkPublisher({
-      x: this.player.position.x,
-      y: this.player.position.y,
-      z: this.player.position.z,
-      radius: this.viewDistance * 16,
-    }))
 
     if(this.recentlySentChunks.length > (this.nearbyChunkCount * 2)) {
       // console.log(this.recentlySentChunks)
