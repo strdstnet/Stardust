@@ -12,7 +12,6 @@ import { FamilyStrToInt, IAddress, IPacketHandlerArgs, ISendPacketArgs } from '.
 import { BinaryData } from './utils/BinaryData'
 import { Packets, Protocol } from './types/protocol'
 import { UnconnectedPong } from './network/raknet/UnconnectedPong'
-import { TextType } from './network/bedrock/Text'
 import { PlayerList, PlayerListType } from './network/bedrock/PlayerList'
 import { BatchedPacket } from './network/bedrock/BatchedPacket'
 import { UnconnectedPing } from './network/raknet/UnconnectedPing'
@@ -22,8 +21,7 @@ import { OpenConnectionReplyTwo } from './network/raknet/OpenConnectionReplyTwo'
 import { OpenConnectionReplyOne } from './network/raknet/OpenConnectionReplyOne'
 import { IncompatibleProtocol } from './network/raknet/IncompatibleProtocol'
 import { Packet } from './network/Packet'
-import { PlayerPosition } from './types/data'
-import { MovePlayer } from './network/bedrock/MovePlayer'
+import { MovePlayer, MovePlayerMode } from './network/bedrock/MovePlayer'
 import { Chat } from './Chat'
 import { AddPlayer } from './network/bedrock/AddPlayer'
 import { CommandMap } from './command/CommandMap'
@@ -224,7 +222,7 @@ export class Server implements IServer {
       pitch: pos.pitch,
       yaw: pos.yaw,
       headYaw: pos.headYaw,
-      onGround: false,
+      onGround: true,
       ridingEntityRuntimeId: 0n,
     }), includeSelf ? null : player.clientId)
   }

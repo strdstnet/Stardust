@@ -39,7 +39,7 @@ export abstract class Entity<Events = unknown, Containers extends Container[] = 
     this.metadata.add(MetadataFlag.FLAGS, MetadataType.LONG, 0n)
     this.metadata.add(MetadataFlag.MAX_AIR, MetadataType.SHORT, 400)
     this.metadata.add(MetadataFlag.ENTITY_LEAD_HOLDER_ID, MetadataType.LONG, -1n)
-    this.metadata.add(MetadataFlag.SCALE, MetadataType.FLOAT, 2)
+    this.metadata.add(MetadataFlag.SCALE, MetadataType.FLOAT, 1)
     this.metadata.add(MetadataFlag.BOUNDING_BOX_WIDTH, MetadataType.FLOAT, 0.6)
     this.metadata.add(MetadataFlag.BOUNDING_BOX_HEIGHT, MetadataType.FLOAT, 1.8)
     this.metadata.add(MetadataFlag.AIR, MetadataType.SHORT, 0)

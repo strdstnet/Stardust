@@ -1,8 +1,6 @@
 import { Packets } from '../../types/protocol'
 import { DataType } from '../../types/data'
 import { BatchedPacket } from '../bedrock/BatchedPacket'
-import { ParserType } from '../Packet'
-import { MetadataType } from '../../types/player'
 import { Metadata } from '../../entity/Metadata'
 
 interface IEntityMetadata {

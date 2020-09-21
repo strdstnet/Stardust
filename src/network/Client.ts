@@ -51,13 +51,14 @@ import { Chat } from '../Chat'
 import { AddPlayer } from './bedrock/AddPlayer'
 import { Attribute } from '../entity/Attribute'
 import { EntityMetadata } from './bedrock/EntityMetadata'
-import { InteractAction, MetadataFlag, MetadataType } from '../types/player'
+import { InteractAction, MetadataFlag, MetadataType, PlayerEventAction } from '../types/player'
 import { Interact } from './bedrock/Interact'
 import { ContainerOpen } from './bedrock/ContainerOpen'
 import { LevelEvent } from './bedrock/LevelEvent'
 import { PlayerAction } from './bedrock/PlayerAction'
 import { CommandRequest } from './bedrock/CommandRequest'
 import { ICommand } from '../types/commands'
+import { Metadata } from '../entity/Metadata'
 
 interface SplitQueue {
   [splitId: number]: BundledPacket<any>,
@@ -148,13 +149,13 @@ export class Client {
     const props = packet.props as IBundledPacket
     if(props.hasSplit && !packet.hasBeenProcessed) {
       if(props.splitIndex === 0) {
-        this.logger.debug(`Initial split packet for ${packet.data.buf[0]}`, packet)
+        // this.logger.debug(`Initial split packet for ${packet.data.buf[0]}`, packet)
         packet.data.pos = packet.data.length
         this.splitQueue[props.splitId] = packet
         // this.splitQueue.set(props.splitId, packet)
       } else {
         const queue = this.splitQueue[props.splitId]
-        this.logger.debug(`Split packet ${props.splitIndex + 1}/${props.splitCount}`)
+        // this.logger.debug(`Split packet ${props.splitIndex + 1}/${props.splitCount}`)
         // const bundled = this.splitQueue.get(props.splitId)
 
         if(!queue) {
@@ -462,7 +463,14 @@ export class Client {
   private handlePlayerAction(packet: PlayerAction) {
     const { action } = packet.props
 
-    console.log(`PLAYER ACTION ID: ${action}`)
+    switch(action) {
+      case PlayerEventAction.START_SNEAK:
+        this.logger.debug('Player is now sneaking')
+        // this.player.metadata.addDataFlag(PlayerEventAction.START_SNEAK, MetadataFlag.FLAGS, true, MetadataType.FLOAT )
+        break
+      default:
+        this.logger.error(`Unhandled PlayerAction ID: ${action}`)
+    }
   }
 
   private handleCommandRequest(packet: CommandRequest) {
@@ -506,9 +514,9 @@ export class Client {
 
     Server.i.addPlayer(this.player)
 
-    this.player.notifySelf()
-    // this.player.notifyContainers()
-    // this.player.notifyHeldItem()
+    // this.player.notifySelf()
+    // // this.player.notifyContainers()
+    // // this.player.notifyHeldItem()
 
     this.sendNearbyChunks()
   }
@@ -565,7 +573,7 @@ export class Client {
       }
     }
 
-    console.log(neededChunks)
+    // console.log(neededChunks)
 
     for(const [x, z] of neededChunks) {
       const chunk = await Server.i.level.getChunkAt(x, z)

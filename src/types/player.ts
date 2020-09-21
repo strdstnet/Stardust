@@ -138,8 +138,9 @@ export enum InteractAction {
   OPEN_INVENTORY = 6,
 }
 
-export enum PlayerAction {
+export enum PlayerEventAction {
   START_BREAK = 0,
   ABORT_BREAK = 1,
-  STOP_BREAK = 2
+  STOP_BREAK = 2,
+  START_SNEAK = 11,
 }
