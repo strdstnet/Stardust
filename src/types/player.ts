@@ -90,7 +90,7 @@ export interface IPlayer {
   clientId: bigint,
   skinData: SkinData,
   position: EntityPosition,
-  sendMessage: (message: string, type?: TextType) => void,
+  sendMessage: (message: string, type?: TextType, parameters?: string[]) => void,
   teleport: (x: number, y: number, z: number) => void,
 }
 

@@ -16,7 +16,7 @@ interface IPlayerEvents {
   'Client:entityNotification': (id: bigint, meta: Metadata) => void,
   'Client:containerNotification': (container: Container) => void,
   'Client:heldItemNotification': (id: bigint, item: Item, inventoySlot: number, hotbarSlot: number, containerId: number) => void,
-  'Client:sendMessage': (message: string, type: TextType) => void,
+  'Client:sendMessage': (message: string, type: TextType, parameters: string[]) => void,
 }
 
 interface IPlayerCreate {
@@ -76,8 +76,8 @@ export class Player extends Human<IPlayerEvents> {
     Chat.i.playerChat(this, message)
   }
 
-  public sendMessage(message: string, type = TextType.RAW): void {
-    this.emit('Client:sendMessage', message, type)
+  public sendMessage(message: string, type = TextType.RAW, parameters: string[] = []): void {
+    this.emit('Client:sendMessage', message, type, parameters)
   }
 
   public teleport(x: number, y: number, z: number): void {

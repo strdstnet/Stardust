@@ -694,10 +694,11 @@ export class Client {
       }))
     })
 
-    this.player.on('Client:sendMessage', (message, type) => {
+    this.player.on('Client:sendMessage', (message, type, parameters) => {
       this.sendBatched(new Text({
         type,
         message,
+        parameters,
       }))
     })
   }

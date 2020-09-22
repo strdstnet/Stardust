@@ -16,16 +16,16 @@ export class Chat {
   }
 
   public broadcastPlayerJoined(player: IPlayer): void {
-    this.broadcast(`${player.username} joined the game`, TextType.RAW)
+    this.broadcast('%multiplayer.player.joined', TextType.TRANSLATION, [player.username])
   }
 
   public playerChat(sender: IPlayer, message: string): void {
     this.broadcast(`${sender.username}: ${message}`, TextType.RAW)
   }
 
-  private broadcast(message: string, type: TextType): void {
+  private broadcast(message: string, type: TextType, parameters: string[] = []): void {
     for(const [, player ] of this.server.players) {
-      player.sendMessage(message, type)
+      player.sendMessage(message, type, parameters)
     }
   }
 

@@ -32,7 +32,7 @@ export class Text extends BatchedPacket<IText> {
   constructor(props?: Partial<IText>) {
     super(Packets.TEXT, [
       { name: 'type', parser: DataType.BYTE },
-      { name: 'needsTranslation', parser: DataType.BOOLEAN, resolve: () => false },
+      { name: 'needsTranslation', parser: DataType.BOOLEAN, resolve: (props) => props.type === TextType.TRANSLATION },
       {
         parser({ type, data, props }) {
           if(type === ParserType.DECODE) {
