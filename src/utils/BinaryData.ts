@@ -263,7 +263,7 @@ export class BinaryData {
     return 0
   }
 
-  public readUnsignedVarLong(skip = true): bigint {
+  public readUnsignedVarLongNumber(skip = true): number {
     let value = 0
 
     for(let i = 0; i <= 63; i += 7) {
@@ -271,24 +271,26 @@ export class BinaryData {
       value |= ((b & 0x7f) << i)
 
       if ((b & 0x80) === 0) {
-        return BigInt(value)
+        return value
       }
     }
 
-    return 0n
+    throw new Error('VarLong did not terminate after 10 bytes')
+  }
+
+  public readUnsignedVarLong(skip = true): bigint {
+    return BigInt(this.readUnsignedVarLongNumber(skip))
   }
 
   public writeUnsignedVarLong(v: bigint): void {
-    let val = Number(v)
-
     for (let i = 0; i < 10; i++) {
-      if ((val >> 7) !== 0) {
-        this.writeByte(val | 0x80)
+      if ((v >> 7n) !== 0n) {
+        this.writeByte(Number(v | 0x80n))
       } else {
-        this.writeByte(val & 0x7f)
+        this.writeByte(Number(v & 0x7fn))
         break
       }
-      val >>= 7
+      v >>= 7n
     }
   }
 
@@ -528,14 +530,14 @@ export class BinaryData {
   }
 
   public readVarLong(skip = true): bigint {
-    const raw = Number(this.readUnsignedVarLong(skip))
+    const raw = this.readUnsignedVarLongNumber(skip)
     const tmp = (((raw << 63) >> 63) ^ raw) >> 1
-    return BigInt(tmp ^ (raw & -2147483648))
+    return BigInt(tmp ^ (raw & (1 << 63)))
   }
 
   public writeVarLong(v: bigint): void {
-    const val = Number(v)
-    this.writeUnsignedVarLong(BigInt((val << 1) ^ (val >> 63)))
+    // const val = Number(v)
+    this.writeUnsignedVarLong((v << 1n) ^ (v >> 63n))
   }
 
   public writeContainerItem(item: Item): void {
@@ -719,6 +721,8 @@ export class BinaryData {
         case MetadataType.SHORT:
           metadata.add(flag, type, this.readSignedLShort())
           break
+        default:
+          throw new Error(`Unknown MetadataType: ${type}`)
       }
     }
 

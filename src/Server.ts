@@ -220,6 +220,7 @@ export class Server implements IServer {
 
     if(includeSelf) {
       console.log('SENDING MOVE TO SELF')
+      return
     }
 
     this.broadcast(new MovePlayer({

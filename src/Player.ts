@@ -89,7 +89,7 @@ export class Player extends Human<IPlayerEvents> {
   }
 
   public notifySelf(data?: any[]): void {
-    this.notifyPlayers([this], data)
+    this.notifyPlayers([this], this.metadata)
   }
 
   public notifyContainers(players: Player[] = [this]): void {

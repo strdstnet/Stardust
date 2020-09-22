@@ -44,7 +44,7 @@ const encodeDataType = (data: BinaryData, type: DataType, value: any, p?: string
       data.writeByte(value)
       break
     case DataType.LONG:
-      data.writeLong(value instanceof BigInt ? Number(value) : value)
+      data.writeLong(value)
       break
     case DataType.SHORT:
       data.writeShort(value)
@@ -188,6 +188,10 @@ export abstract class Packet<T> {
     return Packet.logger
   }
 
+  private validVal(val: any): boolean {
+    return typeof val !== 'undefined' && val !== null
+  }
+
   public encode(props: T = {} as T): BinaryData {
     const data = new BinaryData()
     if(this.encodeId) data.writeByte(this.id)
@@ -197,8 +201,8 @@ export abstract class Packet<T> {
     Object.assign(this.props, props)
 
     this.schema.forEach(({ name, parser, resolve }) => {
-      // const value = resolve ? resolve(this.props) : (name ? (this.props as any)[name] : null)
-      const value = name && (this.props as any)[name] ? (this.props as any)[name] : (resolve ? resolve(this.props) : null)
+      const propsVal = name && this.validVal((this.props as any)[name]) ? (this.props as any)[name] : null
+      const value = this.validVal(propsVal) ? propsVal : (resolve ? resolve(this.props) : null)
 
       if(typeof parser === 'function') {
         parser({

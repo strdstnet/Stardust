@@ -8,7 +8,7 @@ export enum PosUpdateType {
 
 export class EntityPosition {
 
-  public updateType = PosUpdateType.OTHER
+  public updateType = PosUpdateType.NONE
 
   constructor(
     public x: number,

@@ -1,4 +1,5 @@
-import { Packets, DataType } from '../../types'
+import { DataType } from '../../types/data'
+import { Packets } from '../../types/protocol'
 import { BatchedPacket } from './BatchedPacket'
 
 interface ITickSync {

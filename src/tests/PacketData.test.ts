@@ -109,6 +109,33 @@ describe('Longs', () => {
   })
 })
 
+describe('Var Longs', () => {
+  it('reads & writes var longs correctly', () => {
+    const long = 281474976710656n
+
+    const data = new BinaryData()
+    data.writeVarLong(long)
+    data.pos = 0
+
+    expect(data.readVarLong()).toEqual(long)
+  })
+  it('reads & writes multiple var longs correctly', () => {
+    const long1 = 925686942n
+    const long2 = 925686946n
+    const long3 = 925686944n
+
+    const data = new BinaryData()
+    data.writeVarLong(long1)
+    data.writeVarLong(long2)
+    data.writeVarLong(long3)
+    data.pos = 0
+
+    expect(data.readVarLong()).toEqual(long1)
+    expect(data.readVarLong()).toEqual(long2)
+    expect(data.readVarLong()).toEqual(long3)
+  })
+})
+
 describe('Magic', () => {
   it('reads magic correctly', () => {
     const buf = Buffer.from(Protocol.MAGIC, 'binary')
