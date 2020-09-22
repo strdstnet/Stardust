@@ -1,6 +1,6 @@
 import { IAddress } from './network'
 
-export enum   Packets {
+export enum Packets {
   /* RAKNET (Raw) */
   CONNECTED_PING = 0x00, // 0
   UNCONNECTED_PING = 0x01, // 1
