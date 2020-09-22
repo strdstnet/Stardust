@@ -29,8 +29,7 @@ import { ICommand } from './types/commands'
 import { Teleport } from './command/defaults/Teleport'
 import { GlobalTick } from './tick/GlobalTick'
 import { LevelEvent } from './network/bedrock/LevelEvent'
-import { LevelEventType, PlayerEventAction } from './types/player'
-import { posix } from 'path'
+import { LevelEventType } from './types/player'
 
 const DEFAULT_OPTS: ServerOpts = {
   address: '0.0.0.0',
