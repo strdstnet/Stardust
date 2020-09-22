@@ -584,7 +584,7 @@ export class Client {
       }
     }
 
-    // console.log(neededChunks)
+    console.log(neededChunks)
 
     for(const [x, z] of neededChunks) {
       const chunk = await Server.i.level.getChunkAt(x, z)

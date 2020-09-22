@@ -58,7 +58,7 @@ export class Server implements IServer {
   private clients: Map<string, Client> = new Map()
   public players: Map<bigint, Player> = new Map() // Map<Player ID (Entity Runtime ID, Player)>
 
-  public level: Level = Level.TestWorld()
+  public level: Level = Level.Flat()
 
   private chat = new Chat(this)
 
@@ -220,7 +220,6 @@ export class Server implements IServer {
 
     if(includeSelf) {
       console.log('SENDING MOVE TO SELF')
-      return
     }
 
     this.broadcast(new MovePlayer({
