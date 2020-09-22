@@ -21,6 +21,7 @@ import { CommandRequest } from './CommandRequest'
 import { Interact } from './Interact'
 import { LevelEvent } from './LevelEvent'
 import { PlayerAction } from './PlayerAction'
+import { Animate } from './Animate'
 
 interface IPacketBatch {
   packets: Array<BatchedPacket<any>>,
@@ -100,6 +101,9 @@ export class PacketBatch extends BundledPacket<IPacketBatch> {
                   break
                 case Packets.PLAYER_ACTION:
                   packet = new PlayerAction()
+                  break
+                case Packets.ANIMATE:
+                  packet = new Animate()
                   break
                 // case Packets.RESOURCE_PACKS_STACK:
                 //   packet = new BatchedPacket(packetId, [])

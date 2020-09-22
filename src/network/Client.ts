@@ -41,26 +41,21 @@ import { ConnectedPing } from './raknet/ConnectedPing'
 import { ACK } from './raknet/ACK'
 import { ConnectedPong } from './raknet/ConnectedPong'
 import { ConnectionRequestAccepted } from './raknet/ConnectionRequestAccepted'
-import { AdventureSettingsFlag, CommandPermissions, Gamemode, PlayerPermissions, PlayStatusType, ResourcePackResponseStatus } from '../types/world'
-import { SubChunk } from '../level/SubChunk'
+import { AdventureSettingsFlag, CommandPermissions, PlayerPermissions, PlayStatusType, ResourcePackResponseStatus } from '../types/world'
 import { NetworkChunkPublisher } from './bedrock/NetworkChunkPublisher'
 import { MovePlayer } from './bedrock/MovePlayer'
 import { SetLocalPlayerInitialized } from './bedrock/SetLocalPlayerInitialized'
 import { Chat } from '../Chat'
 import { AddPlayer } from './bedrock/AddPlayer'
-import { Attribute } from '../entity/Attribute'
 import { EntityMetadata } from './bedrock/EntityMetadata'
-import { InteractAction, LevelEventType, MetadataFlag, MetadataGeneric, MetadataType, PlayerEventAction } from '../types/player'
+import { InteractAction, LevelEventType, MetadataGeneric, PlayerEventAction } from '../types/player'
 import { Interact } from './bedrock/Interact'
 import { ContainerOpen } from './bedrock/ContainerOpen'
-import { LevelEvent } from './bedrock/LevelEvent'
 import { PlayerAction } from './bedrock/PlayerAction'
 import { CommandRequest } from './bedrock/CommandRequest'
 import { ICommand } from '../types/commands'
-import { Metadata } from '../entity/Metadata'
 import { EntityPosition, PosUpdateType } from '../entity/EntityPosition'
-import { SetTitle } from './bedrock/SetTitle'
-import { TitleCommand } from '../types/interface'
+import { Animate } from './bedrock/Animate'
 
 interface SplitQueue {
   [splitId: number]: BundledPacket<any>,
@@ -320,6 +315,9 @@ export class Client {
           case Packets.PLAYER_ACTION:
             this.handlePlayerAction(pk)
             break
+          case Packets.ANIMATE:
+            this.handleAnimate(pk)
+            break
           default:
             this.logger.debug(`UNKNOWN BATCHED PACKET ${pk.id}`)
         }
@@ -484,12 +482,22 @@ export class Client {
         Server.i.broadcastLevelEvent(LevelEventType.BLOCK_STOP_BREAK, actionX, actionY, actionZ, 0)
         break
       case PlayerEventAction.START_SNEAK:
-        this.logger.debug('Player is now sneaking')
         this.player.metadata.addGeneric(MetadataGeneric.SNEAKING, true)
+        Server.i.broadcastMetadata(this.player, this.player.metadata)
+        break
+      case PlayerEventAction.STOP_SNEAK:
+        this.player.metadata.addGeneric(MetadataGeneric.SNEAKING, true)
+        Server.i.broadcastMetadata(this.player, this.player.metadata)
         break
       default:
         this.logger.error(`Unhandled PlayerAction ID: ${action}`)
     }
+  }
+
+  private handleAnimate(packet: Animate) {
+    const { action } = packet.props
+
+    Server.i.broadcastAnimate(this.player, action)
   }
 
   private handleCommandRequest(packet: CommandRequest) {
