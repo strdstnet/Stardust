@@ -92,7 +92,7 @@ export abstract class Entity<Events = unknown, Containers extends Container[] = 
 
 
     this.metadata.addGeneric(MetadataGeneric.AFFECTED_BY_GRAVITY, true)
-    // this.metadata.addGeneric(MetadataGeneric.HAS_COLLISION, true)
+    this.metadata.addGeneric(MetadataGeneric.HAS_COLLISION, true)
   }
 
   public notifyPlayers(players: Player[], data?: Metadata): void {

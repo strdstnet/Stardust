@@ -28,6 +28,9 @@ import { CommandMap } from './command/CommandMap'
 import { ICommand } from './types/commands'
 import { Teleport } from './command/defaults/Teleport'
 import { GlobalTick } from './tick/GlobalTick'
+import { LevelEvent } from './network/bedrock/LevelEvent'
+import { LevelEventType, PlayerEventAction } from './types/player'
+import { posix } from 'path'
 
 const DEFAULT_OPTS: ServerOpts = {
   address: '0.0.0.0',
@@ -234,6 +237,16 @@ export class Server implements IServer {
       onGround: false,
       ridingEntityRuntimeId: 0n,
     }), includeSelf ? null : player.clientId)
+  }
+
+  public broadcastLevelEvent(event: LevelEventType, x: number, y: number, z: number, data: number): void {
+    this.broadcast(new LevelEvent({
+      eventId: event,
+      x,
+      y,
+      z,
+      data,
+    }))
   }
 
   private updatePlayerList() {
