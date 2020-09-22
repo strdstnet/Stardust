@@ -145,4 +145,11 @@ export enum PlayerEventAction {
   ABORT_BREAK = 1,
   STOP_BREAK = 2,
   START_SNEAK = 11,
+  CONTINUE_BREAK = 18,
+}
+
+export enum LevelEventType {
+  BLOCK_START_BREAK = 3600,
+  BLOCK_STOP_BREAK = 3601,
+  PARTICLE_PUNCH_BLOCK = 2014,
 }

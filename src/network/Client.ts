@@ -50,7 +50,7 @@ import { Chat } from '../Chat'
 import { AddPlayer } from './bedrock/AddPlayer'
 import { Attribute } from '../entity/Attribute'
 import { EntityMetadata } from './bedrock/EntityMetadata'
-import { InteractAction, MetadataFlag, MetadataGeneric, MetadataType, PlayerEventAction } from '../types/player'
+import { InteractAction, LevelEventType, MetadataFlag, MetadataGeneric, MetadataType, PlayerEventAction } from '../types/player'
 import { Interact } from './bedrock/Interact'
 import { ContainerOpen } from './bedrock/ContainerOpen'
 import { LevelEvent } from './bedrock/LevelEvent'
@@ -59,6 +59,8 @@ import { CommandRequest } from './bedrock/CommandRequest'
 import { ICommand } from '../types/commands'
 import { Metadata } from '../entity/Metadata'
 import { EntityPosition, PosUpdateType } from '../entity/EntityPosition'
+import { SetTitle } from './bedrock/SetTitle'
+import { TitleCommand } from '../types/interface'
 
 interface SplitQueue {
   [splitId: number]: BundledPacket<any>,
@@ -468,12 +470,22 @@ export class Client {
   }
 
   private handlePlayerAction(packet: PlayerAction) {
-    const { action } = packet.props
+    const { action, actionX, actionY, actionZ } = packet.props
 
     switch(action) {
+      case PlayerEventAction.START_BREAK:
+        Server.i.broadcastLevelEvent(LevelEventType.BLOCK_START_BREAK, actionX, actionY, actionZ, 65535 / (0.6 * 20))
+        break
+      case PlayerEventAction.CONTINUE_BREAK:
+        Server.i.broadcastLevelEvent(LevelEventType.PARTICLE_PUNCH_BLOCK, actionX, actionY, actionZ, 1) // TODO: Use correct block ID's
+        break
+      case PlayerEventAction.ABORT_BREAK:
+      case PlayerEventAction.STOP_BREAK:
+        Server.i.broadcastLevelEvent(LevelEventType.BLOCK_STOP_BREAK, actionX, actionY, actionZ, 0)
+        break
       case PlayerEventAction.START_SNEAK:
         this.logger.debug('Player is now sneaking')
-        this.player.metadata.addGeneric(MetadataGeneric.SNEAKING, true )
+        this.player.metadata.addGeneric(MetadataGeneric.SNEAKING, true)
         break
       default:
         this.logger.error(`Unhandled PlayerAction ID: ${action}`)
