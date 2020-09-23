@@ -56,6 +56,9 @@ import { CommandRequest } from './bedrock/CommandRequest'
 import { ICommand } from '../types/commands'
 import { EntityPosition, PosUpdateType } from '../entity/EntityPosition'
 import { Animate } from './bedrock/Animate'
+import { EntityFall } from './bedrock/EntityFall'
+import { LevelSound } from './bedrock/LevelSound'
+import { Emote } from './bedrock/Emote'
 
 interface SplitQueue {
   [splitId: number]: BundledPacket<any>,
@@ -322,6 +325,15 @@ export class Client {
           case Packets.ANIMATE:
             this.handleAnimate(pk)
             break
+          case Packets.ENTITY_FALL:
+            this.handleEntityFall(pk)
+            break
+          case Packets.LEVEL_SOUND:
+            this.handleLevelSound(pk)
+            break
+          case Packets.EMOTE:
+            this.handleEmote(pk)
+            break
           default:
             this.logger.debug(`UNKNOWN BATCHED PACKET ${pk.id}`)
         }
@@ -448,7 +460,6 @@ export class Client {
         metadata: player.metadata,
       }))
     })
-
     Chat.i.broadcastPlayerJoined(this.player)
   }
 
@@ -521,6 +532,35 @@ export class Client {
         sender: this.player,
       })
     }
+  }
+
+  private handleEntityFall(packet: EntityFall) {
+    const { runtimeEntityId, fallDistance, isInVoid } = packet.props
+
+    console.log('ENTITY FELL', { runtimeEntityId, fallDistance, isInVoid })
+  }
+
+  private handleLevelSound(packet: LevelSound) {
+    const { sound, position, extraData, entityType, isBabyMob, disableRelativeVolume } = packet.props
+
+    Server.i.broadcastLevelSound(
+      sound,
+      position,
+      extraData,
+      entityType,
+      isBabyMob,
+      disableRelativeVolume,
+    )
+  }
+
+  private handleEmote(packet: Emote) {
+    const { runtimeEntityId, emoteId, flags } = packet.props
+
+    console.log('EMOTE', { runtimeEntityId, emoteId, flags })
+
+    this.player.sendMessage('Emotes are currently disabled on this server.')
+
+    // Server.i.broadcastEmote(this.player, emoteId, flags)
   }
 
   private async completeLogin() {

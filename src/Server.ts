@@ -32,6 +32,9 @@ import { LevelEventType, PlayerAnimation } from './types/player'
 import { EntityMetadata } from './network/bedrock/EntityMetadata'
 import { Metadata } from './entity/Metadata'
 import { Animate } from './network/bedrock/Animate'
+import { Vector3 } from 'math3d'
+import { LevelSound } from './network/bedrock/LevelSound'
+import { Emote } from './network/bedrock/Emote'
 import { ItemMap } from './item/ItemMap'
 import { BlockMap } from './block/BlockMap'
 
@@ -48,7 +51,7 @@ const DEFAULT_OPTS: ServerOpts = {
 // TODO: Merge with Stardust.ts
 export class Server implements IServer {
 
-  public static TPS = 20
+  public static TPS = 100
 
   public static i: Server
 
@@ -64,7 +67,7 @@ export class Server implements IServer {
   private clients: Map<string, Client> = new Map()
   public players: Map<bigint, Player> = new Map() // Map<Player ID (Entity Runtime ID, Player)>
 
-  public static level: Level = Level.Flat()
+  public level: Level = Level.TestWorld()
 
   private chat = new Chat(this)
 
@@ -272,7 +275,7 @@ export class Server implements IServer {
     this.updatePlayerList()
   }
 
-  public updatePlayerLocation(player: Player, includeSelf = false): void {
+  public updatePlayerLocation(player: Player, includeSelf = false, mode?: MovePlayerMode.NORMAL): void {
     const pos = player.position
 
     if(includeSelf) {
@@ -287,6 +290,7 @@ export class Server implements IServer {
       pitch: pos.pitch,
       yaw: pos.yaw,
       headYaw: pos.headYaw,
+      mode,
       onGround: false,
       ridingEntityRuntimeId: 0n,
     }), includeSelf ? null : player.clientId)
@@ -314,6 +318,32 @@ export class Server implements IServer {
       action,
       entityRuntimeId: player.id,
     }), player.clientId)
+  }
+
+  public broadcastLevelSound(
+    sound: number,
+    position: Vector3,
+    extraData: number,
+    entityType: string,
+    isBabyMob: boolean,
+    disableRelativeVolume: boolean,
+  ): void {
+    this.broadcast(new LevelSound({
+      sound,
+      position,
+      extraData,
+      entityType,
+      isBabyMob,
+      disableRelativeVolume,
+    }))
+  }
+
+  public broadcastEmote(player: Player, emoteId: string, flags: number): void {
+    this.broadcast(new Emote({
+      runtimeEntityId: player.id,
+      emoteId,
+      flags,
+    }))
   }
 
   private updatePlayerList() {

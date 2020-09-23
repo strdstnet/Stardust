@@ -16,12 +16,13 @@ import { StartGame } from './StartGame'
 import { Text } from './Text'
 import { Transfer } from './Transfer'
 import { MovePlayer } from './MovePlayer'
-import { AddPlayer } from './AddPlayer'
 import { CommandRequest } from './CommandRequest'
 import { Interact } from './Interact'
-import { LevelEvent } from './LevelEvent'
 import { PlayerAction } from './PlayerAction'
 import { Animate } from './Animate'
+import { EntityFall } from './EntityFall'
+import { LevelSound } from './LevelSound'
+import { Emote } from './Emote'
 
 interface IPacketBatch {
   packets: Array<BatchedPacket<any>>,
@@ -104,6 +105,15 @@ export class PacketBatch extends BundledPacket<IPacketBatch> {
                   break
                 case Packets.ANIMATE:
                   packet = new Animate()
+                  break
+                case Packets.ENTITY_FALL:
+                  packet = new EntityFall()
+                  break
+                case Packets.LEVEL_SOUND:
+                  packet = new LevelSound()
+                  break
+                case Packets.EMOTE:
+                  packet = new Emote()
                   break
                 // case Packets.RESOURCE_PACKS_STACK:
                 //   packet = new BatchedPacket(packetId, [])
