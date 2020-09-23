@@ -28,10 +28,12 @@ import { ICommand } from './types/commands'
 import { Teleport } from './command/defaults/Teleport'
 import { GlobalTick } from './tick/GlobalTick'
 import { LevelEvent } from './network/bedrock/LevelEvent'
-import { LevelEventType } from './types/player'
+import { LevelEventType, PlayerAnimation } from './types/player'
+import { EntityMetadata } from './network/bedrock/EntityMetadata'
+import { Metadata } from './entity/Metadata'
+import { Animate } from './network/bedrock/Animate'
 import { ItemMap } from './item/ItemMap'
 import { BlockMap } from './block/BlockMap'
-import { Stone } from './block/Stone'
 
 const DEFAULT_OPTS: ServerOpts = {
   address: '0.0.0.0',
@@ -46,7 +48,7 @@ const DEFAULT_OPTS: ServerOpts = {
 // TODO: Merge with Stardust.ts
 export class Server implements IServer {
 
-  public static TPS = 500
+  public static TPS = 20
 
   public static i: Server
 
@@ -298,6 +300,20 @@ export class Server implements IServer {
       z,
       data,
     }))
+  }
+
+  public broadcastMetadata(player: Player, metadata: Metadata, includeSelf = false): void {
+    this.broadcast(new EntityMetadata({
+      entityRuntimeId: player.id,
+      metadata,
+    }), includeSelf ? null : player.clientId)
+  }
+
+  public broadcastAnimate(player: Player, action: PlayerAnimation): void {
+    this.broadcast(new Animate({
+      action,
+      entityRuntimeId: player.id,
+    }), player.clientId)
   }
 
   private updatePlayerList() {
