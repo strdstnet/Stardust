@@ -82,6 +82,7 @@ export class Anvil extends Generator {
     )
   }
 
+  // eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
   public translateNBT(nbt: any, name: string = nbt.name, nbtType: string = nbt.type): Tag {
     const type = this.translateNBTType(nbtType)
 

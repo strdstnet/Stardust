@@ -20,7 +20,7 @@ import { OpenConnectionReplyTwo } from './network/raknet/OpenConnectionReplyTwo'
 import { OpenConnectionReplyOne } from './network/raknet/OpenConnectionReplyOne'
 import { IncompatibleProtocol } from './network/raknet/IncompatibleProtocol'
 import { Packet } from './network/Packet'
-import { MovePlayer } from './network/bedrock/MovePlayer'
+import { MovePlayer, MovePlayerMode } from './network/bedrock/MovePlayer'
 import { Chat } from './Chat'
 import { AddPlayer } from './network/bedrock/AddPlayer'
 import { CommandMap } from './command/CommandMap'
@@ -67,7 +67,7 @@ export class Server implements IServer {
   private clients: Map<string, Client> = new Map()
   public players: Map<bigint, Player> = new Map() // Map<Player ID (Entity Runtime ID, Player)>
 
-  public level: Level = Level.TestWorld()
+  public static level: Level = Level.TestWorld()
 
   private chat = new Chat(this)
 
@@ -78,6 +78,7 @@ export class Server implements IServer {
       this.logger.error('Only one instance of Stardust can run per Node process')
       process.exit(1)
     } else {
+      // eslint-disable-next-line deprecation/deprecation
       Server.i = Server.current = this
     }
 
