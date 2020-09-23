@@ -1,9 +1,14 @@
+import { BinaryData } from '../utils/BinaryData'
 import { Tag, TagType } from './Tag'
 
-export class ShortTag extends Tag {
+export class ShortTag extends Tag<number> {
 
-  constructor(name: string, public value: number) {
-    super(TagType.Short, name)
+  constructor() {
+    super(TagType.Short)
+  }
+
+  public readValue(data: BinaryData): number {
+    return this.value = data.readLShort()
   }
 
 }

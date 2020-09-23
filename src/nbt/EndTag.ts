@@ -1,9 +1,18 @@
+import { BinaryData } from '../utils/BinaryData'
 import { Tag, TagType } from './Tag'
 
-export class EndTag extends Tag {
+export class EndTag extends Tag<null> {
 
-  constructor(name: string) {
-    super(TagType.End, name)
+  constructor() {
+    super(TagType.End)
+  }
+
+  public assign(name: string): this {
+    return super.assign(name, null)
+  }
+
+  public readValue(data: BinaryData): null {
+    return this.value = null
   }
 
 }

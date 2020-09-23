@@ -107,6 +107,10 @@ export class Client {
     }, 50)
   }
 
+  private get level() {
+    return Server.i.level
+  }
+
   public disconnect(message: string, hideScreen = false): void {
     this.send(new Disconnect({
       hideScreen,
@@ -469,15 +473,20 @@ export class Client {
     }
   }
 
-  private handlePlayerAction(packet: PlayerAction) {
-    const { action, actionX, actionY, actionZ } = packet.props
+  private async handlePlayerAction(packet: PlayerAction) {
+    const { action, actionX, actionY, actionZ, face } = packet.props
 
     switch(action) {
       case PlayerEventAction.START_BREAK:
         Server.i.broadcastLevelEvent(LevelEventType.BLOCK_START_BREAK, actionX, actionY, actionZ, 65535 / (0.6 * 20))
         break
       case PlayerEventAction.CONTINUE_BREAK:
-        Server.i.broadcastLevelEvent(LevelEventType.PARTICLE_PUNCH_BLOCK, actionX, actionY, actionZ, 1) // TODO: Use correct block ID's
+        const block = this.level.getBlockAt(actionX, actionY, actionZ)
+        console.log('----')
+        console.log(block.runtimeId)
+        console.log(face)
+        console.log(block.runtimeId | (face << 24))
+        Server.i.broadcastLevelEvent(LevelEventType.PARTICLE_PUNCH_BLOCK, actionX, actionY, actionZ, 65535 / (0.6 * 20))
         break
       case PlayerEventAction.ABORT_BREAK:
       case PlayerEventAction.STOP_BREAK:

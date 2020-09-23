@@ -1,9 +1,14 @@
+import { BinaryData } from '../utils/BinaryData'
 import { Tag, TagType } from './Tag'
 
-export class IntTag extends Tag {
+export class IntTag extends Tag<number> {
 
-  constructor(name: string, public value: number) {
-    super(TagType.Int, name)
+  constructor() {
+    super(TagType.Int)
+  }
+
+  public readValue(data: BinaryData): number {
+    return this.value = data.readVarInt()
   }
 
 }

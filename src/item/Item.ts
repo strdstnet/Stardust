@@ -1,9 +1,10 @@
 import { Items } from '../types/world'
 import { CompoundTag } from '../nbt/CompoundTag'
+import LegacyIdMap from '../data/legacy_id_map.json'
 
 export class Item {
 
-  public static items: Map<Items, Item> = new Map()
+  public id: Items
 
   private damageVal = 0
 
@@ -11,30 +12,12 @@ export class Item {
 
   public nbt: CompoundTag | null = null
 
-  public static AIR: Item
-
   /**
    * @description Registers a new Item
    */
-  constructor(public id: Items, public name = 'Unknown', rawDamage = 0) {
+  constructor(public name: string, id?: Items, rawDamage = 0) {
+    this.id = typeof id !== 'undefined' ? id : (LegacyIdMap as any)[this.name]
     this.damage = rawDamage
-  }
-
-  private static registerItem(id: Items, name?: string): Item {
-    const item = new Item(id, name)
-    this.items.set(id, item)
-
-    return item
-  }
-
-  public static registerItems(): void {
-    Item.AIR = Item.registerItem(Items.AIR, 'Air')
-  }
-
-  public static getById(id: number): Item | null {
-    const item = Item.items.get(id)
-
-    return item ? item.clone() : null
   }
 
   public get damage(): number {
@@ -46,7 +29,7 @@ export class Item {
   }
 
   public clone(): Item {
-    const item = new Item(this.id, this.name, 0)
+    const item = new Item(this.name, this.id, 0)
     item.damageVal = this.damageVal
 
     return item

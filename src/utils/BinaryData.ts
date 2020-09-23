@@ -10,6 +10,9 @@ import { MetadataType, SkinData, SkinImage } from '../types/player'
 import { Chunk } from '../level/Chunk'
 import { SubChunk } from '../level/SubChunk'
 import { Metadata } from '../entity/Metadata'
+import { Tag, TagType } from '../nbt/Tag'
+import { EndTag } from '../nbt/EndTag'
+import { TagMapper } from '../nbt/TagMapper'
 
 export enum DataLengths {
   BYTE = 1,
@@ -19,9 +22,10 @@ export enum DataLengths {
   L_TRIAD = 3,
   INT = 4,
   L_INT = 4,
+  FLOAT = 4,
+  DOUBLE = 8,
   LONG = 8,
   MAGIC = 16,
-  FLOAT = 4,
 }
 
 export enum BitFlag {
@@ -176,6 +180,10 @@ export class BinaryData {
     if(skip) this.pos++
 
     return byte
+  }
+
+  public readBytes(len: number, skip = true): number[] {
+    return Array.from(this.read(len, skip))
   }
 
   public writeLong(val: bigint): void {
@@ -727,6 +735,26 @@ export class BinaryData {
     }
 
     return metadata
+  }
+
+  public readLDouble(skip = true): number {
+    const double = this.buf.readDoubleLE(this.pos)
+
+    if(skip) this.pos += DataLengths.DOUBLE
+
+    return double
+  }
+
+  public readTag(): Tag {
+    const type = this.readByte()
+
+    if(type === TagType.End) return new EndTag()
+
+    const tag = TagMapper.get(type)
+    tag.name = this.readString()
+    tag.readValue(this)
+
+    return tag
   }
 
 }

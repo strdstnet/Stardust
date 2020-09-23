@@ -1,3 +1,5 @@
+import { Block } from '../block/Block'
+import { BlockMap } from '../block/BlockMap'
 import { EntityPosition } from '../entity/EntityPosition'
 import { CompoundTag } from '../nbt/CompoundTag'
 import { SubChunk } from './SubChunk'
@@ -63,6 +65,25 @@ export class Chunk {
     const z = args.length > 1 ? args[1] : args[0].z
 
     return [Math.floor(x) >> 4, Math.floor(z) >> 4]
+  }
+
+  public getSubChunk(y: number): SubChunk {
+    return this.subChunks[y]
+  }
+
+  public getBlockAt(x: number, y: number, z: number): Block {
+    const [id, meta] = this.getSubChunk(y >> 4).getBlockAt(x, y & 0x0f, z)
+
+    const block = BlockMap.getById(id)
+    if(!block) throw new Error(`Unknown block with ID: ${id}`)
+
+    block.meta = meta
+
+    return block
+  }
+
+  public setBlock(x: number, y: number, z: number, block: Block): void {
+    this.getSubChunk(y >> 4).setBlock(x, y, z, block)
   }
 
 }

@@ -1,3 +1,4 @@
+import { Block } from '../block/Block'
 import { ensureLength } from './Chunk'
 
 export class SubChunk {
@@ -71,6 +72,23 @@ export class SubChunk {
     return this.blockData.every(v => v === 0) &&
       this.skyLightData.every(v => v === 255) &&
       this.blockLightData.every(v => v === 0)
+  }
+
+  /**
+   * @returns {[number, number]} [blockId, meta]
+   */
+  public getBlockAt(x: number, y: number, z: number): [number, number] {
+    const index = (x << 8) | (z << 4) | y
+
+    return [this.blockData[index], this.data[index >> 1]]
+    // return (this.blockData[index] << 4) | ((this.data[index >> 1] >> ((y & 1) << 2)) & 0xf)
+  }
+
+  public setBlock(x: number, y: number, z: number, block: Block): void {
+    const index = (x << 8) | (z << 4) | y
+
+    this.blockData[index] = block.id
+    this.data[index >> 1] = block.meta
   }
 
 }

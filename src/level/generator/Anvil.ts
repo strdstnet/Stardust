@@ -11,12 +11,7 @@ import { IntArrayTag } from '../../nbt/IntArrayTag'
 import { LongTag } from '../../nbt/LongTag'
 import { ByteArrayTag } from '../../nbt/ByteArrayTag'
 import { ListTag } from '../../nbt/ListTag'
-import { LongArrayTag } from '../../nbt/LongArrayTag'
-import { StringTag } from '../../nbt/StringTag'
-import { EndTag } from '../../nbt/EndTag'
-import { ShortTag } from '../../nbt/ShortTag'
-import { DoubleTag } from '../../nbt/DoubleTag'
-import { FloatTag } from '../../nbt/FloatTag'
+import { TagMapper } from '../../nbt/TagMapper'
 
 const WORLDS_DIR = path.join(__dirname, '..', '..', '..', 'worlds')
 
@@ -88,54 +83,32 @@ export class Anvil extends Generator {
   }
 
   public translateNBT(nbt: any, name: string = nbt.name, nbtType: string = nbt.type): Tag {
-    let tag: Tag
-
     const type = this.translateNBTType(nbtType)
+
+    const tag = TagMapper.get(type)
+    tag.name = name
 
     switch(type) {
       case TagType.Compound:
-        tag = new CompoundTag(name)
-
         for(const [name, child] of Object.entries(nbt.value)) {
           (tag as CompoundTag).add(this.translateNBT(child, name))
         }
         break
-      case TagType.Int:
-        tag = new IntTag(name, nbt.value)
-        break
-      case TagType.IntArray:
-        tag = new IntArrayTag(name, nbt.value)
-        break
-      case TagType.Long:
-        tag = new LongTag(name, nbt.value)
-        break
-      case TagType.LongArray:
-        tag = new LongArrayTag(name, nbt.value)
-        break
-      case TagType.String:
-        tag = new StringTag(name, nbt.value)
-        break
       case TagType.List:
-        const values = nbt.value.value.map((t: any) => this.translateNBT({ value: t }, t.name, nbt.value.type))
-        tag = new ListTag(name, this.translateNBTType(nbt.value.type), values)
+        tag.value = nbt.value.value.map((t: any) => this.translateNBT({ value: t }, t.name, nbt.value.type))
+        ;(tag as ListTag).valueType = this.translateNBTType(nbt.value.type)
         break
-      case TagType.End:
-        tag = new EndTag(name)
-        break
+      case TagType.Int:
+      case TagType.IntArray:
+      case TagType.Long:
+      case TagType.LongArray:
+      case TagType.String:
       case TagType.Byte:
-        tag = new ByteTag(name, nbt.value)
-        break
       case TagType.ByteArray:
-        tag = new ByteArrayTag(name, nbt.value)
-        break
       case TagType.Short:
-        tag = new ShortTag(name, nbt.value)
-        break
       case TagType.Double:
-        tag = new DoubleTag(name, nbt.value)
-        break
       case TagType.Float:
-        tag = new FloatTag(name, nbt.value)
+        tag.value = nbt.value
         break
       default:
         throw new Error(`Unknown tag type: ${nbt.type}`)

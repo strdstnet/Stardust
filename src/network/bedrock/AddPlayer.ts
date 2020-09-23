@@ -1,6 +1,7 @@
 import { EntityPosition } from '../../entity/EntityPosition'
 import { Metadata } from '../../entity/Metadata'
 import { Item } from '../../item/Item'
+import { ItemMap } from '../../item/ItemMap'
 import { DataType } from '../../types/data'
 import { Packets } from '../../types/protocol'
 import { UUID } from '../../utils/UUID'
@@ -45,7 +46,7 @@ export class AddPlayer extends BatchedPacket<IAddPlayer> {
           }
         },
       },
-      { name: 'item', parser: DataType.CONTAINER_ITEM, resolve: () => Item.AIR },
+      { name: 'item', parser: DataType.CONTAINER_ITEM, resolve: () => ItemMap.AIR },
       { name: 'metadata', parser: DataType.ENTITY_METADATA, resolve: () => new Metadata() },
       { parser: DataType.U_VARINT, resolve: () => 0 },
       { parser: DataType.U_VARINT, resolve: () => 0 },

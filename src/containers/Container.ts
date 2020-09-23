@@ -1,6 +1,6 @@
 import { Item } from '../item/Item'
+import { ItemMap } from '../item/ItemMap'
 import { ContainerType } from '../types/containers'
-import { Items } from '../types/world'
 
 export abstract class Container {
 
@@ -11,7 +11,7 @@ export abstract class Container {
   constructor(public type: ContainerType = ContainerType.CONTAINER, items: Item[] = [], protected name = 'Container', protected size = 0) {
     this.items = []
     for(let i = 0; i < this.size; i++) {
-      this.items[i] = items[i] || Item.getById(Items.AIR)
+      this.items[i] = items[i] || ItemMap.AIR
     }
   }
 

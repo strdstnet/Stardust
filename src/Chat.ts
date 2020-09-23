@@ -4,7 +4,8 @@ import { IServer } from './types/server'
 
 const ESCAPE = '\xc2\xa7'
 export const ChatColour = {
-  YELLOW: `${ESCAPE}e`,
+  // YELLOW: `${ESCAPE}e`,
+  YELLOW: '§e',
 }
 
 export class Chat {

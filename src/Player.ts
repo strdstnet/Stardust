@@ -43,7 +43,7 @@ export class Player extends Human<IPlayerEvents> {
   public skinData!: SkinData
 
   constructor(player: IPlayerCreate) {
-    super(player.username, 'stardust:player')
+    super(player.username, 'minecraft:player')
 
     Object.assign(this, player)
     this.UUID = UUID.fromString(player.clientUUID)
@@ -88,7 +88,7 @@ export class Player extends Human<IPlayerEvents> {
     Server.i.updatePlayerLocation(this, this.position.updateType !== PosUpdateType.PLAYER_MOVEMENT)
   }
 
-  public notifySelf(data?: any[]): void {
+  public notifySelf(): void {
     this.notifyPlayers([this], this.metadata)
   }
 

@@ -114,5 +114,8 @@ export enum AdventureSettingsFlag {
 
 export enum Items {
   AIR = 0,
+  STONE = 1,
+  GRASS = 2,
+  DIRT = 3,
   SHIELD = 513,
 }
