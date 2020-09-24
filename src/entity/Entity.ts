@@ -82,7 +82,6 @@ export abstract class Entity<Events = unknown, Containers extends Container[] = 
     this.metadata.add(MetadataFlag.BOUNDING_BOX_HEIGHT, MetadataType.FLOAT, 1.8)
     this.metadata.add(MetadataFlag.AIR, MetadataType.SHORT, 0)
 
-
     this.metadata.setGeneric(MetadataGeneric.AFFECTED_BY_GRAVITY, true)
     this.metadata.setGeneric(MetadataGeneric.HAS_COLLISION, true)
   }

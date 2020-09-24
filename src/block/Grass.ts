@@ -6,6 +6,10 @@ export class Grass extends Block {
     super(BlockNames.GRASS, damage)
   }
 
+  public get breakTime(): number {
+    return 900
+  }
+
 }
 
 import { BlockNames } from './types'

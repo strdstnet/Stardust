@@ -486,17 +486,26 @@ export class Client {
   private async handlePlayerAction(packet: PlayerAction) {
     const { action, actionX, actionY, actionZ, face } = packet.props
 
+    const block = this.level.getBlockAt(actionX, actionY, actionZ)
+
     switch(action) {
       case PlayerEventAction.START_BREAK:
-        Server.i.broadcastLevelEvent(LevelEventType.BLOCK_START_BREAK, actionX, actionY, actionZ, 65535 / (0.6 * 20))
+        const breakTime = block.breakTime
+
+        Server.i.broadcastLevelEvent(LevelEventType.BLOCK_START_BREAK, actionX, actionY, actionZ, 65536 / (breakTime / 50))
         break
       case PlayerEventAction.CONTINUE_BREAK:
         const block = this.level.getBlockAt(actionX, actionY, actionZ)
+        // console.log('----')
+        // console.log(block.runtimeId)
+        // console.log(face)
+        // console.log(block.runtimeId | (face << 24))
         Server.i.broadcastLevelEvent(LevelEventType.PARTICLE_PUNCH_BLOCK, actionX, actionY, actionZ, block.runtimeId | (face << 24))
         break
       case PlayerEventAction.ABORT_BREAK:
       case PlayerEventAction.STOP_BREAK:
         Server.i.broadcastLevelEvent(LevelEventType.BLOCK_STOP_BREAK, actionX, actionY, actionZ, 0)
+        Server.i.broadcastLevelEvent(LevelEventType.PARTICLE_DESTROY, actionX, actionY, actionZ, block.runtimeId)
         break
       case PlayerEventAction.START_SNEAK:
         this.player.metadata.setGeneric(MetadataGeneric.SNEAKING, true)
@@ -658,7 +667,7 @@ export class Client {
       }
     }
 
-    console.log(neededChunks)
+    // console.log(neededChunks)
 
     for(const [x, z] of neededChunks) {
       const chunk = await Server.i.level.getChunkAt(x, z)
