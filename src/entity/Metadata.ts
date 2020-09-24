@@ -11,20 +11,20 @@ export interface MetadataRecord extends MetadataItem {
 
 export class Metadata extends Map<MetadataFlag, MetadataItem> {
 
+  public generics: Map<MetadataGeneric, boolean> = new Map()
+
   public add(flag: MetadataFlag, type: MetadataType, value: any): void {
     this.set(flag, { type, value })
   }
 
-  public addDataFlag(property: number, flag: number, value = true, type = MetadataType.LONG): void {
-    if(this.getDataFlag(property, flag) !== value) {
-      let flags: bigint = (this.get(property) as any).value
-      flags ^= (1n << BigInt(flag))
+  public toggleDataFlag(property: number, flag: number, type = MetadataType.LONG): void {
+    let flags: bigint = (this.get(property) as any).value
+    flags ^= (1n << BigInt(flag))
 
-      this.set(property, {
-        type,
-        value: flags,
-      })
-    }
+    this.set(property, {
+      type,
+      value: flags,
+    })
   }
 
   public getDataFlag(property: number, flag: number): boolean {
@@ -34,9 +34,14 @@ export class Metadata extends Map<MetadataFlag, MetadataItem> {
     return (val & (1n << BigInt(flag))) > 0
   }
 
-  public addGeneric(flag: MetadataGeneric, value: boolean): void {
+  public setGeneric(flag: MetadataGeneric, value: boolean): void {
     const property = flag >= 64 ? MetadataFlag.FLAGS_EXTENDED : MetadataFlag.FLAGS
-    this.addDataFlag(property, flag % 64, value)
+
+    const generic = this.generics.get(flag)
+    if(typeof generic === 'undefined' || generic !== value) {
+      this.generics.set(flag, value)
+      this.toggleDataFlag(property, flag % 64)
+    }
   }
 
   public getGeneric(flag: MetadataGeneric): boolean {

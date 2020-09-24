@@ -502,11 +502,11 @@ export class Client {
         Server.i.broadcastLevelEvent(LevelEventType.BLOCK_STOP_BREAK, actionX, actionY, actionZ, 0)
         break
       case PlayerEventAction.START_SNEAK:
-        this.player.metadata.addGeneric(MetadataGeneric.SNEAKING, true)
+        this.player.metadata.setGeneric(MetadataGeneric.SNEAKING, true)
         Server.i.broadcastMetadata(this.player, this.player.metadata)
         break
       case PlayerEventAction.STOP_SNEAK:
-        this.player.metadata.addGeneric(MetadataGeneric.SNEAKING, true)
+        this.player.metadata.setGeneric(MetadataGeneric.SNEAKING, false)
         Server.i.broadcastMetadata(this.player, this.player.metadata)
         break
       default:
