@@ -46,6 +46,6 @@ export class Block {
 
 import { Item } from '../item/Item'
 import { ItemMap } from '../item/ItemMap'
-import LegacyIdMap from '../data/legacy_id_map.json'
+import LegacyIdMap from '../data/block_id_map.json'
 import { BlockMap } from './BlockMap'
 import { BlockIds } from './types'

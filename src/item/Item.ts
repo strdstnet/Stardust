@@ -1,6 +1,6 @@
 import { Items } from '../types/world'
 import { CompoundTag } from '../nbt/CompoundTag'
-import LegacyIdMap from '../data/legacy_id_map.json'
+import LegacyIdMap from '../data/block_id_map.json'
 
 export class Item {
 

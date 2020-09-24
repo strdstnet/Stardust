@@ -23,7 +23,7 @@ import {
   MultiplayerVisibility,
 } from '../../types/network'
 import { ParserType, Packet } from '../Packet'
-import LegacyIdMap from '../../data/legacy_id_map.json'
+import LegacyIdMap from '../../data/block_id_map.json'
 import fs from 'fs'
 import path from 'path'
 import { EntityPosition } from '../../entity/EntityPosition'
