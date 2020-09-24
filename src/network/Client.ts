@@ -517,7 +517,7 @@ export class Client {
       case PlayerEventAction.ABORT_BREAK:
       case PlayerEventAction.STOP_BREAK:
         Server.i.broadcastLevelEvent(LevelEventType.BLOCK_STOP_BREAK, actionX, actionY, actionZ, 0)
-        Server.i.broadcastLevelEvent(LevelEventType.PARTICLE_DESTROY, actionX, actionY, actionZ, block.runtimeId)
+        Server.i.broadcastLevelEvent(LevelEventType.PARTICLE_DESTROY, actionX + 0.5, actionY + 0.5, actionZ + 0.5, block.runtimeId)
         break
       case PlayerEventAction.START_SNEAK:
         this.player.metadata.setGeneric(MetadataGeneric.SNEAKING, true)

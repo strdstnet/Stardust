@@ -48,3 +48,18 @@ export enum ContainerType {
   JIGSAW_EDITOR = 32,
   SMITHING_TABLE = 33,
 }
+
+export enum ContainerActionSource {
+  CONTAINER = 0,
+  WORLD = 2,
+  CREATIVE = 3,
+  CLIENT = 99999,
+}
+
+export enum ContainerTransactionType {
+  NORMAL = 0,
+  MISMATCH = 1,
+  USE_ITEM = 2,
+  USE_ITEM_ON_ENTITY = 3,
+  RELEASE_ITEM = 4,
+}
