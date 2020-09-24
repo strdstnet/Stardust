@@ -59,6 +59,7 @@ import { Animate } from './bedrock/Animate'
 import { EntityFall } from './bedrock/EntityFall'
 import { LevelSound } from './bedrock/LevelSound'
 import { Emote } from './bedrock/Emote'
+import { ContainerId, ContainerType } from '../types/containers'
 
 interface SplitQueue {
   [splitId: number]: BundledPacket<any>,
@@ -469,8 +470,8 @@ export class Client {
     switch(action) {
       case InteractAction.OPEN_INVENTORY:
         this.sendBatched(new ContainerOpen({
-          windowId: 1,
-          containerType: 1,
+          windowId: ContainerId.INVENTORY,
+          containerType: ContainerType.INVENTORY,
           containerX: 0,
           containerY: 0,
           containerZ: 0,
@@ -491,10 +492,6 @@ export class Client {
         break
       case PlayerEventAction.CONTINUE_BREAK:
         const block = this.level.getBlockAt(actionX, actionY, actionZ)
-        console.log('----')
-        console.log(block.runtimeId)
-        console.log(face)
-        console.log(block.runtimeId | (face << 24))
         Server.i.broadcastLevelEvent(LevelEventType.PARTICLE_PUNCH_BLOCK, actionX, actionY, actionZ, block.runtimeId | (face << 24))
         break
       case PlayerEventAction.ABORT_BREAK:

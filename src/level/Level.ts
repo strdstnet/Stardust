@@ -68,13 +68,8 @@ export class Level {
   }
 
   public async getChunkAt(x: number, z: number): Promise<Chunk> {
-    console.log(x, z, Level.getChunkId(x, z))
     const inCache = this.chunkCache.get(Level.getChunkId(x, z))
-    console.log(inCache ? [inCache.x, inCache.z] : null)
     return inCache ? inCache : await this.loadChunk(x, z)
-
-
-    // return this.loadChunk(x, z)
   }
 
   public getBlockAt(x: number, y: number, z: number): Block {
@@ -88,30 +83,16 @@ export class Level {
 
     if(!chunk) throw new Error('Tried getting block in uncached chunk')
 
-    // const blockIndex = Level.getBlockChunkIndex(x, y, z)
-
     return chunk.getBlockAt(x & 0x0f, y, z & 0x0f)
   }
 
   public async setBlock(x: number, y: number, z: number, block: Block | string): Promise<void> {
     if(typeof block === 'string') block = BlockMap.get(block)
 
-    // const chunkIndex = Level.getChunkId(x >> 4, z >> 4)
-
-    // const chunk = this.chunkCache.get(chunkIndex)
-    const chunkX = x >> 4
-    const chunkZ = z >> 4
-    const chunk = await this.getChunkAt(chunkX, chunkZ)
+    const chunk = await this.getChunkAt(x >> 4, z >> 4)
     if(!chunk) throw new Error('Tried setting block in uncached chunk')
 
-
-
-    console.log(x & 0x0f, z & 0x0f)
     chunk.setBlock(x & 0x0f, y, z & 0x0f, block)
   }
-
-  // public get baseChunk(): Chunk {
-  //   return this.getChunkAt(0, 0) as Chunk
-  // }
 
 }
