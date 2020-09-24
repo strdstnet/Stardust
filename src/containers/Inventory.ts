@@ -10,17 +10,17 @@ export class Inventory extends Container {
   public hotbarSize: number
   public itemInHand = 0 // Index of item in hotbar, 0-{hotbarSize}
 
-  constructor(hotbarSize?: number) {
-    super(ContainerType.ARMOR, [], 'Inventory', 36)
+  constructor(id: number = ContainerId.INVENTORY, hotbarSize?: number) {
+    super(id, ContainerType.ARMOR, [], 'Inventory', 36)
 
     this.hotbarSize = hotbarSize || this.defaultHotbarSize
   }
 
   public get itemHolding(): Item {
-    return this.getItem(this.itemInHand)
+    return this.get(this.itemInHand)
   }
 
 }
 
 import { Item } from '../item/Item'
-import { ContainerType } from '../types/containers'
+import { ContainerId, ContainerType } from '../types/containers'

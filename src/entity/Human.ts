@@ -8,7 +8,7 @@ export class Human<Events, Containers extends Container[] = []> extends Creature
     super.initContainers()
 
     this.containers.push(new Inventory())
-    this.containers.push(new EnderChest())
+    // this.containers.push(new EnderChest())
   }
 
   protected addAttributes(): void {
