@@ -23,6 +23,7 @@ import { Animate } from './Animate'
 import { EntityFall } from './EntityFall'
 import { LevelSound } from './LevelSound'
 import { Emote } from './Emote'
+import { ContainerClose } from './ContainerClose'
 
 interface IPacketBatch {
   packets: Array<BatchedPacket<any>>,
@@ -114,6 +115,9 @@ export class PacketBatch extends BundledPacket<IPacketBatch> {
                   break
                 case Packets.EMOTE:
                   packet = new Emote()
+                  break
+                case Packets.CONTAINER_CLOSE:
+                  packet = new ContainerClose()
                   break
                 // case Packets.RESOURCE_PACKS_STACK:
                 //   packet = new BatchedPacket(packetId, [])

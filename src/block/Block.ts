@@ -28,6 +28,10 @@ export class Block {
     return state
   }
 
+  public get breakTime(): number {
+    return 10
+  }
+
   public clone<T extends Block = this>(): T {
     const copy = new (this.constructor as { new (): T })()
     Object.assign(copy, this)

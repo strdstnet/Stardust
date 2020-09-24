@@ -6,6 +6,10 @@ export class Dirt extends Block {
     super(BlockNames.DIRT, damage)
   }
 
+  public get breakTime() {
+    return 0.5
+  }
+
 }
 
 import { BlockNames } from './types'

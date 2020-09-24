@@ -172,8 +172,10 @@ export enum PlayerAnimation {
 }
 
 export enum LevelEventType {
+  PARTICLE_DESTROY = 2001,
+  PARTICLE_PUNCH_BLOCK = 2014,
   START_RAIN = 3001,
+  PAUSE_GAME = 3005,
   BLOCK_START_BREAK = 3600,
   BLOCK_STOP_BREAK = 3601,
-  PARTICLE_PUNCH_BLOCK = 2014,
 }
