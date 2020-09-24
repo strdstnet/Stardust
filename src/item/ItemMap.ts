@@ -1,6 +1,7 @@
 import { Items } from '../types/world'
 import { Item } from './Item'
 import { ItemNames } from './types'
+import BlockIdMap from '../data/block_id_map.json' // TODO: Use item map JSON
 
 export class ItemMap {
 
@@ -21,10 +22,10 @@ export class ItemMap {
     this.idToName.clear()
   }
 
-  public static get(name: string): Item | null {
+  public static get(name: string): Item {
     const item = this.items.get(name)
 
-    return item ? item.clone() : null
+    return item ? item.clone() : new Item(name)
   }
 
   public static getById(id: number): Item | null {
@@ -34,7 +35,7 @@ export class ItemMap {
 
     const item = this.items.get(name)
 
-    return item ? item.clone() : null
+    return item ? item.clone() : new Item(name)
   }
 
   public static getName(id: number): string | null {
@@ -50,6 +51,10 @@ export class ItemMap {
 
   public static registerItems(): void {
     this.clear()
+
+    for(const [ name, id ] of Object.entries(BlockIdMap)) {
+      this.idToName.set(id, name)
+    }
 
     this.AIR = this.registerItem(ItemNames.AIR, Items.AIR)
     this.registerItem(ItemNames.STONE, Items.STONE)

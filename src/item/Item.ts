@@ -15,7 +15,7 @@ export class Item {
   /**
    * @description Registers a new Item
    */
-  constructor(public name: string, id?: Items, rawDamage = 0) {
+  constructor(public name: string, id?: Items, rawDamage = 0, public maxCount = 64) {
     this.id = typeof id !== 'undefined' ? id : (LegacyIdMap as any)[this.name]
     this.damage = rawDamage
   }

@@ -5,26 +5,24 @@ import { BatchedPacket } from '../bedrock/BatchedPacket'
 import { ParserType } from '../Packet'
 import { Item } from '../../item/Item'
 
-interface IContainerNotification {
+interface IContainerUpdate {
   containerId: ContainerId,
-  items: Item[],
+  slot: number,
+  item: Item,
 }
 
-export class ContainerNotification extends BatchedPacket<IContainerNotification> {
+export class ContainerUpdate extends BatchedPacket<IContainerUpdate> {
 
-  constructor(p?: IContainerNotification) {
-    super(Packets.CONTAINER_NOTIFICATION, [
+  constructor(p?: IContainerUpdate) {
+    super(Packets.CONTAINER_UPDATE, [
       { name: 'containerId', parser: DataType.U_VARINT },
+      { name: 'slot', parser: DataType.U_VARINT },
       {
-        name: 'items',
+        name: 'item',
         parser({ type, data, props }) {
           if(type === ParserType.ENCODE) {
-            data.writeUnsignedVarInt(props.items.length)
-
-            for(const item of props.items) {
-              data.writeVarInt(0)
-              data.writeContainerItem(item)
-            }
+            data.writeVarInt(props.slot)
+            data.writeContainerItem(props.item)
           } else {
             // TODO: DECODE
           }

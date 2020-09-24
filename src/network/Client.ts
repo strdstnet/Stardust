@@ -61,6 +61,9 @@ import { LevelSound } from './bedrock/LevelSound'
 import { Emote } from './bedrock/Emote'
 import { ContainerId, ContainerType } from '../types/containers'
 import { ContainerClose } from './bedrock/ContainerClose'
+import { Container } from '../containers/Container'
+import { Item } from '../item/Item'
+import { ContainerUpdate } from './bedrock/ContainerUpdate'
 
 interface SplitQueue {
   [splitId: number]: BundledPacket<any>,
@@ -507,16 +510,12 @@ export class Client {
         Server.i.broadcastLevelEvent(LevelEventType.BLOCK_START_BREAK, actionX, actionY, actionZ, 65536 / (breakTime / 50))
         break
       case PlayerEventAction.CONTINUE_BREAK:
-        // console.log('----')
-        // console.log('----')
-        // console.log(block.runtimeId)
-        // console.log(face)
-        // console.log(block.runtimeId | (face << 24))
         Server.i.broadcastLevelEvent(LevelEventType.PARTICLE_PUNCH_BLOCK, actionX, actionY, actionZ, block.runtimeId | (face << 24))
         break
       case PlayerEventAction.ABORT_BREAK:
       case PlayerEventAction.STOP_BREAK:
         Server.i.broadcastLevelEvent(LevelEventType.BLOCK_STOP_BREAK, actionX, actionY, actionZ, 0)
+        this.sendContainerUpdate(this.player.inventory, this.player.inventory.add(block.item))
         Server.i.broadcastLevelEvent(LevelEventType.PARTICLE_DESTROY, actionX + 0.5, actionY + 0.5, actionZ + 0.5, block.runtimeId)
         break
       case PlayerEventAction.START_SNEAK:
@@ -617,8 +616,8 @@ export class Client {
     Server.i.addPlayer(this.player)
 
     // this.player.notifySelf()
-    // // this.player.notifyContainers()
-    // // this.player.notifyHeldItem()
+    this.player.notifyContainers()
+    // this.player.notifyHeldItem()
 
     await this.sendNearbyChunks()
 
@@ -761,10 +760,7 @@ export class Client {
     })
 
     this.player.on('Client:containerNotification', container => {
-      this.sendBatched(new ContainerNotification({
-        type: container.type,
-        items: container.items,
-      }), Reliability.Unreliable)
+      this.sendContainer(container)
     })
 
     this.player.on('Client:heldItemNotification', (entityRuntimeId, item, inventorySlot, hotbarSlot, containerId) => {
@@ -784,6 +780,21 @@ export class Client {
         parameters,
       }))
     })
+  }
+
+  private sendContainer(container: Container) {
+    this.sendBatched(new ContainerNotification({
+      containerId: container.id,
+      items: container.items,
+    }), Reliability.Unreliable)
+  }
+
+  private sendContainerUpdate(container: Container, slot: number) {
+    this.sendBatched(new ContainerUpdate({
+      containerId: container.id,
+      slot,
+      item: container.items[slot],
+    }), Reliability.Unreliable)
   }
 
 }

@@ -47,6 +47,8 @@ export class Player extends Human<IPlayerEvents> {
 
     Object.assign(this, player)
     this.UUID = UUID.fromString(player.clientUUID)
+
+    // this.inventory.add(new Item('minecraft:grass'))
   }
 
   public static createFrom(login: Login, clientId: bigint): Player {
