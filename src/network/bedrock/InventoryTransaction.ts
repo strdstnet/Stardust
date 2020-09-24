@@ -5,7 +5,6 @@ import { ParserType } from '../Packet'
 import { ContainerActionSource, ContainerTransactionType } from '../../types/containers'
 import { Item } from '../../item/Item'
 import { Vector3 } from 'math3d'
-import { EntityPosition } from '../../entity/EntityPosition'
 
 interface ITransaction {
   type: number,
@@ -13,7 +12,7 @@ interface ITransaction {
   face?: number,
   hotbarSlot: number,
   itemInHand: Item,
-  playerPos?: EntityPosition
+  playerPos?: Vector3
   clickPos?: Vector3,
   blockRuntimeId?: number,
   entityRuntimeId?: bigint,
@@ -65,9 +64,16 @@ export class InventoryTransaction extends BundledPacket<IInventoryTransaction> {
             if(props.requestId !== 0) {
               const count = data.readUnsignedVarInt()
               for(let i = 0; i < count; i++) {
-                props.requestChangedSlots.push({
-                  containerId: data.readByte(),
-                })
+                const containerId = data.readByte()
+
+                const count2 = data.readUnsignedVarInt()
+                const indexes = []
+
+                for(let i2 = 0; i2 < count2; i2++) {
+                  indexes.push(data.readByte())
+                }
+
+                props.requestChangedSlots.push({ containerId, indexes })
               }
             }
           }
@@ -99,6 +105,36 @@ export class InventoryTransaction extends BundledPacket<IInventoryTransaction> {
               data.writeContainerItem(action.newItem)
               if(props.hasItemStackIds && action.newItemStackId) {
                 data.writeVarInt(action.newItemStackId)
+              }
+            }
+          } else {
+            props.actions = []
+            const count = data.readUnsignedVarInt()
+
+            for(let i = 0; i < count; i++) {
+              const action: IInventoryAction = {} as IInventoryAction
+              action.sourceType = data.readUnsignedVarInt()
+
+              switch(action.sourceType) {
+                case ContainerActionSource.CONTAINER:
+                case ContainerActionSource.CLIENT:
+                  action.containerId = data.readVarInt()
+                  break
+                case ContainerActionSource.WORLD:
+                  action.sourceFlags = data.readUnsignedVarInt()
+                  break
+                case ContainerActionSource.CREATIVE:
+                  break
+                default:
+                  throw new Error(`Unknown inventory source type ${action.sourceType}`)
+              }
+
+              action.inventorySlot = data.readUnsignedVarInt()
+              action.oldItem = data.readContainerItem()
+              action.newItem = data.readContainerItem()
+
+              if(props.hasItemStackIds) {
+                action.newItemStackId = data.readVarInt()
               }
             }
           }
@@ -136,6 +172,48 @@ export class InventoryTransaction extends BundledPacket<IInventoryTransaction> {
                 data.writeVarInt(itemRelease.hotbarSlot)
                 data.writeContainerItem(itemRelease.itemInHand)
                 data.writeVector3(itemRelease.headPos)
+                break
+              case ContainerTransactionType.NORMAL:
+              case ContainerTransactionType.MISMATCH:
+                break
+              default:
+                throw new Error(`Unknown transaction type ${props.transactionType}`)
+            }
+          } else {
+            switch(props.transactionType) {
+              case ContainerTransactionType.USE_ITEM:
+                props.transaction = {
+                  type: data.readUnsignedVarInt(),
+                  position: new Vector3(
+                    data.readVarInt(),
+                    data.readUnsignedVarInt(),
+                    data.readVarInt(),
+                  ),
+                  face: data.readVarInt(),
+                  hotbarSlot: data.readVarInt(),
+                  itemInHand: data.readContainerItem(),
+                  playerPos: data.readVector3(),
+                  clickPos: data.readVector3(),
+                  blockRuntimeId: data.readUnsignedVarInt(),
+                }
+                break
+              case ContainerTransactionType.USE_ITEM_ON_ENTITY:
+                props.transaction = {
+                  entityRuntimeId: data.readUnsignedVarLong(),
+                  type: data.readUnsignedVarInt(),
+                  hotbarSlot: data.readVarInt(),
+                  itemInHand: data.readContainerItem(),
+                  playerPos: data.readVector3(),
+                  clickPos: data.readVector3(),
+                }
+                break
+              case ContainerTransactionType.RELEASE_ITEM:
+                props.transaction = {
+                  type: data.readUnsignedVarInt(),
+                  hotbarSlot: data.readVarInt(),
+                  itemInHand: data.readContainerItem(),
+                  headPos: data.readVector3(),
+                }
                 break
               case ContainerTransactionType.NORMAL:
               case ContainerTransactionType.MISMATCH:
