@@ -509,6 +509,14 @@ export class Client {
         this.player.metadata.setGeneric(MetadataGeneric.SNEAKING, false)
         Server.i.broadcastMetadata(this.player, this.player.metadata)
         break
+      case PlayerEventAction.START_SPRINT:
+        this.player.metadata.setGeneric(MetadataGeneric.SPRINTING, true)
+        Server.i.broadcastMetadata(this.player, this.player.metadata)
+        break
+      case PlayerEventAction.STOP_SPRINT:
+        this.player.metadata.setGeneric(MetadataGeneric.SPRINTING, false) // TODO: This should be false
+        Server.i.broadcastMetadata(this.player, this.player.metadata)
+        break
       default:
         this.logger.error(`Unhandled PlayerAction ID: ${action}`)
     }

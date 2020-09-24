@@ -127,6 +127,7 @@ export enum MetadataFlag {
 export enum MetadataGeneric {
   ON_FIRE = 0,
   SNEAKING = 1,
+  SPRINTING = 3,
   IMMOBILE = 16,
   CAN_FLY = 21,
   HAS_COLLISION = 47,
@@ -144,6 +145,8 @@ export enum PlayerEventAction {
   START_BREAK = 0,
   ABORT_BREAK = 1,
   STOP_BREAK = 2,
+  START_SPRINT = 9,
+  STOP_SPRINT = 10,
   START_SNEAK = 11,
   STOP_SNEAK = 12,
   CONTINUE_BREAK = 18,
