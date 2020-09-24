@@ -53,7 +53,7 @@ export class Level {
   }
 
   public static TestWorld(): Level {
-    return new Level('TestLevel', new Anvil('1_12_2'))
+    return new Level('TestLevel', new Anvil('hsn'))
   }
 
   public static Flat(): Level {
