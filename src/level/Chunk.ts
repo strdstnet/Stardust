@@ -74,7 +74,7 @@ export class Chunk {
   public getBlockAt(x: number, y: number, z: number): Block {
     const [id, meta] = this.getSubChunk(y >> 4).getBlockAt(x, y & 0x0f, z)
 
-    const block = BlockMap.getById(id)
+    const block = BlockMap.getById(id) || Block.fromId(id)
     if(!block) throw new Error(`Unknown block with ID: ${id}`)
 
     block.meta = meta

@@ -37,6 +37,10 @@ export class ItemMap {
     return item ? item.clone() : null
   }
 
+  public static getName(id: number): string | null {
+    return this.idToName.get(id) || null
+  }
+
   private static registerItem(name: string, id: Items): Item {
     const item = new Item(name, id)
     this.add(item)

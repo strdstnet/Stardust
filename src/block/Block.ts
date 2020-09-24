@@ -1,4 +1,4 @@
-export abstract class Block {
+export class Block {
 
   public id: number
   public item: Item
@@ -32,6 +32,14 @@ export abstract class Block {
     const copy = new (this.constructor as { new (): T })()
     Object.assign(copy, this)
     return copy
+  }
+
+  public static fromId(id: number): Block {
+    const name = BlockMap.getName(id)
+
+    if(!name) throw new Error(`Unable to create block from ID: ${id}`)
+
+    return new Block(name)
   }
 
 }

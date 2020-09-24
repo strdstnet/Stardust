@@ -59,8 +59,16 @@ export class BlockMap {
     return block ? block.clone() : null
   }
 
+  public static getName(id: number): string | null {
+    return this.idToName.get(id) || null
+  }
+
   private static registerItems(): void {
     this.clear()
+
+    for(const [ name, id ] of Object.entries(LegacyIdMap)) {
+      this.idToName.set(id, name)
+    }
 
     this.AIR = this.add(new Air())
     this.add(new Stone())
@@ -98,9 +106,6 @@ export class BlockMap {
       idToState.set(name, set ? set.add(id) : new Set([ id ]))
     }
 
-    // console.log(idToState)
-    // if(!process.po) process.exit()
-
     stateLoop: for(const { name, meta, state } of legacyStates) {
       const id = (LegacyIdMap as any)[name]
 
@@ -123,12 +128,6 @@ export class BlockMap {
         }
       }
     }
-
-    // console.log(this.legacyToRuntime.get(BlockIds.STONE << 4))
-    // console.log(this.legacyToRuntime.get(BlockIds.GRASS << 4))
-    // console.log(this.legacyToRuntime.get(BlockIds.DIRT << 4))
-    // console.log(this.legacyToRuntime.get(BlockIds.UPDATE_BLOCK << 4))
-    // if(!process.po) process.exit()
   }
 
 }
@@ -146,4 +145,3 @@ import { StringTag } from '../nbt/StringTag'
 import { IntTag } from '../nbt/IntTag'
 import LegacyIdMap from '../data/legacy_id_map.json'
 import { DataFile } from '../data/DataFile'
-import { BlockIds } from './types'
