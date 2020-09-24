@@ -1,4 +1,3 @@
-import { ICommandExecute } from '../../types/commands'
 import { Command } from '../Command'
 
 export class Teleport extends Command {
@@ -25,3 +24,5 @@ export class Teleport extends Command {
   }
 
 }
+
+import { ICommandExecute } from '../../types/commands'

@@ -1,5 +1,3 @@
-import { IAddress } from './network'
-
 export enum Packets {
   /* RAKNET (Raw) */
   CONNECTED_PING = 0x00, // 0
@@ -96,12 +94,6 @@ export const Protocol = {
   SYSTEM_ADDRESSES: 20,
   DEFAULT_MTU: 1347,
   MAGIC: '\x00\xff\xff\x00\xfe\xfe\xfe\xfe\xfd\xfd\xfd\xfd\x12\x34\x56\x78',
-}
-
-export const DummyAddress: IAddress = {
-  ip: '0.0.0.0',
-  port: 19132,
-  family: 4,
 }
 
 export enum PacketViolationType {

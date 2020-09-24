@@ -1,6 +1,4 @@
-import { EntityPosition } from '../entity/EntityPosition'
-import { TextType } from '../network/bedrock/Text'
-import { UUID } from '../utils/UUID'
+import { Vector3 } from 'math3d'
 
 export interface SkinImage {
   height: number,
@@ -81,16 +79,30 @@ export interface SkinData {
   verified: boolean,
 }
 
+interface IPlayerPosition {
+  x: number,
+  y: number,
+  z: number,
+  pitch: number,
+  yaw: number,
+  headYaw: number,
+  motion: Vector3,
+  onGround: boolean,
+  coords: () => Vector3,
+  acknowledgeUpdate: () => void,
+  update: (...args: any[]) => void,
+}
+
 export interface IPlayer {
   username: string,
-  UUID: UUID,
+  UUID: any,
   clientUUID: string,
   XUID: string,
   identityPublicKey: string,
   clientId: bigint,
   skinData: SkinData,
-  position: EntityPosition,
-  sendMessage: (message: string, type?: TextType, parameters?: string[]) => void,
+  position: IPlayerPosition,
+  sendMessage: (message: string, type?: number, parameters?: string[]) => void,
   teleport: (x: number, y: number, z: number) => void,
 }
 

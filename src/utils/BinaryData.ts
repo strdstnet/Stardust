@@ -1,19 +1,3 @@
-import zlib from 'zlib'
-import Logger from '@bwatton/logger'
-import { Vector3 } from 'math3d'
-import { Protocol } from '../types/protocol'
-import { AddressFamily, IAddress } from '../types/network'
-import { Item } from '../item/Item'
-import { Items } from '../types/world'
-import { UUID } from './UUID'
-import { MetadataType, SkinData, SkinImage } from '../types/player'
-import { Chunk } from '../level/Chunk'
-import { SubChunk } from '../level/SubChunk'
-import { Metadata } from '../entity/Metadata'
-import { Tag, TagType } from '../nbt/Tag'
-import { EndTag } from '../nbt/EndTag'
-import { TagMapper } from '../nbt/TagMapper'
-
 export enum DataLengths {
   BYTE = 1,
   SHORT = 2,
@@ -615,7 +599,7 @@ export class BinaryData {
     this.writeBoolean(skin.persona)
     this.writeBoolean(skin.personaCapeOnClassic)
     this.writeString(skin.cape.id)
-    this.writeString(UUID.random().toString())
+    this.writeString(UUID.randomStr())
     this.writeString(skin.armSize)
     this.writeString(skin.color)
     this.writeLInt(skin.personaPieces.length)
@@ -745,16 +729,32 @@ export class BinaryData {
     return double
   }
 
-  public readTag(): Tag {
+  public readTag<T extends Tag = Tag>(): T {
     const type = this.readByte()
 
-    if(type === TagType.End) return new EndTag()
+    if(type === TagType.End) return new EndTag() as any as T
 
     const tag = TagMapper.get(type)
     tag.name = this.readString()
     tag.readValue(this)
 
-    return tag
+    return tag as T
   }
 
 }
+
+import zlib from 'zlib'
+import Logger from '@bwatton/logger'
+import { Vector3 } from 'math3d'
+import { Protocol } from '../types/protocol'
+import { AddressFamily, IAddress } from '../types/network'
+import { Item } from '../item/Item'
+import { Items } from '../types/world'
+import { UUID } from './UUID'
+import { MetadataType, SkinData, SkinImage } from '../types/player'
+import { Chunk } from '../level/Chunk'
+import { SubChunk } from '../level/SubChunk'
+import { Metadata } from '../entity/Metadata'
+import { Tag, TagType } from '../nbt/Tag'
+import { EndTag } from '../nbt/EndTag'
+import { TagMapper } from '../nbt/TagMapper'

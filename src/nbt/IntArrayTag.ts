@@ -1,4 +1,3 @@
-import { BinaryData } from '../utils/BinaryData'
 import { Tag, TagType } from './Tag'
 
 export class IntArrayTag extends Tag<number[]> {
@@ -7,7 +6,7 @@ export class IntArrayTag extends Tag<number[]> {
     super(TagType.IntArray)
   }
 
-  public readValue(data: BinaryData): number[] {
+  public readValue(data: any): number[] {
     const value = []
     const count = data.readVarInt()
 

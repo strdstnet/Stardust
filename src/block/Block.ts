@@ -1,7 +1,3 @@
-import { Item } from '../item/Item'
-import { ItemMap } from '../item/ItemMap'
-import LegacyIdMap from '../data/legacy_id_map.json'
-
 export abstract class Block {
 
   public id: number
@@ -20,7 +16,16 @@ export abstract class Block {
   // TODO: Actually implement
   // https://github.com/pmmp/PocketMine-MP/blob/stable/src/pocketmine/block/Block.php#L105-L105
   public get runtimeId(): number {
-    return this.id
+    const state = BlockMap.legacyToRuntime.get((this.id << 4) | this.meta) ||
+      BlockMap.legacyToRuntime.get(this.id << 4) ||
+      BlockMap.legacyToRuntime.get(BlockIds.UPDATE_BLOCK << 4)
+
+    // console.log('STATE', state)
+    // if(!process.po) process.exit()
+
+    if(!state) throw new Error('o')
+
+    return state
   }
 
   public clone<T extends Block = this>(): T {
@@ -30,3 +35,9 @@ export abstract class Block {
   }
 
 }
+
+import { Item } from '../item/Item'
+import { ItemMap } from '../item/ItemMap'
+import LegacyIdMap from '../data/legacy_id_map.json'
+import { BlockMap } from './BlockMap'
+import { BlockIds } from './types'

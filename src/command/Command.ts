@@ -1,4 +1,4 @@
-import { ICommand, ICommandExecute, ICreateCommand } from '../types/commands'
+import { ICommand } from '../types/commands'
 
 export abstract class Command implements ICommand {
 
@@ -21,3 +21,5 @@ export abstract class Command implements ICommand {
   public abstract async execute(args: ICommandExecute): Promise<void>
 
 }
+
+import { ICommandExecute, ICreateCommand } from '../types/commands'

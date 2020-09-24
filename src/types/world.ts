@@ -117,5 +117,6 @@ export enum Items {
   STONE = 1,
   GRASS = 2,
   DIRT = 3,
+  UPDATE_BLOCK = 248,
   SHIELD = 513,
 }

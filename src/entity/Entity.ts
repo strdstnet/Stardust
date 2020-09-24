@@ -1,13 +1,5 @@
-import { EventEmitter, DefaultEventMap } from 'tsee'
-import { AttributeMap } from './AttributeMap'
-import { Player } from '../Player'
 import { Container } from '../containers/Container'
-import { Metadata } from './Metadata'
-import { MetadataFlag, MetadataGeneric, MetadataType } from '../types/player'
-import { GlobalTick } from '../tick/GlobalTick'
-import { EntityPosition, PosUpdateType } from './EntityPosition'
-import { Server } from '../Server'
-import { Vector3 } from 'math3d'
+import { EventEmitter, DefaultEventMap } from 'tsee'
 
 interface IEntityEvents extends DefaultEventMap {
   _: () => void, // TODO: Remove when events are added
@@ -104,3 +96,10 @@ export abstract class Entity<Events = unknown, Containers extends Container[] = 
   }
 
 }
+
+import { AttributeMap } from './AttributeMap'
+import { Player } from '../Player'
+import { Metadata } from './Metadata'
+import { MetadataFlag, MetadataGeneric, MetadataType } from '../types/player'
+import { GlobalTick } from '../tick/GlobalTick'
+import { EntityPosition } from './EntityPosition'

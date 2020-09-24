@@ -1,7 +1,3 @@
-import { Item } from '../item/Item'
-import { ItemMap } from '../item/ItemMap'
-import { ContainerType } from '../types/containers'
-
 export abstract class Container {
 
   public static MAX_STACK = 64
@@ -26,3 +22,7 @@ export abstract class Container {
   }
 
 }
+
+import { Item } from '../item/Item'
+import { ItemMap } from '../item/ItemMap'
+import { ContainerType } from '../types/containers'

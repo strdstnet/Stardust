@@ -1,6 +1,4 @@
 import { Socket } from 'dgram'
-import { BinaryData } from '../utils/BinaryData'
-import { Packet } from '../network/Packet'
 
 export interface IAddress {
   ip: string,
@@ -29,13 +27,13 @@ export const FamilyStrToInt = {
 }
 
 export interface ISendPacketArgs {
-  packet: Packet<any>,
+  packet: any,
   socket: Socket,
   address: IAddress,
 }
 
 export interface IPacketHandlerArgs {
-  data: BinaryData,
+  data: any,
   socket: Socket,
   address: IAddress,
 }
@@ -65,4 +63,10 @@ export enum MultiplayerVisibility {
   FRIENDS            = 2,
   FRIENDS_OF_FRIENDS = 3,
   PUBLIC             = 4,
+}
+
+export const DummyAddress: IAddress = {
+  ip: '0.0.0.0',
+  port: 19132,
+  family: 4,
 }

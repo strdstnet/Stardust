@@ -1,4 +1,3 @@
-import { BinaryData } from '../utils/BinaryData'
 import { Tag, TagType } from './Tag'
 
 export class LongTag extends Tag<bigint> {
@@ -7,7 +6,7 @@ export class LongTag extends Tag<bigint> {
     super(TagType.Long)
   }
 
-  public readValue(data: BinaryData): bigint {
+  public readValue(data: any): bigint {
     return this.value = data.readVarLong()
   }
 

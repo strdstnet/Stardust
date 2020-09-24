@@ -1,4 +1,3 @@
-import { BinaryData } from '../utils/BinaryData'
 import { Tag, TagType } from './Tag'
 
 export class FloatTag extends Tag<number> {
@@ -7,7 +6,7 @@ export class FloatTag extends Tag<number> {
     super(TagType.Float)
   }
 
-  public readValue(data: BinaryData): number {
+  public readValue(data: any): number {
     return this.value = data.readLFloat()
   }
 

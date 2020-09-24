@@ -1,6 +1,4 @@
-import { Items } from '../types/world'
 import { Block } from './Block'
-import { BlockNames } from './types'
 
 export class Air extends Block {
 
@@ -9,3 +7,6 @@ export class Air extends Block {
   }
 
 }
+
+import { BlockNames } from './types'
+import { Items } from '../types/world'

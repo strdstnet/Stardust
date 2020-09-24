@@ -1,4 +1,3 @@
-import { BinaryData } from '../utils/BinaryData'
 import { Tag, TagType } from './Tag'
 import { TagMapper } from './TagMapper'
 
@@ -18,7 +17,7 @@ export class ListTag<T extends Tag = Tag> extends Tag<T[]> {
     return this
   }
 
-  public readValue(data: BinaryData): T[] {
+  public readValue(data: any): T[] {
     const items: T[] = []
     this.valueType = data.readByte()
     const count = data.readVarInt()

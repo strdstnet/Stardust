@@ -1,15 +1,3 @@
-import { Air } from './Air'
-import { Block } from './Block'
-import { Dirt } from './Dirt'
-import { Grass } from './Grass'
-import { Stone } from './Stone'
-import { NBTFile, NBTParser } from '../data/NBTParser'
-import { ListTag } from '../nbt/ListTag'
-import { CompoundTag } from '../nbt/CompoundTag'
-import { ShortTag } from '../nbt/ShortTag'
-import { StringTag } from '../nbt/StringTag'
-import { IntTag } from '../nbt/IntTag'
-
 type BlockStateNBT = CompoundTag<{
   id: ShortTag,
   block: CompoundTag<{
@@ -19,12 +7,25 @@ type BlockStateNBT = CompoundTag<{
   }>,
 }>
 
+type R12StateNBT = CompoundTag<{
+  name: StringTag,
+  version: IntTag,
+  states: CompoundTag,
+}>
+
+interface IR12State {
+  name: string,
+  meta: number,
+  state: R12StateNBT,
+}
+
 export class BlockMap {
 
   private static blocks: Map<string, Block> = new Map()
   private static idToName: Map<number, string> = new Map()
 
-  private static blockStates: BlockStateNBT[]
+  public static runtimeToLegacy: Map<number, number> = new Map()
+  public static legacyToRuntime: Map<number, number> = new Map()
 
   public static AIR: Block
 
@@ -67,11 +68,82 @@ export class BlockMap {
     this.add(new Dirt())
   }
 
-  public static async populate(): Promise<void> {
+  public static populate(): void {
     this.registerItems()
 
-    const parser = new NBTParser<ListTag<BlockStateNBT>>(NBTFile.BLOCK_STATES)
-    this.blockStates = parser.parse().value
+    const parser = new NBTFile(NBTFileId.BLOCK_STATES)
+    const states = parser.readTag<ListTag<BlockStateNBT>>().value
+
+    const legacyStates: IR12State[] = []
+    const legacyStateData = new DataFile('r12_to_current_block_map.bin')
+    while(!legacyStateData.feof) {
+      const name = legacyStateData.readString()
+      const meta = legacyStateData.readLShort()
+      const state: R12StateNBT = legacyStateData.readTag()
+
+      legacyStates.push({
+        name,
+        meta,
+        state,
+      })
+    }
+
+
+
+    const idToState: Map<string, Set<number>> = new Map()
+    for(const [ id, state ] of states.entries()) {
+      const name = state.get('block').val('name')
+
+      const set = idToState.get(name)
+      idToState.set(name, set ? set.add(id) : new Set([ id ]))
+    }
+
+    // console.log(idToState)
+    // if(!process.po) process.exit()
+
+    stateLoop: for(const { name, meta, state } of legacyStates) {
+      const id = (LegacyIdMap as any)[name]
+
+      if(typeof id === 'undefined') throw new Error(`No legacy ID found for ${name}`)
+
+      if(meta > 15) continue
+
+      const mappedName = state.val('name')
+      const stateVal = idToState.get(mappedName)
+
+      if(!stateVal) throw new Error(`No network ID found for ${mappedName}`)
+
+      for(const networkStateId of stateVal) {
+        const networkState = states[networkStateId]
+
+        if(state.equals(networkState.get('block'))) {
+          this.legacyToRuntime.set((id << 4) | meta, networkStateId)
+          this.runtimeToLegacy.set(networkStateId, (id << 4) | meta)
+          continue stateLoop
+        }
+      }
+    }
+
+    // console.log(this.legacyToRuntime.get(BlockIds.STONE << 4))
+    // console.log(this.legacyToRuntime.get(BlockIds.GRASS << 4))
+    // console.log(this.legacyToRuntime.get(BlockIds.DIRT << 4))
+    // console.log(this.legacyToRuntime.get(BlockIds.UPDATE_BLOCK << 4))
+    // if(!process.po) process.exit()
   }
 
 }
+
+import { Air } from './Air'
+import { Block } from './Block'
+import { Dirt } from './Dirt'
+import { Grass } from './Grass'
+import { Stone } from './Stone'
+import { NBTFile, NBTFileId } from '../data/NBTFile'
+import { ListTag } from '../nbt/ListTag'
+import { CompoundTag } from '../nbt/CompoundTag'
+import { ShortTag } from '../nbt/ShortTag'
+import { StringTag } from '../nbt/StringTag'
+import { IntTag } from '../nbt/IntTag'
+import LegacyIdMap from '../data/legacy_id_map.json'
+import { DataFile } from '../data/DataFile'
+import { BlockIds } from './types'

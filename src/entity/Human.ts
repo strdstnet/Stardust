@@ -1,9 +1,4 @@
-import { Attribute, Attr } from './Attribute'
 import { Creature } from './Creature'
-import { Armor } from '../containers/Armor'
-import { Container } from '../containers/Container'
-import { EnderChest } from '../containers/EnderChest'
-import { Inventory } from '../containers/Inventory'
 
 type HumanContainers = [Inventory, EnderChest, Armor, ...Container[]]
 
@@ -35,3 +30,9 @@ export class Human<Events, Containers extends Container[] = []> extends Creature
   }
 
 }
+
+import { Attribute, Attr } from './Attribute'
+import { Armor } from '../containers/Armor'
+import { Container } from '../containers/Container'
+import { EnderChest } from '../containers/EnderChest'
+import { Inventory } from '../containers/Inventory'

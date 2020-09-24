@@ -1,4 +1,3 @@
-import { BinaryData } from '../utils/BinaryData'
 import { Tag, TagType } from './Tag'
 
 export class StringTag extends Tag<string> {
@@ -7,7 +6,7 @@ export class StringTag extends Tag<string> {
     super(TagType.String)
   }
 
-  public readValue(data: BinaryData): string {
+  public readValue(data: any): string {
     return this.value = data.readString()
   }
 

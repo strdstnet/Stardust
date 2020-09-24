@@ -1,7 +1,7 @@
 import { BundledPacket } from './BundledPacket'
-import { Packets, Protocol, DummyAddress } from '../../types/protocol'
+import { Packets, Protocol } from '../../types/protocol'
 import { DataType } from '../../types/data'
-import { IAddress } from '../../types/network'
+import { DummyAddress, IAddress } from '../../types/network'
 import { ParserType } from '../Packet'
 
 interface INewIncomingConnection {

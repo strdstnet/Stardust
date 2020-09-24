@@ -31,10 +31,10 @@ import { EntityNotification } from './bedrock/EntityNotification'
 import { ContainerNotification } from './bedrock/ContainerNotification'
 import { EntityEquipment } from './bedrock/EntityEquipment'
 import { BundledPacket } from './raknet/BundledPacket'
-import { IAddress, IBundledPacket, IClientArgs } from '../types/network'
+import { DummyAddress, IAddress, IBundledPacket, IClientArgs } from '../types/network'
 import { PacketBundle } from './raknet/PacketBundle'
 import { NAK } from './raknet/NAK'
-import { DummyAddress, Packets, Protocol } from '../types/protocol'
+import { Packets, Protocol } from '../types/protocol'
 import { ConnectionRequest } from './raknet/ConnectionRequest'
 import { NewIncomingConnection } from './raknet/NewIncomingConnection'
 import { ConnectedPing } from './raknet/ConnectedPing'
@@ -495,7 +495,7 @@ export class Client {
         console.log(block.runtimeId)
         console.log(face)
         console.log(block.runtimeId | (face << 24))
-        Server.i.broadcastLevelEvent(LevelEventType.PARTICLE_PUNCH_BLOCK, actionX, actionY, actionZ, 65535 / (0.6 * 20))
+        Server.i.broadcastLevelEvent(LevelEventType.PARTICLE_PUNCH_BLOCK, actionX, actionY, actionZ, block.runtimeId | (face << 24))
         break
       case PlayerEventAction.ABORT_BREAK:
       case PlayerEventAction.STOP_BREAK:

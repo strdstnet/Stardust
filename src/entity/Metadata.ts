@@ -1,5 +1,3 @@
-import { MetadataFlag, MetadataGeneric, MetadataType } from '../types/player'
-
 export interface MetadataItem {
   type: MetadataType,
   value: any,
@@ -56,3 +54,5 @@ export class Metadata extends Map<MetadataFlag, MetadataItem> {
   }
 
 }
+
+import { MetadataFlag, MetadataGeneric, MetadataType } from '../types/player'

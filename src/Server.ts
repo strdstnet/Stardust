@@ -102,7 +102,7 @@ export class Server implements IServer {
     BedrockData.loadData()
     Attribute.initAttributes()
     ItemMap.registerItems()
-    BlockMap.registerItems()
+    BlockMap.populate()
     GlobalTick.start(Server.TPS)
 
     await this.level.init()

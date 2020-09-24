@@ -1,5 +1,3 @@
-import { FLOAT_MAX_VAL } from '../types/data'
-
 export enum Attr {
   ABSORPTION = 0,
 	SATURATION = 1,
@@ -82,3 +80,5 @@ export class Attribute {
   }
 
 }
+
+import { FLOAT_MAX_VAL } from '../types/data'

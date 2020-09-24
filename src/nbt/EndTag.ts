@@ -1,4 +1,3 @@
-import { BinaryData } from '../utils/BinaryData'
 import { Tag, TagType } from './Tag'
 
 export class EndTag extends Tag<null> {
@@ -11,7 +10,7 @@ export class EndTag extends Tag<null> {
     return super.assign(name, null)
   }
 
-  public readValue(data: BinaryData): null {
+  public readValue(data: any): null {
     return this.value = null
   }
 

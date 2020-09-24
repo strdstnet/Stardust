@@ -1,4 +1,3 @@
-import { BinaryData } from '../utils/BinaryData'
 import { Tag, TagType } from './Tag'
 
 export class LongArrayTag extends Tag<bigint[]> {
@@ -7,7 +6,7 @@ export class LongArrayTag extends Tag<bigint[]> {
     super(TagType.LongArray)
   }
 
-  public readValue(data: BinaryData): bigint[] {
+  public readValue(data: any): bigint[] {
     throw new Error('not implemented')
   }
 

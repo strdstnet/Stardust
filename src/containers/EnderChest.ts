@@ -1,4 +1,3 @@
-import { ContainerType } from '../types/containers'
 import { Container } from './Container'
 
 export class EnderChest extends Container {
@@ -8,3 +7,5 @@ export class EnderChest extends Container {
   }
 
 }
+
+import { ContainerType } from '../types/containers'

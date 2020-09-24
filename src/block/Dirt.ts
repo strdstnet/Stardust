@@ -1,5 +1,4 @@
 import { Block } from './Block'
-import { BlockNames } from './types'
 
 export class Dirt extends Block {
 
@@ -7,8 +6,6 @@ export class Dirt extends Block {
     super(BlockNames.DIRT, damage)
   }
 
-  public get runtimeId(): number {
-    return 2988
-  }
-
 }
+
+import { BlockNames } from './types'

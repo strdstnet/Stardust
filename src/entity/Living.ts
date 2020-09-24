@@ -1,8 +1,4 @@
-import { Attribute, Attr } from './Attribute'
 import { Entity } from './Entity'
-import { Container } from '../containers/Container'
-import { Armor } from '../containers/Armor'
-import { MetadataFlag, MetadataType } from '../types/player'
 
 type LivingContainers = [Armor]
 
@@ -31,3 +27,7 @@ export abstract class Living<Events, Containers extends Container[] = []> extend
   }
 
 }
+
+import { Attribute, Attr } from './Attribute'
+import { Container } from '../containers/Container'
+import { Armor } from '../containers/Armor'
