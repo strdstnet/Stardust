@@ -60,6 +60,7 @@ import { EntityFall } from './bedrock/EntityFall'
 import { LevelSound } from './bedrock/LevelSound'
 import { Emote } from './bedrock/Emote'
 import { ContainerId, ContainerType } from '../types/containers'
+import { ContainerClose } from './bedrock/ContainerClose'
 
 interface SplitQueue {
   [splitId: number]: BundledPacket<any>,
@@ -335,6 +336,9 @@ export class Client {
           case Packets.EMOTE:
             this.handleEmote(pk)
             break
+          case Packets.CONTAINER_CLOSE:
+            this.handleCloseContainer(pk)
+            break
           default:
             this.logger.debug(`UNKNOWN BATCHED PACKET ${pk.id}`)
         }
@@ -483,6 +487,14 @@ export class Client {
     }
   }
 
+  private handleCloseContainer(packet: ContainerClose) {
+    const { windowId } = packet.props
+
+    this.sendBatched(new ContainerClose({
+      windowId,
+    }))
+  }
+
   private async handlePlayerAction(packet: PlayerAction) {
     const { action, actionX, actionY, actionZ, face } = packet.props
 
@@ -495,7 +507,7 @@ export class Client {
         Server.i.broadcastLevelEvent(LevelEventType.BLOCK_START_BREAK, actionX, actionY, actionZ, 65536 / (breakTime / 50))
         break
       case PlayerEventAction.CONTINUE_BREAK:
-        const block = this.level.getBlockAt(actionX, actionY, actionZ)
+        // console.log('----')
         // console.log('----')
         // console.log(block.runtimeId)
         // console.log(face)
