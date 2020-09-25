@@ -13,7 +13,7 @@ export class EntityNotification extends BatchedPacket<IEntityNotification> {
   constructor(p?: IEntityNotification) {
     super(Packets.ENTITY_NOTIFICATION, [
       { name: 'entityRuntimeId', parser: DataType.U_VARLONG },
-      { name: 'metdata', parser: DataType.ENTITY_METADATA },
+      { name: 'metadata', parser: DataType.ENTITY_METADATA },
     ])
 
     if(p) this.props = Object.assign({}, p)
