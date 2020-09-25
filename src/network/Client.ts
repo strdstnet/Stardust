@@ -95,7 +95,7 @@ export class Client {
 
   private player!: Player
 
-  private viewDistance = 12
+  private viewDistance = 4
 
   private lastPlayerChunk: string | null = null // 'x:z' last chunk we generated nearby chunks from
   private recentlySentChunks: string[] = [] // ['x:z']
