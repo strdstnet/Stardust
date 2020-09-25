@@ -556,6 +556,42 @@ export class BinaryData {
     }
   }
 
+  public readContainerItem(): Item {
+    const id = this.readVarInt()
+
+    if(id === Items.AIR) return ItemMap.AIR
+
+    const item = ItemMap.getById(id)
+
+    if(!item) throw new Error(`Couldn't create item from id: ${id}`)
+
+    const auxValue = this.readVarInt()
+    item.damage = auxValue >> 8
+    item.count = auxValue & 0xff
+
+    const nbtLen = this.readLShort()
+
+    item.nbt = null
+    if(nbtLen === 0xffff) {
+      // TODO: Item NBTs
+      // https://github.com/pmmp/PocketMine-MP/blob/stable/src/pocketmine/network/mcpe/NetworkBinaryStream.php#L201-L201
+    }
+
+    for(let i = 0, c = this.readVarInt(); i < c; i++) {
+      this.readString() // CanPlaceOn
+    }
+
+    for(let i = 0, c = this.readVarInt(); i < c; i++) {
+      this.readString() // CanDestroy
+    }
+
+    if(id === Items.SHIELD) {
+      this.readVarLong() // blocking tick
+    }
+
+    return item
+  }
+
   public writeUUID(uuid: UUID): void {
     this.writeLInt(uuid.parts[1])
     this.writeLInt(uuid.parts[0])
@@ -758,3 +794,4 @@ import { Metadata } from '../entity/Metadata'
 import { Tag, TagType } from '../nbt/Tag'
 import { EndTag } from '../nbt/EndTag'
 import { TagMapper } from '../nbt/TagMapper'
+import { ItemMap } from '../item/ItemMap'
