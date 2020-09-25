@@ -25,6 +25,7 @@ import { LevelSound } from './LevelSound'
 import { Emote } from './Emote'
 import { ContainerClose } from './ContainerClose'
 import { ContainerTransaction } from './ContainerTransaction'
+import { EntityEquipment } from './EntityEquipment'
 
 interface IPacketBatch {
   packets: Array<BatchedPacket<any>>,
@@ -122,6 +123,9 @@ export class PacketBatch extends BundledPacket<IPacketBatch> {
                   break
                 case Packets.CONTAINER_TRANSACTION:
                   packet = new ContainerTransaction()
+                  break
+                case Packets.ENTITY_EQUIPMENT:
+                  packet = new EntityEquipment()
                   break
                 // case Packets.RESOURCE_PACKS_STACK:
                 //   packet = new BatchedPacket(packetId, [])
