@@ -33,7 +33,7 @@ export class EntityPosition {
   public update(x: number, y: number, z: number, type?: PosUpdateType): void
   public update(newPos: EntityPosition, type?: PosUpdateType): void
   public update(...args: any[]): void {
-    if(args.length === 2) {
+    if(args.length < 3) {
       const newPos = args[0] as EntityPosition
 
       this.x = newPos.x
@@ -62,6 +62,25 @@ export class EntityPosition {
   public acknowledgeUpdate(): void {
     this.updateType = PosUpdateType.NONE
     // this.updateType = PosUpdateType.OTHER
+  }
+
+  public equals(pos: EntityPosition): boolean {
+    return (
+      pos.x === this.x &&
+      pos.y === this.y &&
+      pos.z === this.z &&
+      pos.pitch === this.pitch &&
+      pos.yaw === this.yaw &&
+      pos.headYaw === this.headYaw &&
+      pos.onGround === this.onGround &&
+      pos.motion.x === this.motion.x &&
+      pos.motion.y === this.motion.y &&
+      pos.motion.z === this.motion.z
+    )
+  }
+
+  public clone(): EntityPosition {
+    return new EntityPosition(this.x, this.y, this.z, this.pitch, this.yaw, this.headYaw, this.motion, this.onGround)
   }
 
 }

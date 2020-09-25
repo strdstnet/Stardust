@@ -158,6 +158,14 @@ export class BinaryData {
     }
   }
 
+  public writeByteRotation(val: number): void {
+    this.writeByte(val / (360 / 256))
+  }
+
+  public readByteRotation(skip = true): number {
+    return (this.readByte(skip) * (360 / 256))
+  }
+
   public readByte(skip = true): number {
     const byte = this.buf[this.pos]
 
@@ -297,7 +305,7 @@ export class BinaryData {
   }
 
   public writeString(val: string, writeLength = true, skip = true): void {
-    if(writeLength) this.writeUnsignedVarInt(val.length)
+    if(writeLength) this.writeUnsignedVarInt(Buffer.byteLength(val))
     this.append(Buffer.from(val, 'utf8'), 0, skip)
   }
 
@@ -411,7 +419,7 @@ export class BinaryData {
     }).replace(m || ' ', '::')
   }
 
-  public writeAddress({ ip, port, family }: IAddress): this {
+  public writeAddress({ ip, port, family }: IAddress): void {
     this.writeByte(family)
     switch (family) {
       case AddressFamily.IPV4:
@@ -424,7 +432,6 @@ export class BinaryData {
       default:
         this.logger.error('ERR -> Unknown address family:', family)
     }
-    return this
   }
 
 
@@ -495,13 +502,13 @@ export class BinaryData {
     return tmp ^ (raw & (1 << 63))
   }
 
-  public writeVector3Float(v3: Vector3): void {
+  public writeVector3Float(v3: Vector3 | EntityPosition): void {
     this.writeFloat(v3.x)
     this.writeFloat(v3.y)
     this.writeFloat(v3.z)
   }
 
-  public writeVector3(v3: Vector3): void {
+  public writeVector3(v3: Vector3 | EntityPosition): void {
     this.writeLFloat(v3.x)
     this.writeLFloat(v3.y)
     this.writeLFloat(v3.z)
@@ -795,3 +802,5 @@ import { Tag, TagType } from '../nbt/Tag'
 import { EndTag } from '../nbt/EndTag'
 import { TagMapper } from '../nbt/TagMapper'
 import { ItemMap } from '../item/ItemMap'
+import { EntityPosition } from '../entity/EntityPosition'
+

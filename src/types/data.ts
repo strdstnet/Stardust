@@ -29,4 +29,5 @@ export enum DataType {
   CHUNK,
   UUID,
   ENTITY_METADATA,
+  BYTE_ROTATION,
 }

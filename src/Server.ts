@@ -38,6 +38,9 @@ import { Emote } from './network/bedrock/Emote'
 import { ItemMap } from './item/ItemMap'
 import { BlockMap } from './block/BlockMap'
 import { WorldSound } from './types/world'
+import { Entity } from './entity/Entity'
+import { AddEntity } from './network/bedrock/AddEntity'
+import { MoveEntity } from './network/bedrock/MoveEntity'
 
 const DEFAULT_OPTS: ServerOpts = {
   address: '0.0.0.0',
@@ -303,6 +306,14 @@ export class Server implements IServer {
     }), includeSelf ? null : player.clientId)
   }
 
+  public moveEntity(entity: Entity): void {
+    this.broadcast(new MoveEntity({
+      runtimeEntityId: entity.id,
+      position: entity.position.coords,
+      mode: 2,
+    }))
+  }
+
   public broadcastLevelEvent(event: LevelEventType, x: number, y: number, z: number, data: number): void {
     this.broadcast(new LevelEvent({
       eventId: event,
@@ -350,6 +361,15 @@ export class Server implements IServer {
       runtimeEntityId: player.id,
       emoteId,
       flags,
+    }))
+  }
+
+  public addEntity(entity: Entity<any, any>): void {
+    this.broadcast(new AddEntity({
+      entityRuntimeId: entity.id,
+      type: entity.gameId,
+      position: entity.position,
+      metadata: entity.metadata,
     }))
   }
 
