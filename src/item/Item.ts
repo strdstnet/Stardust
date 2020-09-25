@@ -6,8 +6,6 @@ export class Item {
 
   public id: Items
 
-  private damageVal = 0
-
   public count = 1
 
   public nbt: CompoundTag | null = null
@@ -15,17 +13,20 @@ export class Item {
   /**
    * @description Registers a new Item
    */
-  constructor(public name: string, id?: Items, rawDamage = 0, public maxCount = 64) {
+  constructor(public name: string, id?: Items, public meta = 0, public maxCount = 64) {
     this.id = typeof id !== 'undefined' ? id : (LegacyIdMap as any)[this.name]
-    this.damage = rawDamage
+  }
+
+  public get canStack(): boolean {
+    return true
   }
 
   public get damage(): number {
-    return this.damageVal
+    return this.meta
   }
 
   public set damage(val: number) {
-    this.damageVal = val === -1 ? -1 : val & 0x7FFF
+    this.meta = val === -1 ? -1 : val & 0x7FFF
   }
 
   public clone(): Item {

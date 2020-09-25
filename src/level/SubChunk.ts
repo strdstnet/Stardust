@@ -80,8 +80,7 @@ export class SubChunk {
   public getBlockAt(x: number, y: number, z: number): [number, number] {
     const index = (x << 8) | (z << 4) | y
 
-    return [this.blockData[index], this.data[index >> 1]]
-    // return (this.blockData[index] << 4) | ((this.data[index >> 1] >> ((y & 1) << 2)) & 0xf)
+    return [this.blockData[index], (this.data[index >> 1] >> ((y & 1) << 2)) & 0xf]
   }
 
   public setBlock(x: number, y: number, z: number, block: Block): void {

@@ -505,7 +505,7 @@ export class Client {
     }))
   }
 
-  private handleContainerTransaction(packet: ContainerTransaction) {
+  private async handleContainerTransaction(packet: ContainerTransaction) {
     const { type, position } = packet.props.transaction
 
     const pos = new Vector3(position?.x, position?.y, position?.z)
@@ -516,7 +516,6 @@ export class Client {
 
     switch(type) {
       case TransactionType.BREAK_BLOCK:
-        console.log('BROKE BLOCK')
         Server.i.broadcastLevelEvent(LevelEventType.PARTICLE_DESTROY, pos.x + 0.5, pos.y + 0.5, pos.z + 0.5, block.runtimeId)
         this.sendContainerUpdate(this.player.inventory, this.player.inventory.add(block.item))
 
@@ -537,9 +536,7 @@ export class Client {
 
     switch(action) {
       case PlayerEventAction.START_BREAK:
-        const breakTime = block.breakTime
-
-        Server.i.broadcastLevelEvent(LevelEventType.BLOCK_START_BREAK, actionX, actionY, actionZ, 65536 / (breakTime / 50))
+        Server.i.broadcastLevelEvent(LevelEventType.BLOCK_START_BREAK, actionX, actionY, actionZ, 65536 / (block.breakTime / 50))
         break
       case PlayerEventAction.CONTINUE_BREAK:
         Server.i.broadcastLevelEvent(LevelEventType.PARTICLE_PUNCH_BLOCK, actionX, actionY, actionZ, block.runtimeId | (face << 24))

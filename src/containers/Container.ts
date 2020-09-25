@@ -20,7 +20,7 @@ export abstract class Container {
   }
 
   public add(item: Item): number {
-    const index = this.items.findIndex(i => i.id === Items.AIR || (i.id === item.id && i.count < i.maxCount))
+    const index = this.items.findIndex(i => i.id === Items.AIR || (i.id === item.id && i.meta === item.meta && i.canStack && item.canStack && i.count < i.maxCount))
 
     if(index < 0) throw new Error('No inventory space free')
 
