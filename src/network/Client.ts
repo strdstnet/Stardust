@@ -64,6 +64,7 @@ import { ContainerClose } from './bedrock/ContainerClose'
 import { Container } from '../containers/Container'
 import { Item } from '../item/Item'
 import { ContainerUpdate } from './bedrock/ContainerUpdate'
+import { ContainerTransaction } from './bedrock/ContainerTransaction'
 
 interface SplitQueue {
   [splitId: number]: BundledPacket<any>,
@@ -342,6 +343,9 @@ export class Client {
           case Packets.CONTAINER_CLOSE:
             this.handleCloseContainer(pk)
             break
+          case Packets.CONTAINER_TRANSACTION:
+            this.handleContainerTransaction(pk)
+            break
           default:
             this.logger.debug(`UNKNOWN BATCHED PACKET ${pk.id}`)
         }
@@ -498,6 +502,10 @@ export class Client {
     }))
   }
 
+  private handleContainerTransaction(packet: ContainerTransaction) {
+    console.log('GOT CONTAINER TRANSACTION')
+  }
+
   private async handlePlayerAction(packet: PlayerAction) {
     const { action, actionX, actionY, actionZ, face } = packet.props
 
@@ -515,8 +523,8 @@ export class Client {
       case PlayerEventAction.ABORT_BREAK:
       case PlayerEventAction.STOP_BREAK:
         Server.i.broadcastLevelEvent(LevelEventType.BLOCK_STOP_BREAK, actionX, actionY, actionZ, 0)
-        this.sendContainerUpdate(this.player.inventory, this.player.inventory.add(block.item))
         Server.i.broadcastLevelEvent(LevelEventType.PARTICLE_DESTROY, actionX + 0.5, actionY + 0.5, actionZ + 0.5, block.runtimeId)
+        this.sendContainerUpdate(this.player.inventory, this.player.inventory.add(block.item))
         break
       case PlayerEventAction.START_SNEAK:
         this.player.metadata.setGeneric(MetadataGeneric.SNEAKING, true)

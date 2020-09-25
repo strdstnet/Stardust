@@ -1,17 +1,17 @@
-import { BundledPacket } from '../raknet/BundledPacket'
 import { Packets } from '../../types/protocol'
 import { DataType } from '../../types/data'
 import { ParserType } from '../Packet'
 import { ContainerActionSource, ContainerTransactionType } from '../../types/containers'
 import { Item } from '../../item/Item'
 import { Vector3 } from 'math3d'
+import { BatchedPacket } from './BatchedPacket'
 
 interface ITransaction {
   type: number,
   position?: Vector3,
   face?: number,
   hotbarSlot: number,
-  itemInHand: Item,
+  itemHolding: Item,
   playerPos?: Vector3
   clickPos?: Vector3,
   blockRuntimeId?: number,
@@ -19,11 +19,11 @@ interface ITransaction {
   headPos?: Vector3
 }
 
-interface IInventoryAction {
+interface IContainerAction {
   sourceType: ContainerActionSource,
   containerId: number,
   sourceFlags?: number,
-  inventorySlot: number,
+  slot: number,
   oldItem: Item,
   newItem: Item
   newItemStackId?: number,
@@ -34,19 +34,19 @@ interface IChangedSlots {
   indexes: number[],
 }
 
-interface IInventoryTransaction {
+interface IContainerTransaction {
   requestId: number,
   requestChangedSlots: IChangedSlots[],
   transactionType: number,
   hasItemStackIds: boolean,
-  actions: IInventoryAction[],
+  actions: IContainerAction[],
   transaction: ITransaction,
 }
 
-export class InventoryTransaction extends BundledPacket<IInventoryTransaction> {
+export class ContainerTransaction extends BatchedPacket<IContainerTransaction> {
 
-  constructor(props?: IInventoryTransaction) {
-    super(Packets.INVENTORY_TRANSACTION, [
+  constructor(props?: IContainerTransaction) {
+    super(Packets.CONTAINER_TRANSACTION, [
       { name: 'requestId', parser: DataType.VARINT },
       {
         parser({ type, data, props }) {
@@ -100,7 +100,7 @@ export class InventoryTransaction extends BundledPacket<IInventoryTransaction> {
                 default:
                   throw new Error(`Unknown inventory source type ${action.sourceType}`)
               }
-              data.writeUnsignedVarInt(action.inventorySlot)
+              data.writeUnsignedVarInt(action.slot)
               data.writeContainerItem(action.oldItem)
               data.writeContainerItem(action.newItem)
               if(props.hasItemStackIds && action.newItemStackId) {
@@ -112,7 +112,7 @@ export class InventoryTransaction extends BundledPacket<IInventoryTransaction> {
             const count = data.readUnsignedVarInt()
 
             for(let i = 0; i < count; i++) {
-              const action: IInventoryAction = {} as IInventoryAction
+              const action: IContainerAction = {} as IContainerAction
               action.sourceType = data.readUnsignedVarInt()
 
               switch(action.sourceType) {
@@ -129,7 +129,7 @@ export class InventoryTransaction extends BundledPacket<IInventoryTransaction> {
                   throw new Error(`Unknown inventory source type ${action.sourceType}`)
               }
 
-              action.inventorySlot = data.readUnsignedVarInt()
+              action.slot = data.readUnsignedVarInt()
               action.oldItem = data.readContainerItem()
               action.newItem = data.readContainerItem()
 
@@ -152,7 +152,7 @@ export class InventoryTransaction extends BundledPacket<IInventoryTransaction> {
                 data.writeVarInt(useItem.position.z)
                 data.writeVarInt(useItem.face)
                 data.writeVarInt(useItem.hotbarSlot)
-                data.writeContainerItem(useItem.itemInHand)
+                data.writeContainerItem(useItem.itemHolding)
                 data.writeVector3(useItem.playerPos)
                 data.writeVector3(useItem.clickPos)
                 data.writeUnsignedVarInt(useItem.blockRuntimeId)
@@ -162,7 +162,7 @@ export class InventoryTransaction extends BundledPacket<IInventoryTransaction> {
                 data.writeUnsignedVarLong(useItemEntity.entityRuntimeId)
                 data.writeUnsignedVarInt(useItemEntity.type)
                 data.writeVarInt(useItemEntity.hotbarSlot)
-                data.writeContainerItem(useItemEntity.itemInHand)
+                data.writeContainerItem(useItemEntity.itemHolding)
                 data.writeVector3(useItemEntity.playerPos)
                 data.writeVector3(useItemEntity.clickPos)
                 break
@@ -170,7 +170,7 @@ export class InventoryTransaction extends BundledPacket<IInventoryTransaction> {
                 const itemRelease = props.transaction as any
                 data.writeUnsignedVarInt(itemRelease.type)
                 data.writeVarInt(itemRelease.hotbarSlot)
-                data.writeContainerItem(itemRelease.itemInHand)
+                data.writeContainerItem(itemRelease.itemHolding)
                 data.writeVector3(itemRelease.headPos)
                 break
               case ContainerTransactionType.NORMAL:
@@ -191,7 +191,7 @@ export class InventoryTransaction extends BundledPacket<IInventoryTransaction> {
                   ),
                   face: data.readVarInt(),
                   hotbarSlot: data.readVarInt(),
-                  itemInHand: data.readContainerItem(),
+                  itemHolding: data.readContainerItem(),
                   playerPos: data.readVector3(),
                   clickPos: data.readVector3(),
                   blockRuntimeId: data.readUnsignedVarInt(),
@@ -202,7 +202,7 @@ export class InventoryTransaction extends BundledPacket<IInventoryTransaction> {
                   entityRuntimeId: data.readUnsignedVarLong(),
                   type: data.readUnsignedVarInt(),
                   hotbarSlot: data.readVarInt(),
-                  itemInHand: data.readContainerItem(),
+                  itemHolding: data.readContainerItem(),
                   playerPos: data.readVector3(),
                   clickPos: data.readVector3(),
                 }
@@ -211,7 +211,7 @@ export class InventoryTransaction extends BundledPacket<IInventoryTransaction> {
                 props.transaction = {
                   type: data.readUnsignedVarInt(),
                   hotbarSlot: data.readVarInt(),
-                  itemInHand: data.readContainerItem(),
+                  itemHolding: data.readContainerItem(),
                   headPos: data.readVector3(),
                 }
                 break
@@ -226,7 +226,7 @@ export class InventoryTransaction extends BundledPacket<IInventoryTransaction> {
       },
     ])
 
-    if(props) this.props = Object.assign({}, BundledPacket.defaultProps, props)
+    if(props) this.props = Object.assign({}, props)
   }
 
 }
