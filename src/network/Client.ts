@@ -349,6 +349,9 @@ export class Client {
           case Packets.CONTAINER_TRANSACTION:
             this.handleContainerTransaction(pk)
             break
+          case Packets.ENTITY_EQUIPMENT:
+            this.handleEntityEquipment(pk)
+            break
           default:
             this.logger.debug(`UNKNOWN BATCHED PACKET ${pk.id}`)
         }
@@ -623,6 +626,10 @@ export class Client {
     // Server.i.broadcastEmote(this.player, emoteId, flags)
   }
 
+  private handleEntityEquipment(packet: EntityEquipment) {
+    console.log(packet.props)
+  }
+
   private async completeLogin() {
     this.sendBatched(new StartGame({
       entityUniqueId: this.player.id,
@@ -652,7 +659,7 @@ export class Client {
 
     // this.player.notifySelf()
     this.player.notifyContainers()
-    // this.player.notifyHeldItem()
+    this.player.notifyHeldItem()
 
     await this.sendNearbyChunks()
 
