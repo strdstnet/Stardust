@@ -14,7 +14,7 @@ interface IEntityEquipment {
 export class EntityEquipment extends BatchedPacket<IEntityEquipment> {
 
   constructor(p?: Partial<IEntityEquipment>) {
-    super(Packets.ENTITY_DEFINITION_LIST, [
+    super(Packets.ENTITY_EQUIPMENT, [
       { name: 'entityRuntimeId', parser: DataType.U_VARLONG },
       { name: 'item', parser: DataType.CONTAINER_ITEM },
       { name: 'inventorySlot', parser: DataType.BYTE },

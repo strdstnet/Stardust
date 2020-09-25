@@ -59,12 +59,15 @@ import { Animate } from './bedrock/Animate'
 import { EntityFall } from './bedrock/EntityFall'
 import { LevelSound } from './bedrock/LevelSound'
 import { Emote } from './bedrock/Emote'
-import { ContainerId, ContainerType } from '../types/containers'
+import { ContainerId, ContainerTransactionType, ContainerType, TransactionType } from '../types/containers'
 import { ContainerClose } from './bedrock/ContainerClose'
 import { Container } from '../containers/Container'
 import { Item } from '../item/Item'
 import { ContainerUpdate } from './bedrock/ContainerUpdate'
 import { ContainerTransaction } from './bedrock/ContainerTransaction'
+import { PacketEvent } from '../events/PacketEvent'
+import { BlockActorData } from './bedrock/BlockActorData'
+import { NBTFile, NBTFileId } from '../data/NBTFile'
 
 interface SplitQueue {
   [splitId: number]: BundledPacket<any>,
@@ -503,7 +506,28 @@ export class Client {
   }
 
   private handleContainerTransaction(packet: ContainerTransaction) {
-    console.log('GOT CONTAINER TRANSACTION')
+    const { type, position } = packet.props.transaction
+
+    const pos = new Vector3(position?.x, position?.y, position?.z)
+
+    const block = this.level.getBlockAt(pos.x, pos.y, pos.z)
+
+    // console.log('GOT CONTAINER TRANSACTION', packet.props)
+
+    switch(type) {
+      case TransactionType.BREAK_BLOCK:
+        console.log('BROKE BLOCK')
+        Server.i.broadcastLevelEvent(LevelEventType.PARTICLE_DESTROY, pos.x + 0.5, pos.y + 0.5, pos.z + 0.5, block.runtimeId)
+        this.sendContainerUpdate(this.player.inventory, this.player.inventory.add(block.item))
+
+        // this.sendBatched(new BlockActorData({
+        //   x: pos.x,
+        //   y: pos.y,
+        //   z: pos.z,
+        //   namedTag: 'minecraft:grass',
+        // }))
+        break
+    }
   }
 
   private async handlePlayerAction(packet: PlayerAction) {
@@ -523,8 +547,6 @@ export class Client {
       case PlayerEventAction.ABORT_BREAK:
       case PlayerEventAction.STOP_BREAK:
         Server.i.broadcastLevelEvent(LevelEventType.BLOCK_STOP_BREAK, actionX, actionY, actionZ, 0)
-        Server.i.broadcastLevelEvent(LevelEventType.PARTICLE_DESTROY, actionX + 0.5, actionY + 0.5, actionZ + 0.5, block.runtimeId)
-        this.sendContainerUpdate(this.player.inventory, this.player.inventory.add(block.item))
         break
       case PlayerEventAction.START_SNEAK:
         this.player.metadata.setGeneric(MetadataGeneric.SNEAKING, true)
@@ -539,7 +561,15 @@ export class Client {
         Server.i.broadcastMetadata(this.player, this.player.metadata)
         break
       case PlayerEventAction.STOP_SPRINT:
-        this.player.metadata.setGeneric(MetadataGeneric.SPRINTING, false) // TODO: This should be false
+        this.player.metadata.setGeneric(MetadataGeneric.SPRINTING, false)
+        Server.i.broadcastMetadata(this.player, this.player.metadata)
+        break
+      case PlayerEventAction.START_SWIMMING:
+        this.player.metadata.setGeneric(MetadataGeneric.SWIMMING, true)
+        Server.i.broadcastMetadata(this.player, this.player.metadata)
+        break
+      case PlayerEventAction.STOP_SWIMMING:
+        this.player.metadata.setGeneric(MetadataGeneric.SWIMMING, false)
         Server.i.broadcastMetadata(this.player, this.player.metadata)
         break
       default:
@@ -764,7 +794,7 @@ export class Client {
       this.sendBatched(new EntityNotification({
         entityRuntimeId,
         metadata,
-      }), Reliability.Unreliable)
+      }))
     })
 
     this.player.on('Client:containerNotification', container => {

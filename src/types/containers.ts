@@ -63,3 +63,9 @@ export enum ContainerTransactionType {
   USE_ITEM_ON_ENTITY = 3,
   RELEASE_ITEM = 4,
 }
+
+export enum TransactionType {
+  CLICK_BLOCK = 0,
+  CLICK_AIR = 1,
+  BREAK_BLOCK = 2,
+}

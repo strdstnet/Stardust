@@ -144,6 +144,8 @@ export enum MetadataGeneric {
   CAN_FLY = 21,
   HAS_COLLISION = 47,
   AFFECTED_BY_GRAVITY = 48,
+  SWIMMING = 56,
+  EATING = 62
 }
 
 export enum InteractAction {
@@ -162,6 +164,8 @@ export enum PlayerEventAction {
   START_SNEAK = 11,
   STOP_SNEAK = 12,
   CONTINUE_BREAK = 18,
+  START_SWIMMING = 21,
+  STOP_SWIMMING = 22,
 }
 
 export enum PlayerAnimation {
