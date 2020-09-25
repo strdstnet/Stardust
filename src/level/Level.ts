@@ -69,7 +69,11 @@ export class Level {
 
   public async getChunkAt(x: number, z: number): Promise<Chunk> {
     const inCache = this.chunkCache.get(Level.getChunkId(x, z))
-    return inCache ? inCache : await this.loadChunk(x, z)
+    return inCache ? new Promise(resolve => {
+      setTimeout(() => {
+        resolve(inCache)
+      }, 20)
+    }) : this.loadChunk(x, z)
   }
 
   public getBlockAt(x: number, y: number, z: number): Block {
