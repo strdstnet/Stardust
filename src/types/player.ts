@@ -166,6 +166,7 @@ export enum PlayerEventAction {
   CONTINUE_BREAK = 18,
   START_SWIMMING = 21,
   STOP_SWIMMING = 22,
+  INTERACT_BLOCK = 25,
 }
 
 export enum PlayerAnimation {

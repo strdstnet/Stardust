@@ -164,6 +164,8 @@ const decodeDataType = (data: BinaryData, type: DataType) => {
       return data.readUUID()
     case DataType.ENTITY_METADATA:
       return data.readEntityMetadata()
+    case DataType.CONTAINER_ITEM:
+      return data.readContainerItem()
     default:
       console.error('Unknown DataType on read:', type)
   }

@@ -120,3 +120,7 @@ export enum Items {
   UPDATE_BLOCK = 248,
   SHIELD = 513,
 }
+
+export enum WorldSound {
+  PLACE = 6,
+}

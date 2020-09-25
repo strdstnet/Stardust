@@ -1,6 +1,8 @@
 import { Items } from '../types/world'
 import { CompoundTag } from '../nbt/CompoundTag'
 import LegacyIdMap from '../data/block_id_map.json'
+import { BlockMap } from '../block/BlockMap'
+import { BlockIds } from '../block/types'
 
 export class Item {
 
@@ -15,6 +17,19 @@ export class Item {
    */
   constructor(public name: string, id?: Items, public meta = 0, public maxCount = 64) {
     this.id = typeof id !== 'undefined' ? id : (LegacyIdMap as any)[this.name]
+  }
+
+  public get runtimeId(): number {
+    const state = BlockMap.legacyToRuntime.get((this.id << 4) | this.meta) ||
+      BlockMap.legacyToRuntime.get(this.id << 4) ||
+      BlockMap.legacyToRuntime.get(BlockIds.UPDATE_BLOCK << 4)
+
+    // console.log('STATE', state)
+    // if(!process.po) process.exit()
+
+    if(!state) throw new Error('o')
+
+    return state
   }
 
   public get canStack(): boolean {

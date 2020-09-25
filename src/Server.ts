@@ -37,6 +37,7 @@ import { LevelSound } from './network/bedrock/LevelSound'
 import { Emote } from './network/bedrock/Emote'
 import { ItemMap } from './item/ItemMap'
 import { BlockMap } from './block/BlockMap'
+import { WorldSound } from './types/world'
 
 const DEFAULT_OPTS: ServerOpts = {
   address: '0.0.0.0',
@@ -273,6 +274,11 @@ export class Server implements IServer {
   public removePlayer(id: bigint): void {
     this.players.delete(id)
 
+    this.broadcast(new PlayerList({
+      type: PlayerListType.REMOVE,
+      players: Array.from(this.players.values()),
+    }))
+
     this.updatePlayerList()
   }
 
@@ -316,13 +322,13 @@ export class Server implements IServer {
 
   public broadcastAnimate(player: Player, action: PlayerAnimation): void {
     this.broadcast(new Animate({
-      action,
+      action: 2,
       entityRuntimeId: player.id,
-    }), player.clientId)
+    }))
   }
 
   public broadcastLevelSound(
-    sound: number,
+    sound: number | WorldSound,
     position: Vector3,
     extraData: number,
     entityType: string,

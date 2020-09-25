@@ -41,7 +41,7 @@ import { ConnectedPing } from './raknet/ConnectedPing'
 import { ACK } from './raknet/ACK'
 import { ConnectedPong } from './raknet/ConnectedPong'
 import { ConnectionRequestAccepted } from './raknet/ConnectionRequestAccepted'
-import { AdventureSettingsFlag, CommandPermissions, PlayerPermissions, PlayStatusType, ResourcePackResponseStatus } from '../types/world'
+import { AdventureSettingsFlag, CommandPermissions, PlayerPermissions, PlayStatusType, ResourcePackResponseStatus, WorldSound } from '../types/world'
 import { NetworkChunkPublisher } from './bedrock/NetworkChunkPublisher'
 import { MovePlayer } from './bedrock/MovePlayer'
 import { SetLocalPlayerInitialized } from './bedrock/SetLocalPlayerInitialized'
@@ -68,6 +68,7 @@ import { ContainerTransaction } from './bedrock/ContainerTransaction'
 import { PacketEvent } from '../events/PacketEvent'
 import { BlockActorData } from './bedrock/BlockActorData'
 import { NBTFile, NBTFileId } from '../data/NBTFile'
+import { ItemMap } from '../item/ItemMap'
 
 interface SplitQueue {
   [splitId: number]: BundledPacket<any>,
@@ -509,7 +510,7 @@ export class Client {
   }
 
   private async handleContainerTransaction(packet: ContainerTransaction) {
-    const { type, position } = packet.props.transaction
+    const { type, position, itemHolding } = packet.props.transaction
 
     const pos = new Vector3(position?.x, position?.y, position?.z)
 
@@ -521,13 +522,10 @@ export class Client {
       case TransactionType.BREAK_BLOCK:
         Server.i.broadcastLevelEvent(LevelEventType.PARTICLE_DESTROY, pos.x + 0.5, pos.y + 0.5, pos.z + 0.5, block.runtimeId)
         this.sendContainerUpdate(this.player.inventory, this.player.inventory.add(block.item))
-
-        // this.sendBatched(new BlockActorData({
-        //   x: pos.x,
-        //   y: pos.y,
-        //   z: pos.z,
-        //   namedTag: 'minecraft:grass',
-        // }))
+        break
+      case TransactionType.CLICK_BLOCK:
+        if(itemHolding.name === 'minecraft:air') return
+        Server.i.broadcastLevelSound(WorldSound.PLACE, new Vector3(pos.x, pos.y, pos.z), itemHolding.runtimeId, ':', false, false)
         break
     }
   }
@@ -657,7 +655,7 @@ export class Client {
 
     Server.i.addPlayer(this.player)
 
-    // this.player.notifySelf()
+    this.player.notifySelf()
     this.player.notifyContainers()
     this.player.notifyHeldItem()
 
