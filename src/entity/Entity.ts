@@ -5,7 +5,7 @@ interface IEntityEvents extends DefaultEventMap {
   _: () => void, // TODO: Remove when events are added
 }
 
-export abstract class Entity<Events = unknown, Containers extends Container[] = []> extends EventEmitter<IEntityEvents & Events> {
+export abstract class Entity<Events = any, Containers extends Container[] = any> extends EventEmitter<IEntityEvents & Events> {
 
   protected gravity = 0
   protected drag = 0
@@ -23,6 +23,8 @@ export abstract class Entity<Events = unknown, Containers extends Container[] = 
 
   protected dragBeforeGravity = false
 
+  private tickExtenders: Array<() => void | Promise<void>> = []
+
   constructor(
     public name: string, // Ex. Zombie
     public gameId: string, // Ex. minecraft:zombie
@@ -36,7 +38,11 @@ export abstract class Entity<Events = unknown, Containers extends Container[] = 
     this.addMetadata()
   }
 
-  public onTick(): void {
+  public async onTick(): Promise<void> {
+    for(const ext of this.tickExtenders) {
+      await ext.call(this)
+    }
+
     if(this.position.hasUpdate) {
       // this.applyForces()
       this.updateLocation()
@@ -62,7 +68,7 @@ export abstract class Entity<Events = unknown, Containers extends Container[] = 
   }
 
   public updateLocation(): void {
-    // TODO: Actually send entity movement
+    Server.i.moveEntity(this)
   }
 
   public destroy(): void {
@@ -86,12 +92,58 @@ export abstract class Entity<Events = unknown, Containers extends Container[] = 
     this.metadata.setGeneric(MetadataGeneric.HAS_COLLISION, true)
   }
 
-  public notifyPlayers(players: Player[], data?: Metadata): void {
-    const metadata = data || this.metadata // https://github.com/pmmp/PocketMine-MP/blob/e47a711494c20ac86fea567b44998f2e24f3dbc7/src/pocketmine/entity/Entity.php#L2094
-
+  public notifyPlayers(players: Player[], data: Metadata = this.metadata): void {
     for(const player of players) {
-      player.emit('Client:entityNotification', this.id, metadata)
+      player.emit('Client:entityNotification', this.id, data)
     }
+  }
+
+  public mime(entity: Entity, offset = new Vector3(0, 0, 0)): void {
+    this.tickExtenders.push(() => {
+      if(!this.position.equals(entity.position)) {
+        const pos = entity.position.clone()
+        pos.x += offset.x
+        pos.y += offset.y
+        pos.z += offset.z
+        this.position.update(pos)
+      }
+    })
+  }
+
+  public get scale(): number {
+    const data = this.metadata.get(MetadataFlag.SCALE)
+
+    return data ? data.value : 1
+  }
+
+  public set scale(val: number) {
+    this.metadata.add(MetadataFlag.SCALE, MetadataType.FLOAT, val)
+  }
+
+  public get immobile(): boolean {
+    return this.metadata.getGeneric(MetadataGeneric.IMMOBILE)
+  }
+
+  public set immobile(val: boolean) {
+    this.metadata.setGeneric(MetadataGeneric.IMMOBILE, val)
+  }
+
+  public get affectedByGravity(): boolean {
+    return this.metadata.getGeneric(MetadataGeneric.AFFECTED_BY_GRAVITY)
+  }
+
+  public set affectedByGravity(val: boolean) {
+    this.metadata.setGeneric(MetadataGeneric.AFFECTED_BY_GRAVITY, val)
+  }
+
+  public get height(): number {
+    const data = this.metadata.get(MetadataFlag.BOUNDING_BOX_HEIGHT)
+
+    return data ? data.value : 1
+  }
+
+  public set height(val: number) {
+    this.metadata.add(MetadataFlag.BOUNDING_BOX_HEIGHT, MetadataType.FLOAT, val)
   }
 
 }
@@ -101,4 +153,7 @@ import { Player } from '../Player'
 import { Metadata } from './Metadata'
 import { MetadataFlag, MetadataGeneric, MetadataType } from '../types/player'
 import { GlobalTick } from '../tick/GlobalTick'
-import { EntityPosition } from './EntityPosition'
+import { EntityPosition, PosUpdateType } from './EntityPosition'
+import { Server } from '../Server'
+import { Vector3 } from 'math3d'
+

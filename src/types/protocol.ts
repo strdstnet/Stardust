@@ -52,6 +52,8 @@ export enum Packets {
   SET_TIME = 0x0a, // 10
   START_GAME = 0x0b, // 11
   ADD_PLAYER = 0x0c, // 12
+  ADD_ENTITY = 0x0d, // 13
+  MOVE_ENTITY = 0x12, // 18
   MOVE_PLAYER = 0x13, // 19
   TICK_SYNC = 0x17, // 23
   LEVEL_EVENT = 0x19, // 25

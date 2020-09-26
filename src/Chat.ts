@@ -2,9 +2,7 @@ import { TextType } from './network/bedrock/Text'
 import { IPlayer } from './types/player'
 import { IServer } from './types/server'
 
-const ESCAPE = '\xc2\xa7'
 export const ChatColour = {
-  // YELLOW: `${ESCAPE}e`,
   YELLOW: '§e',
 }
 
@@ -17,7 +15,7 @@ export class Chat {
   }
 
   public broadcastPlayerJoined(player: IPlayer): void {
-    this.broadcast('%multiplayer.player.joined', TextType.TRANSLATION, [player.username])
+    this.broadcast(`${ChatColour.YELLOW}%multiplayer.player.joined`, TextType.TRANSLATION, [player.username])
   }
 
   public playerChat(sender: IPlayer, message: string): void {

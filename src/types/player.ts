@@ -88,7 +88,7 @@ interface IPlayerPosition {
   headYaw: number,
   motion: Vector3,
   onGround: boolean,
-  coords: () => Vector3,
+  coords: Vector3,
   acknowledgeUpdate: () => void,
   update: (...args: any[]) => void,
 }

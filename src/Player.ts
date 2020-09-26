@@ -11,6 +11,7 @@ import { Server } from './Server'
 import { Chat } from './Chat'
 import { PosUpdateType } from './entity/EntityPosition'
 import { Metadata } from './entity/Metadata'
+import { Vector3 } from 'math3d'
 
 interface IPlayerEvents {
   'Client:entityNotification': (id: bigint, meta: Metadata) => void,
@@ -47,8 +48,6 @@ export class Player extends Human<IPlayerEvents> {
 
     Object.assign(this, player)
     this.UUID = UUID.fromString(player.clientUUID)
-
-    // this.inventory.add(new Item('minecraft:grass'))
   }
 
   public static createFrom(login: Login, clientId: bigint): Player {
@@ -109,6 +108,22 @@ export class Player extends Human<IPlayerEvents> {
       const slot = this.inventory.itemInHand
       player.emit('Client:heldItemNotification', this.id, item, slot, slot, ContainerId.INVENTORY)
     }
+  }
+
+  // temporary
+  public makeBig(scale = 5): void {
+    const difY = this.height * scale
+
+    const human = new Human(this.name, 'minecraft:npc')
+    human.scale = scale
+    human.mime(this, new Vector3(0, -difY, 0))
+
+    setTimeout(() => {
+      Server.i.addEntity(human)
+    }, 8000)
+
+    this.affectedByGravity = false
+    this.position.y = this.position.y + difY
   }
 
 }

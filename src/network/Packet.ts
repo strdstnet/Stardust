@@ -29,7 +29,7 @@ interface IPacket {
 
 export type PacketProps<T> = IPacket & T
 
-const encodeDataType = (data: BinaryData, type: DataType, value: any, p?: string) => {
+const encodeDataType = (data: BinaryData, type: DataType, value: any, p?: string): void => {
   if(type === DataType.MAGIC) {
     return data.writeMagic()
   }
@@ -41,78 +41,56 @@ const encodeDataType = (data: BinaryData, type: DataType, value: any, p?: string
 
   switch(type) {
     case DataType.BYTE:
-      data.writeByte(value)
-      break
+      return data.writeByte(value)
     case DataType.LONG:
-      data.writeLong(value)
-      break
+      return data.writeLong(value)
     case DataType.SHORT:
-      data.writeShort(value)
-      break
+      return data.writeShort(value)
     case DataType.L_SHORT:
-      data.writeLShort(value)
-      break
+      return data.writeLShort(value)
     case DataType.STRING:
-      data.writeString(value, true)
-      break
+      return data.writeString(value, true)
     case DataType.RAW_STRING:
       data.writeShort(value.length)
-      data.writeString(value, false)
-      break
+      return data.writeString(value, false)
     case DataType.BOOLEAN:
-      data.writeBoolean(value)
-      break
+      return data.writeBoolean(value)
     case DataType.ADDRESS:
-      data.writeAddress(value)
-      break
+      return data.writeAddress(value)
     case DataType.L_TRIAD:
-      data.writeLTriad(value)
-      break
+      return data.writeLTriad(value)
     case DataType.INT:
-      data.writeInt(value)
-      break
+      return data.writeInt(value)
     case DataType.VECTOR3_VARINT:
-      data.writeVector3VarInt(value)
-      break
+      return data.writeVector3VarInt(value)
     case DataType.VECTOR3_FLOAT:
-      data.writeVector3Float(value)
-      break
+      return data.writeVector3Float(value)
     case DataType.VECTOR3:
-      data.writeVector3(value)
-      break
+      return data.writeVector3(value)
     case DataType.VARINT:
-      data.writeVarInt(value)
-      break
+      return data.writeVarInt(value)
     case DataType.U_VARLONG:
-      data.writeUnsignedVarLong(value)
-      break
+      return data.writeUnsignedVarLong(value)
     case DataType.U_VARINT:
-      data.writeUnsignedVarInt(value)
-      break
+      return data.writeUnsignedVarInt(value)
     case DataType.VARLONG:
-      data.writeVarLong(value)
-      break
+      return data.writeVarLong(value)
     case DataType.L_FLOAT:
-      data.writeLFloat(value)
-      break
+      return data.writeLFloat(value)
     case DataType.L_INT:
-      data.writeLInt(value)
-      break
+      return data.writeLInt(value)
     case DataType.L_LONG:
-      data.writeLLong(value)
-      break
+      return data.writeLLong(value)
     case DataType.CONTAINER_ITEM:
-      data.writeContainerItem(value)
-      break
+      return data.writeContainerItem(value)
     case DataType.CHUNK:
-      data.writeChunk(value)
-      break
+      return data.writeChunk(value)
     case DataType.UUID:
-      data.writeUUID(value)
-      break
+      return data.writeUUID(value)
     case DataType.ENTITY_METADATA:
-      data.writeEntityMetadata(value)
-      break
+      return data.writeEntityMetadata(value)
+    case DataType.BYTE_ROTATION:
+      return data.writeByteRotation(value)
     default:
       console.error('Unknown DataType on write:', type)
   }
@@ -166,6 +144,8 @@ const decodeDataType = (data: BinaryData, type: DataType) => {
       return data.readEntityMetadata()
     case DataType.CONTAINER_ITEM:
       return data.readContainerItem()
+    case DataType.BYTE_ROTATION:
+      return data.readByteRotation()
     default:
       console.error('Unknown DataType on read:', type)
   }
