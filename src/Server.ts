@@ -339,10 +339,14 @@ export class Server implements IServer {
   }
 
   private updatePlayerList() {
-    this.broadcast(new PlayerList({
-      type: PlayerListType.ADD,
-      players: Array.from(this.players.values()),
-    }))
+    if(this.clients.size < 2) return
+
+    this.clients.forEach(async client => {
+      client.sendBatched(new PlayerList({
+        type: PlayerListType.ADD,
+        players: Array.from(this.players.values()).filter(p => p.clientId !== client.id),
+      }))
+    })
   }
 
   public spawnToAll(player: Player): void {
