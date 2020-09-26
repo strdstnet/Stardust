@@ -15,6 +15,8 @@ export class Level {
   private chunkDelta: ChunkDeltaList = new Map() // Map<ChunkIndex, Map<BlockIndex, Block>>
   private dirtyBlocks: Set<[Vector3, Block]> = new Set()
 
+  public entities: Set<Entity> = new Set()
+
   constructor(public name: string, public generator: Generator) {}
 
   public async init(): Promise<void> {
@@ -50,7 +52,7 @@ export class Level {
   }
 
   public static Flat(): Level {
-    return new Level('TestLevel', new Flat())
+    return new Level('Flat', new Flat())
   }
 
   public async loadChunk(x: number, z: number): Promise<Chunk> {
@@ -135,6 +137,28 @@ export class Level {
     return new Vector3(v.x, v.y, v.z)
   }
 
+  public async canPlace(block: Block, pos: Vector3): Promise<boolean> {
+    const x = Math.round(pos.x)
+    const y = Math.round(pos.y)
+    const z = Math.round(pos.z)
+    let canPlace = true
+
+    for await(const entity of this.entities) {
+      console.log(entity.position, [x, y, z])
+      if(
+        Math.abs(entity.position.x - x) < 1 &&
+        (
+          Math.abs(entity.position.y - y) < 1 ||
+          Math.abs(entity.position.y - y + 1) < 1 ||
+          Math.abs(entity.position.y - y - 1) < 1
+        ) &&
+        Math.abs(entity.position.z - z) < 1
+      ) canPlace = false
+    }
+
+    return canPlace
+  }
+
 }
 
 import { Chunk } from './Chunk'
@@ -146,3 +170,4 @@ import { BlockMap } from '../block/BlockMap'
 import { Vector3 } from 'math3d'
 import { GlobalTick } from '../tick/GlobalTick'
 import { Server } from '../Server'
+import { Entity } from '../entity/Entity'

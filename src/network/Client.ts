@@ -66,6 +66,7 @@ import { ContainerUpdate } from './bedrock/ContainerUpdate'
 import { ContainerTransaction } from './bedrock/ContainerTransaction'
 import { GlobalTick } from '../tick/GlobalTick'
 import { BlockMap } from '../block/BlockMap'
+import { Item } from '../item/Item'
 
 interface SplitQueue {
   [splitId: number]: BundledPacket<any>,
@@ -99,6 +100,9 @@ export class Client {
 
   private lastPlayerChunk: string | null = null // 'x:z' last chunk we generated nearby chunks from
   private recentlySentChunks: string[] = [] // ['x:z']
+
+  private lastRightClickTime = 0
+  private lastRightClickPos: Vector3 | null = null
 
   constructor({ id, address, socket, mtuSize }: IClientArgs) {
     this.id = id
@@ -221,17 +225,7 @@ export class Client {
     })
   }
 
-  // private send(packet: BundledPacket<any>, sequenceNumber = ++this.sequenceNumber) {
   private send(packet: BundledPacket<any>) {
-    // Server.current.send({
-    //   packet: new PacketBundle({
-    //     sequenceNumber,
-    //     packets: [packet],
-    //   }),
-    //   socket: this.socket,
-    //   address: this.address,
-    // })
-
     this.sendQueue.push(packet)
   }
 
@@ -450,14 +444,6 @@ export class Client {
       headYaw,
     } = packet.props
 
-    // console.log({
-    //   positionX,
-    //   positionY,
-    //   positionZ,
-    //   pitch,
-    //   yaw,
-    //   headYaw,
-    // })
     this.player.position.update(new EntityPosition(x, y, z, pitch, yaw, headYaw), PosUpdateType.PLAYER_MOVEMENT)
 
     this.sendNearbyChunks()
@@ -527,12 +513,34 @@ export class Client {
         Server.i.level.setBlock(pos.x, pos.y, pos.z, BlockMap.AIR)
         break
       case TransactionType.CLICK_BLOCK:
-        if(itemHolding.name === 'minecraft:air') return
-        Server.i.broadcastLevelSound(WorldSound.PLACE, new Vector3(pos.x, pos.y, pos.z), itemHolding.runtimeId, ':', false, false)
-        const blockPos = Server.i.level.getRelativeBlockPosition(pos.x, pos.y, pos.z, face)
-        Server.i.level.setBlock(blockPos.x, blockPos.y, blockPos.z, itemHolding.name)
+        this.handleClickBlock(pos, itemHolding, face as number)
         break
     }
+  }
+
+  private async handleClickBlock(pos: Vector3, itemHolding: Item, face: number): Promise<void> {
+    if(itemHolding.name === 'minecraft:air') return
+
+    const clientDidSpam = (
+      this.lastRightClickPos &&
+      (Date.now() - this.lastRightClickTime) < 100 &&
+      (Math.round(pos.x) === Math.round(this.lastRightClickPos.x)) &&
+      (Math.round(pos.y) === Math.round(this.lastRightClickPos.y)) &&
+      (Math.round(pos.z) === Math.round(this.lastRightClickPos.z))
+    )
+
+    this.lastRightClickPos = pos
+    this.lastRightClickTime = Date.now()
+
+    if(clientDidSpam) return
+
+    const block = BlockMap.get(itemHolding.name)
+    const blockPos = Server.i.level.getRelativeBlockPosition(pos.x, pos.y, pos.z, face)
+
+    if(!await Server.i.level.canPlace(block, blockPos)) return
+
+    Server.i.broadcastLevelSound(WorldSound.PLACE, blockPos, block.runtimeId, ':', false, false)
+    Server.i.level.setBlock(blockPos.x, blockPos.y, blockPos.z, block)
   }
 
   private async handlePlayerAction(packet: PlayerAction) {
