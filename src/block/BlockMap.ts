@@ -44,9 +44,7 @@ export class BlockMap {
   public static get(name: string): Block {
     const block = this.blocks.get(name)
 
-    if(!block) throw new Error(`Unknown block: "${name}"`)
-
-    return block.clone()
+    return block ? block.clone() : new Block(name)
   }
 
   public static getById(id: number): Block | null {
@@ -54,9 +52,7 @@ export class BlockMap {
 
     if(!name) return null
 
-    const block = this.blocks.get(name)
-
-    return block ? block.clone() : null
+    return this.get(name)
   }
 
   public static getName(id: number): string | null {
