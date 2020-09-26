@@ -298,7 +298,7 @@ export class Server implements IServer {
 
   public broadcastAnimate(player: Player, action: PlayerAnimation): void {
     this.broadcast(new Animate({
-      action: 2,
+      action,
       entityRuntimeId: player.id,
     }))
   }
