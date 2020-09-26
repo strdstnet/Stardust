@@ -4,11 +4,19 @@ type HumanContainers = [Inventory, EnderChest, Armor, ...Container[]]
 
 export class Human<Events, Containers extends Container[] = []> extends Creature<Events, [...HumanContainers, ...Containers]> {
 
+  public baseOffset = 1.62
+
+  protected dimensions: [number, number] = [0.6, 1.8] // [width, height] in blocks
+
   protected initContainers(): void {
     super.initContainers()
 
     this.containers.push(new Inventory())
     // this.containers.push(new EnderChest())
+
+    const grass = new Item('minecraft:grass', 2, 0)
+    grass.count = 64
+    this.inventory.add(grass)
   }
 
   protected addAttributes(): void {
@@ -36,3 +44,5 @@ import { Armor } from '../containers/Armor'
 import { Container } from '../containers/Container'
 import { EnderChest } from '../containers/EnderChest'
 import { Inventory } from '../containers/Inventory'
+import { Item } from '../item/Item'
+

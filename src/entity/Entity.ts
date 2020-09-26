@@ -7,10 +7,14 @@ interface IEntityEvents extends DefaultEventMap {
 
 export abstract class Entity<Events = any, Containers extends Container[] = any> extends EventEmitter<IEntityEvents & Events> {
 
+  public static entityCount = 0
+
   protected gravity = 0
   protected drag = 0
 
-  public static entityCount = 0
+  protected dimensions: [number, number] = [1, 1] // [width, height] in blocks
+
+  public baseOffset = 0
 
   public id = BigInt(++Entity.entityCount)
 
@@ -36,6 +40,21 @@ export abstract class Entity<Events = any, Containers extends Container[] = any>
     this.initContainers()
     this.addAttributes()
     this.addMetadata()
+  }
+
+  public get boundingBox(): BoundingBox {
+    const hWidth = this.width / 2
+    const pos = this.position
+
+    const y = pos.y - this.baseOffset
+    return new BoundingBox(
+      pos.x - hWidth,
+      y,
+      pos.z - hWidth,
+      pos.x + hWidth,
+      y + this.height,
+      pos.z + hWidth,
+    )
   }
 
   public async onTick(): Promise<void> {
@@ -67,6 +86,15 @@ export abstract class Entity<Events = any, Containers extends Container[] = any>
     this.position.motion.z *= friction
   }
 
+  public get basePosition(): EntityPosition {
+    if(this.baseOffset === 0) return this.position
+
+    const pos = this.position.clone()
+    pos.y = pos.y -= this.baseOffset
+
+    return pos
+  }
+
   public updateLocation(): void {
     Server.i.moveEntity(this)
   }
@@ -84,8 +112,8 @@ export abstract class Entity<Events = any, Containers extends Container[] = any>
     this.metadata.add(MetadataFlag.MAX_AIR, MetadataType.SHORT, 400)
     this.metadata.add(MetadataFlag.ENTITY_LEAD_HOLDER_ID, MetadataType.LONG, -1n)
     this.metadata.add(MetadataFlag.SCALE, MetadataType.FLOAT, 1)
-    this.metadata.add(MetadataFlag.BOUNDING_BOX_WIDTH, MetadataType.FLOAT, 0.6)
-    this.metadata.add(MetadataFlag.BOUNDING_BOX_HEIGHT, MetadataType.FLOAT, 1.8)
+    this.metadata.add(MetadataFlag.BOUNDING_BOX_WIDTH, MetadataType.FLOAT, this.width)
+    this.metadata.add(MetadataFlag.BOUNDING_BOX_HEIGHT, MetadataType.FLOAT, this.height)
     this.metadata.add(MetadataFlag.AIR, MetadataType.SHORT, 0)
 
     this.metadata.setGeneric(MetadataGeneric.AFFECTED_BY_GRAVITY, true)
@@ -136,13 +164,21 @@ export abstract class Entity<Events = any, Containers extends Container[] = any>
     this.metadata.setGeneric(MetadataGeneric.AFFECTED_BY_GRAVITY, val)
   }
 
-  public get height(): number {
-    const data = this.metadata.get(MetadataFlag.BOUNDING_BOX_HEIGHT)
+  public get width(): number {
+    return this.dimensions[0]
+  }
 
-    return data ? data.value : 1
+  public set width(val: number) {
+    this.dimensions[0] = val
+    this.metadata.add(MetadataFlag.BOUNDING_BOX_WIDTH, MetadataType.FLOAT, val)
+  }
+
+  public get height(): number {
+    return this.dimensions[1]
   }
 
   public set height(val: number) {
+    this.dimensions[1] = val
     this.metadata.add(MetadataFlag.BOUNDING_BOX_HEIGHT, MetadataType.FLOAT, val)
   }
 
@@ -153,7 +189,8 @@ import { Player } from '../Player'
 import { Metadata } from './Metadata'
 import { MetadataFlag, MetadataGeneric, MetadataType } from '../types/player'
 import { GlobalTick } from '../tick/GlobalTick'
-import { EntityPosition, PosUpdateType } from './EntityPosition'
+import { EntityPosition } from './EntityPosition'
 import { Server } from '../Server'
 import { Vector3 } from 'math3d'
+import { BoundingBox } from '../utils/BoundingBox'
 

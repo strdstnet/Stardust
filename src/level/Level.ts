@@ -38,7 +38,6 @@ export class Level {
       this.dirtyBlocks.delete(dirty)
 
       const [pos, block] = dirty
-      console.log('Updating block')
       Server.i.updateBlock(pos, block)
     })
   }
@@ -137,23 +136,22 @@ export class Level {
     return new Vector3(v.x, v.y, v.z)
   }
 
+  private getDiff(a: number, b: number): number {
+    if (a > b) return a - b
+
+    return b - a
+  }
+
   public async canPlace(block: Block, pos: Vector3): Promise<boolean> {
-    const x = Math.round(pos.x)
-    const y = Math.round(pos.y)
-    const z = Math.round(pos.z)
-    let canPlace = true
+    const box = new BoundingBox(
+      pos.x,
+      pos.y,
+      pos.z,
+    )
+    const canPlace = true
 
     for await(const entity of this.entities) {
-      console.log(entity.position, [x, y, z])
-      if(
-        Math.abs(entity.position.x - x) < 1 &&
-        (
-          Math.abs(entity.position.y - y) < 1 ||
-          Math.abs(entity.position.y - y + 1) < 1 ||
-          Math.abs(entity.position.y - y - 1) < 1
-        ) &&
-        Math.abs(entity.position.z - z) < 1
-      ) canPlace = false
+      if(entity.boundingBox.intersectsWith(box)) return false
     }
 
     return canPlace
@@ -171,3 +169,4 @@ import { Vector3 } from 'math3d'
 import { GlobalTick } from '../tick/GlobalTick'
 import { Server } from '../Server'
 import { Entity } from '../entity/Entity'
+import { BoundingBox } from '../utils/BoundingBox'

@@ -83,4 +83,14 @@ export class EntityPosition {
     return new EntityPosition(this.x, this.y, this.z, this.pitch, this.yaw, this.headYaw, this.motion, this.onGround)
   }
 
+  public round(): EntityPosition {
+    const clone = this.clone()
+
+    clone.x = Math.round(clone.x)
+    clone.y = Math.round(clone.y)
+    clone.z = Math.round(clone.z)
+
+    return clone
+  }
+
 }

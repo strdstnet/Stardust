@@ -67,6 +67,7 @@ import { ContainerTransaction } from './bedrock/ContainerTransaction'
 import { GlobalTick } from '../tick/GlobalTick'
 import { BlockMap } from '../block/BlockMap'
 import { Item } from '../item/Item'
+import { BlockUpdate } from './bedrock/BlockUpdate'
 
 interface SplitQueue {
   [splitId: number]: BundledPacket<any>,
@@ -540,8 +541,17 @@ export class Client {
 
     const block = BlockMap.get(itemHolding.name)
     const blockPos = Server.i.level.getRelativeBlockPosition(pos.x, pos.y, pos.z, face)
+    const currentBlock = Server.i.level.getBlockAt(blockPos.x, blockPos.y, blockPos.z)
 
-    if(!await Server.i.level.canPlace(block, blockPos)) return
+    if(!await Server.i.level.canPlace(block, blockPos)) {
+      setTimeout(() => {
+        this.sendBatched(new BlockUpdate({
+          position: blockPos,
+          blockRuntimeId: currentBlock.runtimeId,
+        }))
+      }, 250)
+      return
+    }
 
     Server.i.broadcastLevelSound(WorldSound.PLACE, blockPos, block.runtimeId, ':', false, false)
     Server.i.level.setBlock(blockPos.x, blockPos.y, blockPos.z, block)
