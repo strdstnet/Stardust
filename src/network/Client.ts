@@ -516,7 +516,7 @@ export class Client {
 
     const block = this.level.getBlockAt(pos.x, pos.y, pos.z)
 
-    // console.log('GOT CONTAINER TRANSACTION', packet.props)
+    console.log('GOT CONTAINER TRANSACTION', packet.props)
 
     switch(type) {
       case TransactionType.BREAK_BLOCK:
