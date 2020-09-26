@@ -7,8 +7,8 @@ export class BedrockData {
   public static ENTITY_DEFINITIONS: Buffer
 
   public static loadData(): void {
-    BedrockData.BIOME_DEFINITIONS = fs.readFileSync(path.join(__dirname, 'biome_definitions.nbt'))
-    BedrockData.ENTITY_DEFINITIONS = fs.readFileSync(path.join(__dirname, 'entity_definitions.nbt'))
+    BedrockData.BIOME_DEFINITIONS = fs.readFileSync(path.join(__dirname, 'bedrock', 'biome_definitions.nbt'))
+    BedrockData.ENTITY_DEFINITIONS = fs.readFileSync(path.join(__dirname, 'bedrock', 'entity_definitions.nbt'))
   }
 
 }

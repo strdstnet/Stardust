@@ -528,6 +528,20 @@ export class BinaryData {
     this.writeVarInt(v3.z)
   }
 
+  public writeBlockPosition(v3: Vector3): void {
+    this.writeVarInt(v3.x)
+    this.writeUnsignedVarInt(v3.y)
+    this.writeVarInt(v3.z)
+  }
+
+  public readBlockPosition(skip = true): Vector3 {
+    return new Vector3(
+      this.readVarInt(skip),
+      this.readUnsignedVarInt(skip),
+      this.readVarInt(skip),
+    )
+  }
+
   public readVarLong(skip = true): bigint {
     const raw = this.readUnsignedVarLongNumber(skip)
     const tmp = (((raw << 63) >> 63) ^ raw) >> 1

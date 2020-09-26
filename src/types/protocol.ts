@@ -55,6 +55,7 @@ export enum Packets {
   ADD_ENTITY = 0x0d, // 13
   MOVE_ENTITY = 0x12, // 18
   MOVE_PLAYER = 0x13, // 19
+  BLOCK_UPDATE = 0x15, // 21
   TICK_SYNC = 0x17, // 23
   LEVEL_EVENT = 0x19, // 25
   ENTITY_METADATA = 0x27, // 27

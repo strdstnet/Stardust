@@ -252,7 +252,7 @@ export class StartGame extends BatchedPacket<IStartGame> {
         name: 'states',
         parser({ type, data }) {
           if (type === ParserType.ENCODE) {
-            data.append(fs.readFileSync(path.join(__dirname, '..', '..', 'data', 'block_states.nbt')))
+            data.append(fs.readFileSync(path.join(__dirname, '..', '..', 'data', 'bedrock', 'block_states.nbt')))
           } else if(type === ParserType.DECODE) {
             data.pos += 1063028
           }

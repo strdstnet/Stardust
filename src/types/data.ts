@@ -30,4 +30,5 @@ export enum DataType {
   UUID,
   ENTITY_METADATA,
   BYTE_ROTATION,
+  BLOCK_POSITION,
 }

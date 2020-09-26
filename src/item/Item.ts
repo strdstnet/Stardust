@@ -46,7 +46,7 @@ export class Item {
 
   public clone(): Item {
     const item = new Item(this.name, this.id, 0)
-    item.damageVal = this.damageVal
+    item.meta = this.meta
 
     return item
   }

@@ -8,7 +8,7 @@ import { BatchedPacket } from './BatchedPacket'
 
 interface ITransaction {
   type: number,
-  position?: Vector3,
+  position: Vector3,
   face?: number,
   hotbarSlot: number,
   itemHolding: Item,
@@ -205,6 +205,7 @@ export class ContainerTransaction extends BatchedPacket<IContainerTransaction> {
                   itemHolding: data.readContainerItem(),
                   playerPos: data.readVector3(),
                   clickPos: data.readVector3(),
+                  position: new Vector3(0, 0, 0),
                 }
                 break
               case ContainerTransactionType.RELEASE_ITEM:
@@ -213,6 +214,7 @@ export class ContainerTransaction extends BatchedPacket<IContainerTransaction> {
                   hotbarSlot: data.readVarInt(),
                   itemHolding: data.readContainerItem(),
                   headPos: data.readVector3(),
+                  position: new Vector3(0, 0, 0),
                 }
                 break
               case ContainerTransactionType.NORMAL:

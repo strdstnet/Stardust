@@ -59,22 +59,21 @@ import { Animate } from './bedrock/Animate'
 import { EntityFall } from './bedrock/EntityFall'
 import { LevelSound } from './bedrock/LevelSound'
 import { Emote } from './bedrock/Emote'
-import { ContainerId, ContainerTransactionType, ContainerType, TransactionType } from '../types/containers'
+import { ContainerId, ContainerType, TransactionType } from '../types/containers'
 import { ContainerClose } from './bedrock/ContainerClose'
 import { Container } from '../containers/Container'
-import { Item } from '../item/Item'
 import { ContainerUpdate } from './bedrock/ContainerUpdate'
 import { ContainerTransaction } from './bedrock/ContainerTransaction'
-import { PacketEvent } from '../events/PacketEvent'
-import { BlockActorData } from './bedrock/BlockActorData'
-import { NBTFile, NBTFileId } from '../data/NBTFile'
-import { ItemMap } from '../item/ItemMap'
+import { GlobalTick } from '../tick/GlobalTick'
+import { BlockMap } from '../block/BlockMap'
 
 interface SplitQueue {
   [splitId: number]: BundledPacket<any>,
 }
 
 export class Client {
+
+  public static MAX_CHUNKS_PER_TICK = 5
 
   private logger: Logger = new Logger('Client')
 
@@ -109,10 +108,10 @@ export class Client {
 
     this.logger.info('Created for', `${address.ip}:${address.port}`)
 
-    // TODO: Migrate to GlobalTick
-    setInterval(() => {
-      this.processSendQueue()
-    }, 50)
+    // setInterval(() => {
+    //   this.processSendQueue()
+    // }, 50)
+    GlobalTick.attach(this)
   }
 
   private get level() {
@@ -244,10 +243,17 @@ export class Client {
     })
   }
 
+  public onTick(): void {
+    this.processSendQueue()
+  }
+
   private processSendQueue() {
     if(!this.sendQueue.length) return
 
-    const [bundles, sequenceNumber, lastSplitId] = bundlePackets(this.sendQueue, this.sequenceNumber, this.lastSplitId, this.mtuSize)
+    const count = this.sendQueue.length > Client.MAX_CHUNKS_PER_TICK ? Client.MAX_CHUNKS_PER_TICK : this.sendQueue.length
+    const packets: BundledPacket<any>[] = this.sendQueue.splice(0, count)
+
+    const [bundles, sequenceNumber, lastSplitId] = bundlePackets(packets, this.sequenceNumber, this.lastSplitId, this.mtuSize)
 
     for(const packet of bundles) {
       this.sentPackets.set(packet.props.sequenceNumber, packet)
@@ -259,7 +265,7 @@ export class Client {
       })
     }
 
-    this.sendQueue = []
+    // this.sendQueue = []
     this.sequenceNumber = sequenceNumber
     this.lastSplitId = lastSplitId
   }
@@ -510,22 +516,21 @@ export class Client {
   }
 
   private async handleContainerTransaction(packet: ContainerTransaction) {
-    const { type, position, itemHolding } = packet.props.transaction
-
-    const pos = new Vector3(position?.x, position?.y, position?.z)
+    const { type, position: pos, itemHolding, face } = packet.props.transaction
 
     const block = this.level.getBlockAt(pos.x, pos.y, pos.z)
-
-    // console.log('GOT CONTAINER TRANSACTION', packet.props)
 
     switch(type) {
       case TransactionType.BREAK_BLOCK:
         Server.i.broadcastLevelEvent(LevelEventType.PARTICLE_DESTROY, pos.x + 0.5, pos.y + 0.5, pos.z + 0.5, block.runtimeId)
         this.sendContainerUpdate(this.player.inventory, this.player.inventory.add(block.item))
+        Server.i.level.setBlock(pos.x, pos.y, pos.z, BlockMap.AIR)
         break
       case TransactionType.CLICK_BLOCK:
         if(itemHolding.name === 'minecraft:air') return
         Server.i.broadcastLevelSound(WorldSound.PLACE, new Vector3(pos.x, pos.y, pos.z), itemHolding.runtimeId, ':', false, false)
+        const blockPos = Server.i.level.getRelativeBlockPosition(pos.x, pos.y, pos.z, face)
+        Server.i.level.setBlock(blockPos.x, blockPos.y, blockPos.z, itemHolding.name)
         break
     }
   }

@@ -9,6 +9,7 @@
     "strict": true,
     "esModuleInterop": true,
     "resolveJsonModule": true,
+    "skipLibCheck": true,
     "typeRoots": [
       "./src/@types/",
       "./node_modules/@types",

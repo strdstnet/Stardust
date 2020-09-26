@@ -2,6 +2,7 @@ import { Block } from '../block/Block'
 import { BlockMap } from '../block/BlockMap'
 import { EntityPosition } from '../entity/EntityPosition'
 import { CompoundTag } from '../nbt/CompoundTag'
+import { ChunkDelta } from './Level'
 import { SubChunk } from './SubChunk'
 
 export function ensureLength(arr: number[], length: number, filler = 0): void {
@@ -71,8 +72,12 @@ export class Chunk {
     return this.subChunks[y]
   }
 
+  public getSubChunkAt(blockY: number): SubChunk {
+    return this.getSubChunk(blockY >> 4)
+  }
+
   public getBlockAt(x: number, y: number, z: number): Block {
-    const [id, meta] = this.getSubChunk(y >> 4).getBlockAt(x, y & 0x0f, z)
+    const [id, meta] = this.getSubChunkAt(y).getBlockAt(x, y & 0x0f, z)
 
     const block = BlockMap.getById(id) || Block.fromId(id)
     if(!block) throw new Error(`Unknown block with ID: ${id}`)
@@ -83,7 +88,21 @@ export class Chunk {
   }
 
   public setBlock(x: number, y: number, z: number, block: Block): void {
-    this.getSubChunk(y >> 4).setBlock(x, y, z, block)
+    this.getSubChunkAt(y).setBlock(x, y, z, block)
+  }
+
+  public applyDelta(delta: ChunkDelta | null): Chunk {
+    if(!delta) return this
+
+    for(const [ coords, block ] of delta.entries()) {
+      const [ x, y, z ] = coords.split(':').map(i => parseInt(i, 10))
+      
+      console.log([ x, y, z ], block.name, this.x, this.z)
+
+      this.getSubChunkAt(y).setBlock(x, y & 0x0f, z, block)
+    }
+
+    return this
   }
 
 }

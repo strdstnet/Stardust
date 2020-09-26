@@ -1,9 +1,5 @@
-import { Chunk } from './Chunk'
-import { Generator } from './generator/Generator'
-import { Anvil } from './generator/Anvil'
-import { Flat } from './generator/Flat'
-import { Block } from '../block/Block'
-import { BlockMap } from '../block/BlockMap'
+export type ChunkDelta = Map<string, Block> // Map<`x:y:z`, Block>
+export type ChunkDeltaList = Map<string, ChunkDelta>
 
 export class Level {
 
@@ -16,7 +12,8 @@ export class Level {
 
   private chunkCache: Map<string, Chunk> = new Map()
 
-  private blockCache: Map<number, Block> = new Map()
+  private chunkDelta: ChunkDeltaList = new Map() // Map<ChunkIndex, Map<BlockIndex, Block>>
+  private dirtyBlocks: Set<[Vector3, Block]> = new Set()
 
   constructor(public name: string, public generator: Generator) {}
 
@@ -30,26 +27,22 @@ export class Level {
     await this.loadChunk(-1, 0)
     await this.loadChunk(-1, 1)
     await this.loadChunk(-1, -1)
+
+    GlobalTick.attach(this)
+  }
+
+  public onTick(): void {
+    this.dirtyBlocks.forEach(dirty => {
+      this.dirtyBlocks.delete(dirty)
+
+      const [pos, block] = dirty
+      console.log('Updating block')
+      Server.i.updateBlock(pos, block)
+    })
   }
 
   public static getChunkId(x: number, z: number): string {
     return `chunk:${x}:${z}`
-  }
-
-  public static getChunkIndex(x: number, z: number): number {
-    return ((x & 0xFFFFFFFF) << 32) | (z & 0xFFFFFFFF)
-  }
-
-  public static getBlockIndex(x: number, y: number, z: number): number {
-    if(y < 0 || y >= Level.MAX_HEIGHT) {
-      throw new Error(`Y should be > 0 and < ${Level.MAX_HEIGHT}. Got ${y}`)
-    }
-
-    return ((x & 0xFFFFFFFF) << 36) | ((y & Level.Y_MASK) << 28) | (z & 0xFFFFFFFF)
-  }
-
-  public static getBlockChunkIndex(x: number, y: number, z: number): number {
-    return (y << 8) || ((z & 0xf) << 4) | (x & 0xf)
   }
 
   public static TestWorld(): Level {
@@ -69,18 +62,31 @@ export class Level {
 
   public async getChunkAt(x: number, z: number): Promise<Chunk> {
     const inCache = this.chunkCache.get(Level.getChunkId(x, z))
-    return inCache ? new Promise(resolve => {
-      setTimeout(() => {
-        resolve(inCache)
-      }, 20)
-    }) : this.loadChunk(x, z)
+
+    const chunk = inCache || await this.loadChunk(x, z)
+    const delta = this.getChunkDelta(x, z)
+
+    return chunk.applyDelta(delta)
+  }
+
+  private getChunkDelta(x: number, z: number): ChunkDelta | null {
+    return this.chunkDelta.get(Level.getChunkId(x, z)) || null
+  }
+
+  private setChunkDelta(x: number, z: number, delta: ChunkDelta): void {
+    this.chunkDelta.set(Level.getChunkId(x, z), delta)
+  }
+
+  private getBlockFromDelta(x: number, y: number, z: number): Block | null {
+    const delta = this.getChunkDelta(x >> 4, z >> 4)
+    const block = delta ? delta.get(`${x}:${y}:${z}`) : null
+
+    return block || null
   }
 
   public getBlockAt(x: number, y: number, z: number): Block {
-    const index = Level.getBlockIndex(x, y, z)
-
-    const cached = this.blockCache.get(index)
-    if(cached) return cached
+    const fromDelta = this.getBlockFromDelta(x, y, z)
+    if(fromDelta) return fromDelta
 
     const chunkIndex = Level.getChunkId(x >> 4, z >> 4)
     const chunk = this.chunkCache.get(chunkIndex)
@@ -90,13 +96,53 @@ export class Level {
     return chunk.getBlockAt(x & 0x0f, y, z & 0x0f)
   }
 
-  public async setBlock(x: number, y: number, z: number, block: Block | string): Promise<void> {
+  public setBlock(x: number, y: number, z: number, block: Block | string): void {
     if(typeof block === 'string') block = BlockMap.get(block)
 
-    const chunk = await this.getChunkAt(x >> 4, z >> 4)
-    if(!chunk) throw new Error('Tried setting block in uncached chunk')
+    const blockIndex = `${x & 0x0f}:${y}:${z & 0x0f}`
+    const chunkX = x >> 4
+    const chunkZ = z >> 4
+    const deltaChunk = this.getChunkDelta(chunkX, chunkZ)
+    this.setChunkDelta(chunkX, chunkZ, deltaChunk ? deltaChunk.set(blockIndex, block) : new Map([[blockIndex, block]]))
 
-    chunk.setBlock(x & 0x0f, y, z & 0x0f, block)
+    this.dirtyBlocks.add([new Vector3(x, y, z), block])
+  }
+
+  public getRelativeBlockPosition(x: number, y: number, z: number, face: BlockFace): Vector3 {
+    const v = { x, y, z }
+
+    switch(face) {
+      case BlockFace.BOTTOM:
+        v.y--
+        break
+      case BlockFace.EAST:
+        v.x--
+        break
+      case BlockFace.NORTH:
+        v.z++
+        break
+      case BlockFace.SOUTH:
+        v.z--
+        break
+      case BlockFace.UP:
+        v.y++
+        break
+      case BlockFace.WEST:
+        v.x++
+        break
+    }
+
+    return new Vector3(v.x, v.y, v.z)
   }
 
 }
+
+import { Chunk } from './Chunk'
+import { Generator } from './generator/Generator'
+import { Anvil } from './generator/Anvil'
+import { Flat } from './generator/Flat'
+import { Block, BlockFace } from '../block/Block'
+import { BlockMap } from '../block/BlockMap'
+import { Vector3 } from 'math3d'
+import { GlobalTick } from '../tick/GlobalTick'
+import { Server } from '../Server'

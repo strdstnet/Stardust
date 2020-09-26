@@ -1,3 +1,12 @@
+export enum BlockFace {
+  BOTTOM = 0,
+  UP = 1,
+  SOUTH = 2,
+  NORTH = 3,
+  EAST = 4,
+  WEST = 5,
+}
+
 export class Block {
 
   public id: number

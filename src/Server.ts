@@ -41,6 +41,8 @@ import { WorldSound } from './types/world'
 import { Entity } from './entity/Entity'
 import { AddEntity } from './network/bedrock/AddEntity'
 import { MoveEntity } from './network/bedrock/MoveEntity'
+import { BlockUpdate } from './network/bedrock/BlockUpdate'
+import { Block } from './block/Block'
 
 const DEFAULT_OPTS: ServerOpts = {
   address: '0.0.0.0',
@@ -110,50 +112,6 @@ export class Server implements IServer {
     GlobalTick.start(Server.TPS)
 
     await this.level.init()
-
-    this.level.setBlock(0, 4, 0, 'minecraft:stone')
-    this.level.setBlock(1, 5, 0, 'minecraft:dirt')
-    this.level.setBlock(2, 6, 0, 'minecraft:grass')
-    this.level.setBlock(3, 7, 0, 'minecraft:stone')
-    this.level.setBlock(4, 8, 0, 'minecraft:dirt')
-    this.level.setBlock(5, 9, 0, 'minecraft:grass')
-    this.level.setBlock(6, 9, 0, 'minecraft:grass')
-    this.level.setBlock(7, 9, 0, 'minecraft:grass')
-    this.level.setBlock(8, 9, 0, 'minecraft:grass')
-    this.level.setBlock(9, 9, 0, 'minecraft:grass')
-    this.level.setBlock(10, 9, 0, 'minecraft:dirt')
-    this.level.setBlock(11, 9, 0, 'minecraft:dirt')
-    this.level.setBlock(12, 9, 0, 'minecraft:dirt')
-    this.level.setBlock(13, 9, 0, 'minecraft:dirt')
-    this.level.setBlock(14, 9, 0, 'minecraft:dirt')
-    this.level.setBlock(15, 9, 0, 'minecraft:dirt')
-
-    this.level.setBlock(16, 9, 0, 'minecraft:stone')
-    this.level.setBlock(17, 9, 0, 'minecraft:stone')
-    this.level.setBlock(18, 9, 0, 'minecraft:stone')
-    this.level.setBlock(19, 9, 0, 'minecraft:stone')
-    this.level.setBlock(20, 9, 0, 'minecraft:stone')
-    this.level.setBlock(21, 9, 0, 'minecraft:stone')
-    this.level.setBlock(22, 9, 0, 'minecraft:stone')
-    this.level.setBlock(23, 9, 0, 'minecraft:stone')
-    this.level.setBlock(24, 9, 0, 'minecraft:stone')
-    this.level.setBlock(25, 9, 0, 'minecraft:stone')
-    this.level.setBlock(26, 9, 0, 'minecraft:stone')
-    this.level.setBlock(27, 9, 0, 'minecraft:stone')
-    this.level.setBlock(28, 9, 0, 'minecraft:stone')
-    this.level.setBlock(29, 9, 0, 'minecraft:stone')
-    this.level.setBlock(30, 9, 0, 'minecraft:stone')
-    this.level.setBlock(31, 9, 0, 'minecraft:stone')
-
-    this.level.setBlock(32, 9, 0, 'minecraft:dirt')
-    this.level.setBlock(32, 9, -1, 'minecraft:dirt')
-    this.level.setBlock(32, 9, -2, 'minecraft:dirt')
-    this.level.setBlock(32, 9, -3, 'minecraft:dirt')
-    this.level.setBlock(32, 9, -4, 'minecraft:dirt')
-    this.level.setBlock(32, 9, -5, 'minecraft:dirt')
-    this.level.setBlock(32, 9, -6, 'minecraft:dirt')
-    this.level.setBlock(32, 9, 1, 'minecraft:grass')
-    this.level.setBlock(32, 9, 2, 'minecraft:dirt')
 
     return new Server(Object.assign({}, DEFAULT_OPTS, opts))
   }
@@ -304,6 +262,13 @@ export class Server implements IServer {
       onGround: false,
       ridingEntityRuntimeId: 0n,
     }), includeSelf ? null : player.clientId)
+  }
+
+  public updateBlock(position: Vector3, block: Block): void {
+    this.broadcast(new BlockUpdate({
+      position,
+      blockRuntimeId: block.runtimeId,
+    }))
   }
 
   public moveEntity(entity: Entity): void {
