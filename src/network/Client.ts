@@ -506,6 +506,10 @@ export class Client {
 
     const block = this.level.getBlockAt(pos.x, pos.y, pos.z)
 
+    // Server.i.broadcastTransaction(packet.props)
+
+    // console.log(packet.props)
+
     switch(type) {
       case TransactionType.BREAK_BLOCK:
         Server.i.broadcastLevelEvent(LevelEventType.PARTICLE_DESTROY, pos.x + 0.5, pos.y + 0.5, pos.z + 0.5, block.runtimeId)
@@ -638,7 +642,11 @@ export class Client {
   }
 
   private handleEntityEquipment(packet: EntityEquipment) {
-    console.log(packet.props)
+    const { item, inventorySlot, hotbarSlot, containerId } = packet.props
+
+    Server.i.broadcastEntityEquipment(this.player, item, inventorySlot, hotbarSlot, containerId)
+
+    // console.log('ENTITY SWITCHED SLOTS', packet.props)
   }
 
   private async completeLogin() {

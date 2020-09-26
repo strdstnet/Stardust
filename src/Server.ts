@@ -43,6 +43,8 @@ import { AddEntity } from './network/bedrock/AddEntity'
 import { MoveEntity } from './network/bedrock/MoveEntity'
 import { BlockUpdate } from './network/bedrock/BlockUpdate'
 import { Block } from './block/Block'
+import { Item } from './item/Item'
+import { EntityEquipment } from './network/bedrock/EntityEquipment'
 
 const DEFAULT_OPTS: ServerOpts = {
   address: '0.0.0.0',
@@ -328,6 +330,22 @@ export class Server implements IServer {
       emoteId,
       flags,
     }))
+  }
+
+  public broadcastEntityEquipment(
+    player: Player,
+    item: Item,
+    inventorySlot: number,
+    hotbarSlot: number,
+    containerId: number,
+  ): void {
+    this.broadcast(new EntityEquipment({
+      entityRuntimeId: player.id,
+      item,
+      inventorySlot,
+      hotbarSlot,
+      containerId,
+    }), player.clientId)
   }
 
   public addEntity(entity: Entity<any, any>): void {
