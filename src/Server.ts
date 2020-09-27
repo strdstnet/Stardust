@@ -226,7 +226,7 @@ export class Server implements IServer {
 
   public addPlayer(player: Player): void {
     this.players.set(player.id, player)
-    this.level.entities.add(player)
+    this.level.addEntity(player)
 
     this.updatePlayerList()
   }

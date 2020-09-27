@@ -15,7 +15,7 @@ export class Level {
   private chunkDelta: ChunkDeltaList = new Map() // Map<ChunkIndex, Map<BlockIndex, Block>>
   private dirtyBlocks: Set<[Vector3, Block]> = new Set()
 
-  public entities: Set<Entity> = new Set()
+  private entities: Map<bigint, Entity> = new Map()
 
   constructor(public name: string, public generator: Generator) {}
 
@@ -150,11 +150,19 @@ export class Level {
     )
     const canPlace = true
 
-    for await(const entity of this.entities) {
+    for await(const [, entity] of this.entities) {
       if(entity.boundingBox.intersectsWith(box)) return false
     }
 
     return canPlace
+  }
+
+  public addEntity(entity: Entity): void {
+    this.entities.set(entity.id, entity)
+  }
+
+  public getEntity(entityId: bigint): Entity | null {
+    return this.entities.get(entityId) || null
   }
 
 }

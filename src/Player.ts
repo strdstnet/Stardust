@@ -18,6 +18,7 @@ interface IPlayerEvents {
   'Client:containerNotification': (container: Container) => void,
   'Client:heldItemNotification': (id: bigint, item: Item, inventoySlot: number, hotbarSlot: number, containerId: number) => void,
   'Client:sendMessage': (message: string, type: TextType, parameters: string[]) => void,
+  'Client:updateHealth': (health: number) => void,
 }
 
 interface IPlayerCreate {
@@ -108,6 +109,10 @@ export class Player extends Human<IPlayerEvents> {
       const slot = this.inventory.itemInHand
       player.emit('Client:heldItemNotification', this.id, item, slot, slot, ContainerId.INVENTORY)
     }
+  }
+
+  public updateHealth(): void {
+    this.emit('Client:updateHealth', this.health)
   }
 
   // temporary

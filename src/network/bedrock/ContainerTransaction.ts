@@ -1,23 +1,4 @@
-import { Packets } from '../../types/protocol'
-import { DataType } from '../../types/data'
-import { ParserType } from '../Packet'
-import { ContainerActionSource, ContainerTransactionType } from '../../types/containers'
-import { Item } from '../../item/Item'
-import { Vector3 } from 'math3d'
 import { BatchedPacket } from './BatchedPacket'
-
-interface ITransaction {
-  type: number,
-  position: Vector3,
-  face?: number,
-  hotbarSlot: number,
-  itemHolding: Item,
-  playerPos?: Vector3
-  clickPos?: Vector3,
-  blockRuntimeId?: number,
-  entityRuntimeId?: bigint,
-  headPos?: Vector3
-}
 
 interface IContainerAction {
   sourceType: ContainerActionSource,
@@ -37,7 +18,7 @@ interface IChangedSlots {
 interface IContainerTransaction {
   requestId: number,
   requestChangedSlots: IChangedSlots[],
-  transactionType: number,
+  transactionType: ContainerTransactionType,
   hasItemStackIds: boolean,
   actions: IContainerAction[],
   transaction: ITransaction,
@@ -183,7 +164,7 @@ export class ContainerTransaction extends BatchedPacket<IContainerTransaction> {
             switch(props.transactionType) {
               case ContainerTransactionType.USE_ITEM:
                 props.transaction = {
-                  type: data.readUnsignedVarInt(),
+                  type: data.readUnsignedVarInt() as TransactionType,
                   position: new Vector3(
                     data.readVarInt(),
                     data.readUnsignedVarInt(),
@@ -200,7 +181,7 @@ export class ContainerTransaction extends BatchedPacket<IContainerTransaction> {
               case ContainerTransactionType.USE_ITEM_ON_ENTITY:
                 props.transaction = {
                   entityRuntimeId: data.readUnsignedVarLong(),
-                  type: data.readUnsignedVarInt(),
+                  type: data.readUnsignedVarInt() as TransactionType,
                   hotbarSlot: data.readVarInt(),
                   itemHolding: data.readContainerItem(),
                   playerPos: data.readVector3(),
@@ -210,7 +191,7 @@ export class ContainerTransaction extends BatchedPacket<IContainerTransaction> {
                 break
               case ContainerTransactionType.RELEASE_ITEM:
                 props.transaction = {
-                  type: data.readUnsignedVarInt(),
+                  type: data.readUnsignedVarInt() as TransactionType,
                   hotbarSlot: data.readVarInt(),
                   itemHolding: data.readContainerItem(),
                   headPos: data.readVector3(),
@@ -232,3 +213,10 @@ export class ContainerTransaction extends BatchedPacket<IContainerTransaction> {
   }
 
 }
+
+import { Packets } from '../../types/protocol'
+import { DataType } from '../../types/data'
+import { ParserType } from '../Packet'
+import { ContainerActionSource, ContainerTransactionType, ITransaction, TransactionType } from '../../types/containers'
+import { Item } from '../../item/Item'
+import { Vector3 } from 'math3d'

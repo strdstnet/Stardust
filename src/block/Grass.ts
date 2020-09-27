@@ -7,8 +7,7 @@ export class Grass extends Block {
   }
 
   public get breakTime(): number {
-    // return 900
-    return 200
+    return 900
   }
 
 }

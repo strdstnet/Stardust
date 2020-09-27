@@ -27,7 +27,13 @@ export abstract class Entity<Events = any, Containers extends Container[] = any>
 
   protected dragBeforeGravity = false
 
+  private _alive = true
+
+  public maxHealth = 20
+  private _health = this.maxHealth
+
   private tickExtenders: Array<() => void | Promise<void>> = []
+  private lastTickHealth = this.health
 
   constructor(
     public name: string, // Ex. Zombie
@@ -67,6 +73,12 @@ export abstract class Entity<Events = any, Containers extends Container[] = any>
       this.updateLocation()
       this.position.acknowledgeUpdate()
     }
+
+    if(this.lastTickHealth !== this.health) {
+      this.updateHealth()
+    }
+
+    this.lastTickHealth = this.health
   }
 
   protected applyForces(): void {
@@ -86,6 +98,26 @@ export abstract class Entity<Events = any, Containers extends Container[] = any>
     this.position.motion.z *= friction
   }
 
+  public get alive(): boolean {
+    return this._alive
+  }
+
+  public get health(): number {
+    return this._health
+  }
+
+  public set health(val: number) {
+    this._health = val
+
+    if(this._health === 0) {
+      this._alive = false
+    }
+  }
+
+  public get type(): string {
+    return this.constructor.name
+  }
+
   public get basePosition(): EntityPosition {
     if(this.baseOffset === 0) return this.position
 
@@ -98,6 +130,8 @@ export abstract class Entity<Events = any, Containers extends Container[] = any>
   public updateLocation(): void {
     Server.i.moveEntity(this)
   }
+
+  public updateHealth(): void {}
 
   public destroy(): void {
     GlobalTick.detach(this)

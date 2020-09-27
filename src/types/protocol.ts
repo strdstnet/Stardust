@@ -66,6 +66,7 @@ export enum Packets {
   PLAYER_ACTION = 0x24, // 36
   ENTITY_FALL = 0x25, // 37
   ENTITY_NOTIFICATION = 0x27, // 39
+  SET_HEALTH = 0x2a, // 42
   SET_SPAWN_POSITION = 0x2b, // 43
   ANIMATE = 0x2c, // 44
   RESPAWN = 0x2d, // 45
