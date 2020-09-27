@@ -184,3 +184,9 @@ export enum LevelEventType {
   BLOCK_START_BREAK = 3600,
   BLOCK_STOP_BREAK = 3601,
 }
+
+export enum EntityAnimationType {
+  JUMP = 1,
+  HURT = 2,
+  DEATH = 3,
+}

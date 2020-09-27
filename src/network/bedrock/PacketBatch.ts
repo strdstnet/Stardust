@@ -26,6 +26,7 @@ import { Emote } from './Emote'
 import { ContainerClose } from './ContainerClose'
 import { ContainerTransaction } from './ContainerTransaction'
 import { EntityEquipment } from './EntityEquipment'
+import { EntityAnimation } from './EntityAnimation'
 
 interface IPacketBatch {
   packets: Array<BatchedPacket<any>>,
@@ -126,6 +127,9 @@ export class PacketBatch extends BundledPacket<IPacketBatch> {
                   break
                 case Packets.ENTITY_EQUIPMENT:
                   packet = new EntityEquipment()
+                  break
+                case Packets.ENTITY_ANIMATION:
+                  packet = new EntityAnimation()
                   break
                 // case Packets.RESOURCE_PACKS_STACK:
                 //   packet = new BatchedPacket(packetId, [])

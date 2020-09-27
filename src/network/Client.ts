@@ -283,6 +283,9 @@ export class Client {
           case Packets.ENTITY_EQUIPMENT:
             this.handleEntityEquipment(pk)
             break
+          case Packets.ENTITY_EVENT:
+            this.handleEntityEvent(pk)
+            break
           default:
             this.logger.debug(`UNKNOWN BATCHED PACKET ${pk.id}`)
         }
@@ -477,6 +480,7 @@ export class Client {
         if(!(target instanceof Living)) throw new Error(`Attempted to attack non-Living entity: ${target.type}`)
 
         target.health -= 2
+        Server.i.broadcastEntityAnimation(target, EntityAnimationType.HURT, 0)
       default:
         this.logger.error(`Unknown UseItemOnEntityType: ${type}`)
     }
@@ -616,6 +620,10 @@ export class Client {
     Server.i.broadcastEntityEquipment(this.player, item, inventorySlot, hotbarSlot, containerId)
 
     // console.log('ENTITY SWITCHED SLOTS', packet.props)
+  }
+
+  private handleEntityEvent(packet: EntityAnimation) {
+    console.log(packet.props)
   }
 
   private async completeLogin() {
@@ -883,7 +891,7 @@ import { SetLocalPlayerInitialized } from './bedrock/SetLocalPlayerInitialized'
 import { Chat } from '../Chat'
 import { AddPlayer } from './bedrock/AddPlayer'
 import { EntityMetadata } from './bedrock/EntityMetadata'
-import { InteractAction, LevelEventType, MetadataGeneric, PlayerEventAction } from '../types/player'
+import { InteractAction, LevelEventType, MetadataGeneric, PlayerEventAction, EntityAnimationType } from '../types/player'
 import { Interact } from './bedrock/Interact'
 import { ContainerOpen } from './bedrock/ContainerOpen'
 import { PlayerAction } from './bedrock/PlayerAction'
@@ -905,4 +913,5 @@ import { Item } from '../item/Item'
 import { BlockUpdate } from './bedrock/BlockUpdate'
 import { Living } from '../entity/Living'
 import { SetHealth } from './bedrock/SetHealth'
+import { EntityAnimation } from './bedrock/EntityAnimation'
 

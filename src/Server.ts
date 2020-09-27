@@ -45,6 +45,7 @@ import { BlockUpdate } from './network/bedrock/BlockUpdate'
 import { Block } from './block/Block'
 import { Item } from './item/Item'
 import { EntityEquipment } from './network/bedrock/EntityEquipment'
+import { EntityAnimation } from './network/bedrock/EntityAnimation'
 
 const DEFAULT_OPTS: ServerOpts = {
   address: '0.0.0.0',
@@ -346,6 +347,14 @@ export class Server implements IServer {
       hotbarSlot,
       containerId,
     }), player.clientId)
+  }
+
+  public broadcastEntityAnimation(target: Entity, event: number, data: number): void {
+    this.broadcast(new EntityAnimation({
+      entityRuntimeId: target.id,
+      event,
+      data,
+    }))
   }
 
   public addEntity(entity: Entity<any, any>): void {
