@@ -6,7 +6,9 @@ export class Human<Events, Containers extends Container[] = []> extends Creature
 
   public baseOffset = 1.62
 
-  protected dimensions: [number, number] = [0.6, 1.8] // [width, height] in blocks
+  constructor(name: string, gameId: string) {
+    super(name, gameId, [0.6, 1.8])
+  }
 
   protected initContainers(): void {
     super.initContainers()

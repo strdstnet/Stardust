@@ -12,8 +12,6 @@ export abstract class Entity<Events = any, Containers extends Container[] = any>
   protected gravity = 0
   protected drag = 0
 
-  protected dimensions: [number, number] = [1, 1] // [width, height] in blocks
-
   public baseOffset = 0
 
   public id = BigInt(++Entity.entityCount)
@@ -38,6 +36,7 @@ export abstract class Entity<Events = any, Containers extends Container[] = any>
   constructor(
     public name: string, // Ex. Zombie
     public gameId: string, // Ex. minecraft:zombie
+    public dimensions: [number, number] = [1, 1], // [width, height] in blocks
   ) {
     super()
 
@@ -142,6 +141,8 @@ export abstract class Entity<Events = any, Containers extends Container[] = any>
   protected addAttributes(): void {}
 
   protected addMetadata(): void {
+    console.log('SETTING BOUNDING BOX', [this.width, this.height])
+    console.log(this.dimensions)
     this.metadata.add(MetadataFlag.FLAGS, MetadataType.LONG, 0n)
     this.metadata.add(MetadataFlag.MAX_AIR, MetadataType.SHORT, 400)
     this.metadata.add(MetadataFlag.ENTITY_LEAD_HOLDER_ID, MetadataType.LONG, -1n)
