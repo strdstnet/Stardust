@@ -632,10 +632,15 @@ export class Client {
 
     this.player.inventory.itemInHand = hotbarSlot
     Server.i.broadcastEntityEquipment(this.player, item, inventorySlot, hotbarSlot, containerId)
+
+    // this.sendBatched(new FormRequest({
+    //   formId: 1,
+    //   formData: '{"type": "form","title": "§l§4Teleporter","buttons": [{"text": "§l§eMurder Mystery","image": {"type": "url","data": "https://64.media.tumblr.com/dcb08efc82f1fdde9bf1a7e744847888/tumblr_p3neymZXlx1qk55bko8_250.jpg"}},{"text": "§l§bHide n Seek", "image": {"type": "url", "data": "https://cdn.discordapp.com/attachments/690813365978791976/760203902439653386/tumblr_p7b48tPzXj1whvc9so9_1280.png"}}],"content": "§7Where do you want to go?"}',
+    // }))
   }
 
   private handleEntityAnimation(packet: EntityAnimation) {
-    console.log(packet.props)
+    console.log('entity amimation', packet.props)
   }
 
   private async completeLogin() {
@@ -926,4 +931,5 @@ import { BlockUpdate } from './bedrock/BlockUpdate'
 import { Living } from '../entity/Living'
 import { SetHealth } from './bedrock/SetHealth'
 import { EntityAnimation } from './bedrock/EntityAnimation'
+import { FormRequest } from './bedrock/FormRequest'
 
