@@ -64,9 +64,6 @@ export class Server implements IServer {
 
   public static i: Server
 
-  /** @deprecated use Server.i instead */
-  public static current: Server
-
   public static logger = new Logger('Server')
 
   private sockets: Array<[string, Socket]> // Array<[id, Socket]>
@@ -88,7 +85,7 @@ export class Server implements IServer {
       process.exit(1)
     } else {
       // eslint-disable-next-line deprecation/deprecation
-      Server.i = Server.current = this
+      Server.i = this
     }
 
     this.sockets = [
@@ -108,9 +105,11 @@ export class Server implements IServer {
   }
 
   public static async start(opts?: Partial<ServerOpts>): Promise<Server> {
+    await ItemMap.registerItems()
+    this.logger.as('ItemMap').info(`Registered ${ItemMap.count} items`)
+
     BedrockData.loadData()
     Attribute.initAttributes()
-    ItemMap.registerItems()
     BlockMap.populate()
     GlobalTick.start(Server.TPS)
 

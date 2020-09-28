@@ -1,5 +1,4 @@
 import { Tag, TagType } from './Tag'
-import { TagMapper } from './TagMapper'
 
 export class ListTag<T extends Tag = Tag> extends Tag<T[]> {
 
@@ -17,7 +16,7 @@ export class ListTag<T extends Tag = Tag> extends Tag<T[]> {
     return this
   }
 
-  public readValue(data: any): T[] {
+  public readValue(data: BinaryData): T[] {
     const items: T[] = []
     this.valueType = data.readByte()
     const count = data.readVarInt()
@@ -36,4 +35,16 @@ export class ListTag<T extends Tag = Tag> extends Tag<T[]> {
     return this.value = items
   }
 
+  public writeValue(data: BinaryData): void {
+    data.writeByte(this.value.length < 1 ? TagType.End : this.valueType)
+    data.writeByte(this.value.length)
+
+    for(const tag of this.value) {
+      data.writeTag(tag)
+    }
+  }
+
 }
+
+import { BinaryData } from '../utils/BinaryData'
+import { TagMapper } from './TagMapper'

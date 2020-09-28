@@ -10,8 +10,12 @@ export class EndTag extends Tag<null> {
     return super.assign(name, null)
   }
 
-  public readValue(data: any): null {
+  public readValue(data: BinaryData): null {
     return this.value = null
   }
 
+  public writeValue(data: BinaryData): void {}
+
 }
+
+import { BinaryData } from '../utils/BinaryData'

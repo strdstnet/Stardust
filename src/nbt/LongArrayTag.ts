@@ -6,8 +6,14 @@ export class LongArrayTag extends Tag<bigint[]> {
     super(TagType.LongArray)
   }
 
-  public readValue(data: any): bigint[] {
+  public readValue(data: BinaryData): bigint[] {
+    throw new Error('not implemented')
+  }
+
+  public writeValue(data: BinaryData): void {
     throw new Error('not implemented')
   }
 
 }
+
+import { BinaryData } from '../utils/BinaryData'

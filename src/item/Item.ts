@@ -1,31 +1,25 @@
-import { Items } from '../types/world'
-import { CompoundTag } from '../nbt/CompoundTag'
-import LegacyIdMap from '../data/block_id_map.json'
-import { BlockMap } from '../block/BlockMap'
-import { BlockIds } from '../block/types'
+import { EventEmitter } from 'events'
 
-export class Item {
+export interface IUseOnEntity {
+  damage: number,
+}
 
-  public id: Items
+export class Item extends EventEmitter {
 
   public count = 1
 
   public nbt: CompoundTag | null = null
 
-  /**
-   * @description Registers a new Item
-   */
-  constructor(public name: string, id?: Items, public meta = 0, public maxCount = 64) {
-    this.id = typeof id !== 'undefined' ? id : (LegacyIdMap as any)[this.name]
+  public baseDamage = 1
+
+  constructor(public name: string, public id: number, public meta = 0, public maxCount = 64) {
+    super()
   }
 
   public get runtimeId(): number {
     const state = BlockMap.legacyToRuntime.get((this.id << 4) | this.meta) ||
       BlockMap.legacyToRuntime.get(this.id << 4) ||
       BlockMap.legacyToRuntime.get(BlockIds.UPDATE_BLOCK << 4)
-
-    // console.log('STATE', state)
-    // if(!process.po) process.exit()
 
     if(!state) throw new Error('o')
 
@@ -36,19 +30,20 @@ export class Item {
     return true
   }
 
-  public get damage(): number {
-    return this.meta
-  }
-
-  public set damage(val: number) {
-    this.meta = val === -1 ? -1 : val & 0x7FFF
-  }
-
   public clone(): Item {
-    const item = new Item(this.name, this.id, 0)
-    item.meta = this.meta
+    return new Item(this.name, this.id, this.meta, this.maxCount)
+  }
 
-    return item
+  public useOnBlock(): void {}
+
+  public useOnEntity(): IUseOnEntity | null {
+    return {
+      damage: this.baseDamage,
+    }
   }
 
 }
+
+import { CompoundTag } from '../nbt/CompoundTag'
+import { BlockMap } from '../block/BlockMap'
+import { BlockIds } from '../block/types'

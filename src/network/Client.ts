@@ -283,8 +283,8 @@ export class Client {
           case Packets.ENTITY_EQUIPMENT:
             this.handleEntityEquipment(pk)
             break
-          case Packets.ENTITY_EVENT:
-            this.handleEntityEvent(pk)
+          case Packets.ENTITY_ANIMATION:
+            this.handleEntityAnimation(pk)
             break
           default:
             this.logger.debug(`UNKNOWN BATCHED PACKET ${pk.id}`)
@@ -452,8 +452,12 @@ export class Client {
 
     const block = this.level.getBlockAt(pos.x, pos.y, pos.z)
 
+    const item = this.player.inventory.itemHolding
+
     switch(type) {
       case UseItemType.BREAK_BLOCK:
+        item.useOnBlock()
+
         Server.i.broadcastLevelEvent(LevelEventType.PARTICLE_DESTROY, pos.x + 0.5, pos.y + 0.5, pos.z + 0.5, block.runtimeId)
         this.sendContainerUpdate(this.player.inventory, this.player.inventory.add(block.item))
         Server.i.level.setBlock(pos.x, pos.y, pos.z, BlockMap.AIR)
@@ -473,14 +477,23 @@ export class Client {
 
     if(!target) return
 
+    const item = this.player.inventory.itemHolding
+
     switch(type) {
       case UseItemOnEntityType.ATTACK:
         if(!target.alive) return
 
         if(!(target instanceof Living)) throw new Error(`Attempted to attack non-Living entity: ${target.type}`)
 
-        target.health -= 2
+        console.log(item)
+
+        const action = item.useOnEntity()
+
+        if(!action) return
+
+        target.health -= action.damage
         Server.i.broadcastEntityAnimation(target, EntityAnimationType.HURT, 0)
+        break
       default:
         this.logger.error(`Unknown UseItemOnEntityType: ${type}`)
     }
@@ -617,12 +630,11 @@ export class Client {
   private handleEntityEquipment(packet: EntityEquipment) {
     const { item, inventorySlot, hotbarSlot, containerId } = packet.props
 
+    this.player.inventory.itemInHand = hotbarSlot
     Server.i.broadcastEntityEquipment(this.player, item, inventorySlot, hotbarSlot, containerId)
-
-    // console.log('ENTITY SWITCHED SLOTS', packet.props)
   }
 
-  private handleEntityEvent(packet: EntityAnimation) {
+  private handleEntityAnimation(packet: EntityAnimation) {
     console.log(packet.props)
   }
 

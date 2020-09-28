@@ -21,7 +21,8 @@ export abstract class Tag<V = any> {
 
   constructor(public type: TagType) {}
 
-  public abstract readValue(data: any): V
+  public abstract readValue(data: BinaryData): V
+  public abstract writeValue(data: BinaryData): void
 
   public assign(name: string, value: V): this {
     this.name = name
@@ -31,3 +32,5 @@ export abstract class Tag<V = any> {
   }
 
 }
+
+import { BinaryData } from '../utils/BinaryData'

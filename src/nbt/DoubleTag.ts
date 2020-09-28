@@ -6,8 +6,14 @@ export class DoubleTag extends Tag<number> {
     super(TagType.Double)
   }
 
-  public readValue(data: any): number {
+  public readValue(data: BinaryData): number {
     return this.value = data.readLDouble()
   }
 
+  public writeValue(data: BinaryData): void {
+    data.writeDouble(this.value)
+  }
+
 }
+
+import { BinaryData } from '../utils/BinaryData'

@@ -6,8 +6,14 @@ export class ByteTag extends Tag<number> {
     super(TagType.Byte)
   }
 
-  public readValue(data: any): number {
+  public readValue(data: BinaryData): number {
     return this.value = data.readByte()
   }
 
+  public writeValue(data: BinaryData): void {
+    data.writeByte(this.value)
+  }
+
 }
+
+import { BinaryData } from '../utils/BinaryData'

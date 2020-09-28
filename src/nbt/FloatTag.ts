@@ -6,8 +6,14 @@ export class FloatTag extends Tag<number> {
     super(TagType.Float)
   }
 
-  public readValue(data: any): number {
+  public readValue(data: BinaryData): number {
     return this.value = data.readLFloat()
   }
 
+  public writeValue(data: BinaryData): void {
+    data.writeLFloat(this.value)
+  }
+
 }
+
+import { BinaryData } from '../utils/BinaryData'

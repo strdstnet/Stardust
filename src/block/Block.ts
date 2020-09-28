@@ -23,6 +23,9 @@ export class Block {
     this.id = typeof id !== 'undefined' ? id : (LegacyIdMap as any)[this.name]
     this.metaVal = meta
     this.item = item || ItemMap.get(this.name) || ItemMap.AIR
+    console.log(item)
+    console.log(this.name, ItemMap.get(this.name))
+    console.log(ItemMap.AIR)
     this.item.meta = this.metaVal
   }
 
@@ -41,9 +44,6 @@ export class Block {
     const state = BlockMap.legacyToRuntime.get((this.id << 4) | this.meta) ||
       BlockMap.legacyToRuntime.get(this.id << 4) ||
       BlockMap.legacyToRuntime.get(BlockIds.UPDATE_BLOCK << 4)
-
-    // console.log('STATE', state)
-    // if(!process.po) process.exit()
 
     if(!state) throw new Error('o')
 

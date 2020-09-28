@@ -219,7 +219,7 @@ export class StartGame extends BatchedPacket<IStartGame> {
       },
       { name: 'bonusChestEnabled', parser: DataType.BOOLEAN, resolve: def(false) },
       { name: 'startWithMapEnabled', parser: DataType.BOOLEAN, resolve: def(false) },
-      { name: 'defaultPlayerPermission', parser: DataType.VARINT, resolve: def(PlayerPermissions.MEMBER) },
+      { name: 'defaultPlayerPermission', parser: DataType.VARINT, resolve: def(PlayerPermissions.CUSTOM) },
       { name: 'serverChunkTickRadius', parser: DataType.L_INT, resolve: def(4) },
       { name: 'hasLockedBehaviorPack', parser: DataType.BOOLEAN, resolve: def(false) },
       { name: 'hasLockedResourcePack', parser: DataType.BOOLEAN, resolve: def(false) },
@@ -280,7 +280,7 @@ export class StartGame extends BatchedPacket<IStartGame> {
             }
           }
         },
-        resolve: def(LegacyIdMap),
+        resolve: def({}),
       },
       { name: 'multiplayerCorrelationId', parser: DataType.STRING, resolve: def('') },
       { name: 'enableNewInventorySystem', parser: DataType.BOOLEAN, resolve: def(false) }, // TODO: Automatic crafting, etc...

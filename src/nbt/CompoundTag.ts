@@ -1,4 +1,3 @@
-import { EndTag } from './EndTag'
 import { Tag, TagType } from './Tag'
 
 export class CompoundTag<V extends Record<string, Tag> = {
@@ -27,7 +26,7 @@ export class CompoundTag<V extends Record<string, Tag> = {
     return this.value[name] ? this.value[name].value : null
   }
 
-  public readValue(data: any): V {
+  public readValue(data: BinaryData): V {
     this.value = {} as V
 
     let tag: Tag | null = null
@@ -38,6 +37,12 @@ export class CompoundTag<V extends Record<string, Tag> = {
     }
 
     return this.value
+  }
+
+  public writeValue(data: BinaryData): void {
+    for(const tag of Object.values(this.value)) {
+      data.writeTag(tag)
+    }
   }
 
   public equals(tag: CompoundTag): boolean {
@@ -71,4 +76,14 @@ export class CompoundTag<V extends Record<string, Tag> = {
     return true
   }
 
+  public clone(): CompoundTag<V> {
+    const tag = new CompoundTag<V>()
+    tag.value = Object.assign({}, this.value)
+
+    return tag
+  }
+
 }
+
+import { BinaryData } from '../utils/BinaryData'
+import { EndTag } from './EndTag'

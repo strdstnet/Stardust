@@ -6,7 +6,7 @@ export class IntArrayTag extends Tag<number[]> {
     super(TagType.IntArray)
   }
 
-  public readValue(data: any): number[] {
+  public readValue(data: BinaryData): number[] {
     const value = []
     const count = data.readVarInt()
 
@@ -17,4 +17,14 @@ export class IntArrayTag extends Tag<number[]> {
     return this.value = value
   }
 
+  public writeValue(data: BinaryData): void {
+    data.writeVarInt(this.value.length)
+
+    for(const val of this.value) {
+      data.writeVarInt(val)
+    }
+  }
+
 }
+
+import { BinaryData } from '../utils/BinaryData'

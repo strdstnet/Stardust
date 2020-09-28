@@ -6,8 +6,14 @@ export class LongTag extends Tag<bigint> {
     super(TagType.Long)
   }
 
-  public readValue(data: any): bigint {
+  public readValue(data: BinaryData): bigint {
     return this.value = data.readVarLong()
   }
 
+  public writeValue(data: BinaryData): void {
+    data.writeVarLong(this.value)
+  }
+
 }
+
+import { BinaryData } from '../utils/BinaryData'

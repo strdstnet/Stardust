@@ -1,16 +1,3 @@
-import { ByteArrayTag } from './ByteArrayTag'
-import { ByteTag } from './ByteTag'
-import { CompoundTag } from './CompoundTag'
-import { DoubleTag } from './DoubleTag'
-import { FloatTag } from './FloatTag'
-import { IntArrayTag } from './IntArrayTag'
-import { IntTag } from './IntTag'
-import { ListTag } from './ListTag'
-import { LongTag } from './LongTag'
-import { ShortTag } from './ShortTag'
-import { StringTag } from './StringTag'
-import { Tag, TagType } from './Tag'
-
 export class TagMapper {
 
   public static get(type: TagType): Tag {
@@ -43,3 +30,16 @@ export class TagMapper {
   }
 
 }
+
+import { ByteArrayTag } from './ByteArrayTag'
+import { ByteTag } from './ByteTag'
+import { CompoundTag } from './CompoundTag'
+import { DoubleTag } from './DoubleTag'
+import { FloatTag } from './FloatTag'
+import { IntArrayTag } from './IntArrayTag'
+import { IntTag } from './IntTag'
+import { ListTag } from './ListTag'
+import { LongTag } from './LongTag'
+import { ShortTag } from './ShortTag'
+import { StringTag } from './StringTag'
+import { Tag, TagType } from './Tag'

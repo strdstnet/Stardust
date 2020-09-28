@@ -554,17 +554,26 @@ export class BinaryData {
   }
 
   public writeContainerItem(item: Item): void {
-    // this.writeBoolean(!!item.count && item.id !== Items.AIR)
-
     this.writeVarInt(item.id)
     if(item.id === Items.AIR) return
 
-    const auxValue = ((item.damage & 0x7fff) << 8) | item.count
+    const auxValue = ((item.meta & 0x7fff) << 8) | item.count
     this.writeVarInt(auxValue)
 
-    if(item.nbt) {
-      // TODO: Compound tags
-      // https://github.com/pmmp/PocketMine-MP/blob/f9c2ed620008a695bef2c4d141c0d26880e77040/src/pocketmine/network/mcpe/NetworkBinaryStream.php#L259
+    let tag = item.nbt ? item.nbt.clone() : null
+
+    if(item instanceof Durable && item.damage > 0) {
+      if(!tag) {
+        tag = new CompoundTag()
+      }
+
+      tag.add(new IntTag().assign('Damage', item.damage))
+    }
+
+    if(tag) {
+      this.writeLShort(0xffff)
+      this.writeByte(1)
+      this.writeTag(tag)
     } else {
       this.writeLShort(0)
     }
@@ -587,15 +596,14 @@ export class BinaryData {
     if(!item) throw new Error(`Couldn't create item from id: ${id}`)
 
     const auxValue = this.readVarInt()
-    item.damage = auxValue >> 8
+    item.meta = auxValue >> 8
     item.count = auxValue & 0xff
 
-    const nbtLen = this.readLShort()
-
     item.nbt = null
-    if(nbtLen === 0xffff) {
-      // TODO: Item NBTs
-      // https://github.com/pmmp/PocketMine-MP/blob/stable/src/pocketmine/network/mcpe/NetworkBinaryStream.php#L201-L201
+    if(this.readLShort() === 0xffff) {
+      const nbtVersion = this.readByte()
+
+      item.nbt = this.readTag<CompoundTag>(nbtVersion)
     }
 
     for(let i = 0, c = this.readVarInt(); i < c; i++) {
@@ -786,7 +794,15 @@ export class BinaryData {
     return double
   }
 
-  public readTag<T extends Tag = Tag>(): T {
+  public writeDouble(val: number): void {
+    this.alloc(DataLengths.DOUBLE)
+    this.buf.writeDoubleLE(val, this.pos)
+    this.pos += DataLengths.DOUBLE
+  }
+
+  public readTag<T extends Tag = Tag>(version = 1): T {
+    if(version !== 1) throw new Error(`Unsupport NBT version: ${1}`)
+
     const type = this.readByte()
 
     if(type === TagType.End) return new EndTag() as any as T
@@ -796,6 +812,12 @@ export class BinaryData {
     tag.readValue(this)
 
     return tag as T
+  }
+
+  public writeTag(val: Tag): void {
+    this.writeByte(val.type)
+    this.writeString(val.name)
+    val.writeValue(this)
   }
 
 }
@@ -817,4 +839,7 @@ import { EndTag } from '../nbt/EndTag'
 import { TagMapper } from '../nbt/TagMapper'
 import { ItemMap } from '../item/ItemMap'
 import { EntityPosition } from '../entity/EntityPosition'
+import { Durable } from '../item/Durable'
+import { CompoundTag } from '../nbt/CompoundTag'
+import { IntTag } from '../nbt/IntTag'
 

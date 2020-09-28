@@ -19,10 +19,16 @@ export class ContainerNotification extends BatchedPacket<IContainerNotification>
         name: 'items',
         parser({ type, data, props }) {
           if(type === ParserType.ENCODE) {
+            // data.writeUnsignedVarInt(0)
             data.writeUnsignedVarInt(props.items.length)
 
-            for(const item of props.items) {
-              data.writeVarInt(0)
+            console.log('---')
+            console.log(props.items.filter(i => i.id !== 0))
+            console.log('---')
+
+            for(let i = 0; i < props.items.length; i++) {
+              const item = props.items[i]
+              data.writeVarInt(item.id === 0 || item.count < 1 ? 0 : 1)
               data.writeContainerItem(item)
             }
           } else {

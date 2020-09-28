@@ -16,9 +16,19 @@ export class Human<Events, Containers extends Container[] = []> extends Creature
     this.containers.push(new Inventory())
     // this.containers.push(new EnderChest())
 
-    const grass = new Item('minecraft:grass', 2, 0)
-    grass.count = 64
+    const grass = ItemMap.get('minecraft:grass')
+    if(grass) grass.count = 64
     this.inventory.add(grass)
+    console.log(ItemMap.get('minecraft:diamond_sword'))
+    this.inventory.add(ItemMap.get('minecraft:stone'))
+    this.inventory.add(ItemMap.get('minecraft:dirt'))
+    this.inventory.add(ItemMap.get('minecraft:netherite_sword'))
+    this.inventory.add(ItemMap.get('minecraft:netherite_axe'))
+    this.inventory.add(ItemMap.get('minecraft:netherite_shovel'))
+    this.inventory.add(ItemMap.get('minecraft:diamond_sword'))
+    console.log(ItemMap.get('minecraft:wooden_sword'))
+    console.log(ItemMap.get('minecraft:iron_sword'))
+    // console.log(ItemMap.get('minecraft:golden_axe'))
   }
 
   protected addAttributes(): void {
@@ -47,4 +57,5 @@ import { Container } from '../containers/Container'
 import { EnderChest } from '../containers/EnderChest'
 import { Inventory } from '../containers/Inventory'
 import { Item } from '../item/Item'
+import { ItemMap } from '../item/ItemMap'
 

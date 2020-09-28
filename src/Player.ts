@@ -96,6 +96,7 @@ export class Player extends Human<IPlayerEvents> {
 
   public notifyContainers(players: Player[] = [this]): void {
     for(const container of this.containers) {
+      console.log(container)
       for(const player of players) {
         player.emit('Client:containerNotification', container)
       }

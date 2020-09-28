@@ -1,14 +1,16 @@
-import { Items } from '../types/world'
 import { Item } from './Item'
-import { ItemNames } from './types'
-import BlockIdMap from '../data/block_id_map.json' // TODO: Use item map JSON
+import ItemDefinition from './items.json'
 
 export class ItemMap {
 
   private static items: Map<string, Item> = new Map()
-  private static idToName: Map<Items, string> = new Map()
+  private static idToName: Map<number, string> = new Map()
 
   public static AIR: Item
+
+  public static get count(): number {
+    return this.items.size
+  }
 
   public static add(item: Item): Item {
     this.items.set(item.name, item)
@@ -22,44 +24,64 @@ export class ItemMap {
     this.idToName.clear()
   }
 
-  public static get(name: string): Item {
+  public static get(name: string, clone = true): Item | null{
     const item = this.items.get(name)
 
-    return item ? item.clone() : new Item(name)
+    return item ? (clone ? item.clone() : item) : null
   }
 
-  public static getById(id: number): Item | null {
+  public static getById(id: number, clone = true): Item | null {
     const name = this.idToName.get(id)
 
     if(!name) return null
 
-    const item = this.items.get(name)
-
-    return item ? item.clone() : new Item(name)
+    return this.get(name, clone)
   }
 
   public static getName(id: number): string | null {
     return this.idToName.get(id) || null
   }
 
-  private static registerItem(name: string, id: Items): Item {
+  private static registerItem(name: string, id: number): Item {
     const item = new Item(name, id)
     this.add(item)
 
     return item
   }
 
-  public static registerItems(): void {
+  public static async registerItems(): Promise<void> {
     this.clear()
 
-    for(const [ name, id ] of Object.entries(BlockIdMap)) {
-      this.idToName.set(id, name)
+    for await(const { name, id } of ItemDefinition.standard) {
+      this.registerItem(name, id)
     }
 
-    this.AIR = this.registerItem(ItemNames.AIR, Items.AIR)
-    this.registerItem(ItemNames.STONE, Items.STONE)
-    this.registerItem(ItemNames.GRASS, Items.GRASS)
-    this.registerItem(ItemNames.DIRT, Items.DIRT)
+    for await(const { defaults, items } of ItemDefinition.tools) {
+      for await(const item of items) {
+        const props = Object.assign({}, defaults, item) as any
+
+        this.add(new Tool(
+          item.name,
+          props.blockType,
+          props.entityDmg,
+          props.blockDmg,
+          props.miningMod || 1,
+          props.harvestLvl,
+          props.miningEff,
+          props.attackPts,
+          props.durability,
+          item.id,
+        ))
+      }
+    }
+
+    this.AIR = this.get('minecraft:air', false) as Item
+    // this.AIR = this.registerItem('minecraft:air', 0)
+    // this.registerItem('minecraft:stone', 1)
+    // this.registerItem('minecraft:grass', 2)
+    // this.registerItem('minecraft:dirt', 3)
   }
 
 }
+
+import { Tool } from './Tool'
