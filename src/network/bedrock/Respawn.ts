@@ -7,7 +7,7 @@ import { Vector3 } from 'math3d'
 interface IRespawn {
   position: Vector3,
   state: RespawnState,
-  entityId: bigint,
+  entityRuntimeId: bigint,
 }
 
 export class Respawn extends BatchedPacket<IRespawn> {
@@ -16,7 +16,7 @@ export class Respawn extends BatchedPacket<IRespawn> {
     super(Packets.RESPAWN, [
       { name: 'position', parser: DataType.VECTOR3 },
       { name: 'state', parser: DataType.BYTE },
-      { name: 'entityId', parser: DataType.U_VARLONG },
+      { name: 'entityRuntimeId', parser: DataType.U_VARLONG },
     ])
 
     if(p) this.props = Object.assign({}, p)

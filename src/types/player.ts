@@ -190,3 +190,9 @@ export enum EntityAnimationType {
   HURT = 2,
   DEATH = 3,
 }
+
+export enum RespawnState {
+  SEARCHING = 0,
+  READY = 1,
+  CLIENT_READY = 2,
+}

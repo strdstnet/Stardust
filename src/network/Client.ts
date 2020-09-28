@@ -286,6 +286,9 @@ export class Client {
           case Packets.ENTITY_ANIMATION:
             this.handleEntityAnimation(pk)
             break
+          case Packets.RESPAWN:
+            this.handleRespawn(pk)
+            break
           default:
             this.logger.debug(`UNKNOWN BATCHED PACKET ${pk.id}`)
         }
@@ -643,21 +646,34 @@ export class Client {
     console.log('entity amimation', packet.props)
   }
 
+  private handleRespawn(packet: Respawn) {
+    const { state, entityRuntimeId } = packet.props
+
+    if (state === RespawnState.CLIENT_READY) {
+      this.sendBatched(new Respawn({
+        position: new Vector3(0, 80, 0),
+        state: RespawnState.SERVER_READY,
+        entityRuntimeId,
+      }))
+    }
+    this.player.health = this.player.maxHealth
+  }
+
   private async completeLogin() {
     this.sendBatched(new StartGame({
       entityUniqueId: this.player.id,
       entityRuntimeId: this.player.id,
       playerPosition: this.player.position,
       spawnLocation: new Vector3(0, 20, 0),
-    }), Reliability.Unreliable)
+    }))
 
     // // TODO: Name tag visible, can climb, immobile
     // // https://github.com/pmmp/PocketMine-MP/blob/e47a711494c20ac86fea567b44998f2e24f3dbc7/src/pocketmine/Player.php#L2255
 
     Server.logger.info(`${this.player.name} logged in from ${this.address.ip}:${this.address.port} with MTU ${this.mtuSize}`)
 
-    this.sendBatched(new EntityDefinitionList(), Reliability.Unreliable)
-    this.sendBatched(new BiomeDefinitionList(), Reliability.Unreliable)
+    this.sendBatched(new EntityDefinitionList())
+    this.sendBatched(new BiomeDefinitionList())
 
     this.sendAttributes(true)
     this.sendMetadata()
@@ -901,7 +917,7 @@ import { ConnectedPing } from './raknet/ConnectedPing'
 import { ACK } from './raknet/ACK'
 import { ConnectedPong } from './raknet/ConnectedPong'
 import { ConnectionRequestAccepted } from './raknet/ConnectionRequestAccepted'
-import { AdventureSettingsFlag, CommandPermissions, PlayerPermissions, PlayStatusType, ResourcePackResponseStatus, WorldSound } from '../types/world'
+import { AdventureSettingsFlag, CommandPermissions, PlayerPermissions, PlayStatusType, ResourcePackResponseStatus, RespawnState, WorldSound } from '../types/world'
 import { NetworkChunkPublisher } from './bedrock/NetworkChunkPublisher'
 import { MovePlayer } from './bedrock/MovePlayer'
 import { SetLocalPlayerInitialized } from './bedrock/SetLocalPlayerInitialized'
@@ -932,4 +948,5 @@ import { Living } from '../entity/Living'
 import { SetHealth } from './bedrock/SetHealth'
 import { EntityAnimation } from './bedrock/EntityAnimation'
 import { FormRequest } from './bedrock/FormRequest'
+import { Respawn } from './bedrock/Respawn'
 

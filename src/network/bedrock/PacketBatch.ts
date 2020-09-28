@@ -27,6 +27,7 @@ import { ContainerClose } from './ContainerClose'
 import { ContainerTransaction } from './ContainerTransaction'
 import { EntityEquipment } from './EntityEquipment'
 import { EntityAnimation } from './EntityAnimation'
+import { Respawn } from './Respawn'
 
 interface IPacketBatch {
   packets: Array<BatchedPacket<any>>,
@@ -130,6 +131,9 @@ export class PacketBatch extends BundledPacket<IPacketBatch> {
                   break
                 case Packets.ENTITY_ANIMATION:
                   packet = new EntityAnimation()
+                  break
+                case Packets.RESPAWN:
+                  packet = new Respawn()
                   break
                 // case Packets.RESOURCE_PACKS_STACK:
                 //   packet = new BatchedPacket(packetId, [])
