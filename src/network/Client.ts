@@ -608,9 +608,17 @@ export class Client {
   }
 
   private handleEntityFall(packet: EntityFall) {
-    const { runtimeEntityId, fallDistance, isInVoid } = packet.props
+    const { fallDistance, isInVoid } = packet.props
 
-    console.log('ENTITY FELL', { runtimeEntityId, fallDistance, isInVoid })
+    console.log('ENTITY FELL', { fallDistance, isInVoid })
+
+    const fallDamage = Math.ceil(fallDistance - 3)
+
+    if (fallDamage > 0) {
+      this.player.health -= fallDamage
+
+      Server.i.broadcastEntityAnimation(this.player, EntityAnimationType.HURT, 0)
+    }
   }
 
   private handleLevelSound(packet: LevelSound) {
@@ -860,6 +868,10 @@ export class Client {
 
     this.player.on('Client:updateHealth', health => {
       this.sendBatched(new SetHealth({ health }))
+
+      if (health <= 0) {
+        Server.i.broadcastEntityAnimation(this.player, 3, 0)
+      }
     })
   }
 
@@ -930,7 +942,7 @@ import { SetLocalPlayerInitialized } from './bedrock/SetLocalPlayerInitialized'
 import { Chat } from '../Chat'
 import { AddPlayer } from './bedrock/AddPlayer'
 import { EntityMetadata } from './bedrock/EntityMetadata'
-import { InteractAction, LevelEventType, MetadataGeneric, PlayerEventAction, EntityAnimationType } from '../types/player'
+import { InteractAction, LevelEventType, MetadataGeneric, PlayerEventAction, EntityAnimationType, PlayerAnimation } from '../types/player'
 import { Interact } from './bedrock/Interact'
 import { ContainerOpen } from './bedrock/ContainerOpen'
 import { PlayerAction } from './bedrock/PlayerAction'
