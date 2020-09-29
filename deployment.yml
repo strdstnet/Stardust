@@ -4,6 +4,9 @@ metadata:
   name: stardust
 spec:
   replicas: 1
+  selector:
+    matchLabels:
+      app: stardust
   strategy:
     rollingUpdate:
       maxSurge: 1
