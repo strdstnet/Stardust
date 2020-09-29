@@ -109,4 +109,3 @@ dist
 .yarnrc.yml
 lib/
 nodemon.json
-worlds/

@@ -441,6 +441,8 @@ export class Client {
     const { transactionType: type, transaction } = packet.props
 
     switch(type) {
+      case ContainerTransactionType.NORMAL:
+        return this.handleNormalTransaction(packet)
       case ContainerTransactionType.USE_ITEM:
         return this.handleUseItem(transaction)
       case ContainerTransactionType.USE_ITEM_ON_ENTITY:
@@ -448,6 +450,10 @@ export class Client {
       default:
         this.logger.error(`Unknown ContainerTransactionType: ${type}`)
     }
+  }
+
+  private handleNormalTransaction(transaction: ContainerTransaction): void {
+    console.log(transaction.props)
   }
 
   private handleUseItem(transaction: ITransaction): void {

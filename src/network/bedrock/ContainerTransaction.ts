@@ -117,6 +117,8 @@ export class ContainerTransaction extends BatchedPacket<IContainerTransaction> {
               if(props.hasItemStackIds) {
                 action.newItemStackId = data.readVarInt()
               }
+
+              props.actions.push(action)
             }
           }
         },
