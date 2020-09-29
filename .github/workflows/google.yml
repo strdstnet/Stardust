@@ -12,15 +12,13 @@
 
 name: Build and Deploy to GKE
 
-on:
-  release:
-    types: [created]
+on: push
 
 env:
   PROJECT_ID: ${{ secrets.GKE_PROJECT }}
-  GKE_CLUSTER: cluster-1    # TODO: update to cluster name
-  GKE_ZONE: europe-west2-a   # TODO: update to cluster zone
-  DEPLOYMENT_NAME: stardust # TODO: update to deployment name
+  GKE_CLUSTER: cluster-1
+  GKE_ZONE: europe-west2-a
+  DEPLOYMENT_NAME: stardust
   IMAGE: stardust
 
 jobs:
