@@ -19,7 +19,7 @@ spec:
     spec:
       containers:
       - name: stardust
-        image: eu.gcr.io/PROJECT_ID/IMAGE:TAG
+        image: gcr.io/PROJECT_ID/IMAGE:TAG
         ports:
         - containerPort: 19132
         resources:
