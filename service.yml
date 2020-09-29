@@ -6,6 +6,7 @@ spec:
   type: LoadBalancer
   ports:
     - port: 19132
+      protocol: UDP
       targetPort: 19132
   selector:
     app: stardust
