@@ -14,7 +14,7 @@
   },
   "dependencies": {
     "@bwatton/logger": "^1.0.4",
-    "@yarnpkg/pnpify": "^2.0.0-rc.19",
+    "@yarnpkg/pnpify": "^2.2.1",
     "chalk": "^3.0.0",
     "math3d": "^0.2.2",
     "prismarine-provider-anvil": "^2.3.1",
