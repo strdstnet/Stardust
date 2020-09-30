@@ -317,7 +317,7 @@ export class Client {
         behaviourPacks: [],
         resourcePacks: [],
       }),
-    ], Reliability.Unreliable)
+    ])
     // this.sendBatched()
     // this.sendBatched()
   }
@@ -868,10 +868,6 @@ export class Client {
 
     this.player.on('Client:updateHealth', health => {
       this.sendBatched(new SetHealth({ health }))
-
-      if (health <= 0) {
-        Server.i.broadcastEntityAnimation(this.player, 3, 0)
-      }
     })
   }
 
@@ -967,4 +963,3 @@ import { SetHealth } from './bedrock/SetHealth'
 import { EntityAnimation } from './bedrock/EntityAnimation'
 import { FormRequest } from './bedrock/FormRequest'
 import { Respawn } from './bedrock/Respawn'
-

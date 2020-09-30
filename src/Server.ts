@@ -46,6 +46,7 @@ import { Block } from './block/Block'
 import { Item } from './item/Item'
 import { EntityEquipment } from './network/bedrock/EntityEquipment'
 import { EntityAnimation } from './network/bedrock/EntityAnimation'
+import { RemoveEntity } from './network/bedrock/RemoveEntity'
 
 const DEFAULT_OPTS: ServerOpts = {
   address: '0.0.0.0',
@@ -241,6 +242,10 @@ export class Server implements IServer {
     this.broadcast(new PlayerList({
       type: PlayerListType.REMOVE,
       players: Array.from(this.players.values()),
+    }))
+
+    this.broadcast(new RemoveEntity({
+      entityRuntimeId: id,
     }))
 
     this.updatePlayerList()

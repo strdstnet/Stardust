@@ -53,6 +53,7 @@ export enum Packets {
   START_GAME = 0x0b, // 11
   ADD_PLAYER = 0x0c, // 12
   ADD_ENTITY = 0x0d, // 13
+  REMOVE_ENTITY = 0x0e, // 14
   MOVE_ENTITY = 0x12, // 18
   MOVE_PLAYER = 0x13, // 19
   BLOCK_UPDATE = 0x15, // 21

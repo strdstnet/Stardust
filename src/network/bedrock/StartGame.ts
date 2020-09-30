@@ -23,7 +23,6 @@ import {
   MultiplayerVisibility,
 } from '../../types/network'
 import { ParserType, Packet } from '../Packet'
-import LegacyIdMap from '../../data/block_id_map.json'
 import fs from 'fs'
 import path from 'path'
 import { EntityPosition } from '../../entity/EntityPosition'
@@ -219,7 +218,7 @@ export class StartGame extends BatchedPacket<IStartGame> {
       },
       { name: 'bonusChestEnabled', parser: DataType.BOOLEAN, resolve: def(false) },
       { name: 'startWithMapEnabled', parser: DataType.BOOLEAN, resolve: def(false) },
-      { name: 'defaultPlayerPermission', parser: DataType.VARINT, resolve: def(PlayerPermissions.CUSTOM) },
+      { name: 'defaultPlayerPermission', parser: DataType.VARINT, resolve: def(PlayerPermissions.MEMBER) },
       { name: 'serverChunkTickRadius', parser: DataType.L_INT, resolve: def(4) },
       { name: 'hasLockedBehaviorPack', parser: DataType.BOOLEAN, resolve: def(false) },
       { name: 'hasLockedResourcePack', parser: DataType.BOOLEAN, resolve: def(false) },
@@ -243,7 +242,7 @@ export class StartGame extends BatchedPacket<IStartGame> {
         },
       },
       { name: 'levelId', parser: DataType.STRING, resolve: def('') },
-      { name: 'worldName', parser: DataType.STRING, resolve: def('Hyperstone Network') },
+      { name: 'worldName', parser: DataType.STRING, resolve: def('§eHyperstone Network') },
       { name: 'premiumWorldTemplateId', parser: DataType.STRING, resolve: def('') },
       { name: 'isTrial', parser: DataType.BOOLEAN, resolve: def(false) },
       { name: 'isMovementServerAuthoritative', parser: DataType.BOOLEAN, resolve: def(false) },
