@@ -1,7 +1,7 @@
 import { Metadata } from '../../../entity/Metadata'
 import { EntityMetadata } from '../../../network/bedrock/EntityMetadata'
-import { MetadataFlag, MetadataGeneric, MetadataType } from '../../../types/player'
-import { BinaryData, DataLengths } from '../../../utils/BinaryData'
+import { MetadataFlag, MetadataType } from '../../../types/player'
+import { BinaryData } from '../../../utils/BinaryData'
 
 describe('EntityMetadata', () => {
   it('encodes & decodes correctly', async () => {

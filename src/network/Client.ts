@@ -494,8 +494,6 @@ export class Client {
 
         if(!(target instanceof Living)) throw new Error(`Attempted to attack non-Living entity: ${target.type}`)
 
-        console.log(item)
-
         const action = item.useOnEntity()
 
         if(!action) return
@@ -648,6 +646,10 @@ export class Client {
     const { item, inventorySlot, hotbarSlot, containerId } = packet.props
 
     this.player.inventory.itemInHand = hotbarSlot
+
+    console.log('sending metadata')
+    console.log(this.player, item, inventorySlot, hotbarSlot, containerId)
+
     Server.i.broadcastEntityEquipment(this.player, item, inventorySlot, hotbarSlot, containerId)
 
     // this.sendBatched(new FormRequest({
@@ -838,7 +840,7 @@ export class Client {
 
   private initPlayerListeners() {
     this.player.on('Client:entityNotification', (entityRuntimeId, metadata) => {
-      this.sendBatched(new EntityNotification({
+      this.sendBatched(new EntityMetadata({
         entityRuntimeId,
         metadata,
       }))
@@ -917,7 +919,7 @@ import { LevelChunk } from './bedrock/LevelChunk'
 import { UpdateAttributes } from './bedrock/UpdateAttributes'
 import { AvailableCommands } from './bedrock/AvailableCommands'
 import { AdventureSettings } from './bedrock/AdventureSettings'
-import { EntityNotification } from './bedrock/EntityNotification'
+import { EntityMetadata } from './bedrock/EntityMetadata'
 import { ContainerNotification } from './bedrock/ContainerNotification'
 import { EntityEquipment } from './bedrock/EntityEquipment'
 import { BundledPacket } from './raknet/BundledPacket'
@@ -937,7 +939,6 @@ import { MovePlayer } from './bedrock/MovePlayer'
 import { SetLocalPlayerInitialized } from './bedrock/SetLocalPlayerInitialized'
 import { Chat } from '../Chat'
 import { AddPlayer } from './bedrock/AddPlayer'
-import { EntityMetadata } from './bedrock/EntityMetadata'
 import { InteractAction, LevelEventType, MetadataGeneric, PlayerEventAction, EntityAnimationType, PlayerAnimation } from '../types/player'
 import { Interact } from './bedrock/Interact'
 import { ContainerOpen } from './bedrock/ContainerOpen'

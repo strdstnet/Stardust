@@ -10,13 +10,13 @@ interface IEntityMetadata {
 
 export class EntityMetadata extends BatchedPacket<IEntityMetadata> {
 
-  constructor(p?: Partial<IEntityMetadata>) {
+  constructor(p?: IEntityMetadata) {
     super(Packets.ENTITY_METADATA, [
       { name: 'entityRuntimeId', parser: DataType.U_VARLONG },
-      { name: 'metadata', parser: DataType.ENTITY_METADATA, resolve: () => new Metadata() },
+      { name: 'metadata', parser: DataType.ENTITY_METADATA },
     ])
 
-    if(p) this.props = Object.assign({}, p as IEntityMetadata)
+    if(p) this.props = Object.assign({}, p)
   }
 
 }

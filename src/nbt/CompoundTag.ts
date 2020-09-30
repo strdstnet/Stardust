@@ -43,6 +43,7 @@ export class CompoundTag<V extends Record<string, Tag> = {
     for(const tag of Object.values(this.value)) {
       data.writeTag(tag)
     }
+    data.writeTag(new EndTag())
   }
 
   public equals(tag: CompoundTag): boolean {

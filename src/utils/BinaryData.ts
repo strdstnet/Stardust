@@ -549,7 +549,6 @@ export class BinaryData {
   }
 
   public writeVarLong(v: bigint): void {
-    // const val = Number(v)
     this.writeUnsignedVarLong((v << 1n) ^ (v >> 63n))
   }
 
@@ -563,7 +562,13 @@ export class BinaryData {
     let tag = item.nbt ? item.nbt.clone() : null
 
     if(item instanceof Durable && item.damage > 0) {
-      if(!tag) {
+      if(tag) {
+        const existing = tag.get('Damage')
+
+        if(existing) {
+          tag.add(new IntTag().assign('___Damage_ProtocolCollisionResolution___', existing.value))
+        }
+      } else {
         tag = new CompoundTag()
       }
 
@@ -815,7 +820,13 @@ export class BinaryData {
   }
 
   public writeTag(val: Tag): void {
+    console.log(`Writing ${val.constructor.name}...`)
+
     this.writeByte(val.type)
+
+    if(val.type === TagType.End) return
+
+    console.log(`...${val.name}`, val.value)
     this.writeString(val.name)
     val.writeValue(this)
   }

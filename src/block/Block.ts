@@ -23,9 +23,6 @@ export class Block {
     this.id = typeof id !== 'undefined' ? id : (LegacyIdMap as any)[this.name]
     this.metaVal = meta
     this.item = item || ItemMap.get(this.name) || ItemMap.AIR
-    console.log(item)
-    console.log(this.name, ItemMap.get(this.name))
-    console.log(ItemMap.AIR)
     this.item.meta = this.metaVal
   }
 

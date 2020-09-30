@@ -19,16 +19,12 @@ export class Human<Events, Containers extends Container[] = []> extends Creature
     const grass = ItemMap.get('minecraft:grass')
     if(grass) grass.count = 64
     this.inventory.add(grass)
-    console.log(ItemMap.get('minecraft:diamond_sword'))
     this.inventory.add(ItemMap.get('minecraft:stone'))
     this.inventory.add(ItemMap.get('minecraft:dirt'))
     this.inventory.add(ItemMap.get('minecraft:netherite_sword'))
     this.inventory.add(ItemMap.get('minecraft:netherite_axe'))
     this.inventory.add(ItemMap.get('minecraft:netherite_shovel'))
     this.inventory.add(ItemMap.get('minecraft:diamond_sword'))
-    console.log(ItemMap.get('minecraft:wooden_sword'))
-    console.log(ItemMap.get('minecraft:iron_sword'))
-    // console.log(ItemMap.get('minecraft:golden_axe'))
   }
 
   protected addAttributes(): void {

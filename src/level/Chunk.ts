@@ -96,8 +96,6 @@ export class Chunk {
 
     for(const [ coords, block ] of delta.entries()) {
       const [ x, y, z ] = coords.split(':').map(i => parseInt(i, 10))
-      
-      console.log([ x, y, z ], block.name, this.x, this.z)
 
       this.getSubChunkAt(y).setBlock(x, y & 0x0f, z, block)
     }
