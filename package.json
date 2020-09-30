@@ -37,7 +37,7 @@
     "barrelsby": "^2.2.0",
     "eslint": "^7.5.0",
     "eslint-plugin-deprecation": "^1.1.0",
-    "jest": "^26.1.0",
+    "jest": "^26.4.2",
     "nodemon": "^2.0.4",
     "ts-jest": "^26.1.2",
     "ts-node": "^9.0.0",
