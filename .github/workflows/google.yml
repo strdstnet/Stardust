@@ -19,7 +19,7 @@ on:
 
 env:
   PROJECT_ID: ${{ secrets.GKE_PROJECT }}
-  GKE_CLUSTER: cluster-1
+  GKE_CLUSTER: big-cluster
   GKE_ZONE: europe-west2-a
   DEPLOYMENT_NAME: stardust
   IMAGE: stardust
