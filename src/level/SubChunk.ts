@@ -1,5 +1,4 @@
-import { Block } from '../block/Block'
-import { ensureLength } from './Chunk'
+import { ensureLength } from '../utils/ensureLength'
 
 export class SubChunk {
 
@@ -91,3 +90,5 @@ export class SubChunk {
   }
 
 }
+
+import { Block } from '../block/Block'

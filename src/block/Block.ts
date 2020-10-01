@@ -18,11 +18,21 @@ export class Block {
     public name: string,
     meta = 0,
     id?: number,
-    item?: Item,
+    public hardness = 0,
+    protected itemName: string = name,
+    public fromEdu = false,
   ) {
-    this.id = typeof id !== 'undefined' ? id : (LegacyIdMap as any)[this.name]
+    this.id = typeof id === 'undefined' ? BlockMap.getId(name) : id
     this.metaVal = meta
-    this.item = item || ItemMap.get(this.name) || ItemMap.AIR
+
+    let item = ItemMap.get(itemName)
+
+    if(!item) {
+      Server.logger.as('Block').error(`Couldn't find valid item: ${itemName}`)
+      item = new Item(this.itemName, this.id)
+    }
+
+    this.item = item
     this.item.meta = this.metaVal
   }
 
@@ -51,8 +61,11 @@ export class Block {
     return 1000
   }
 
-  public clone<T extends Block = this>(): T {
-    const copy = new (this.constructor as { new (): T })()
+  public clone(): Block {
+    const copy = new (this.constructor as { new (...args: any[]): Block })(
+      this.name, this.metaVal, this.id,
+      this.hardness, this.itemName, this.fromEdu,
+    )
     Object.assign(copy, this)
     return copy
   }
@@ -69,6 +82,7 @@ export class Block {
 
 import { Item } from '../item/Item'
 import { ItemMap } from '../item/ItemMap'
-import LegacyIdMap from '../data/block_id_map.json'
 import { BlockMap } from './BlockMap'
 import { BlockIds } from './types'
+import { Server } from '../Server'
+

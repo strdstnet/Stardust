@@ -109,9 +109,11 @@ export class Server implements IServer {
     await ItemMap.registerItems()
     this.logger.as('ItemMap').info(`Registered ${ItemMap.count} items`)
 
+    await BlockMap.populate()
+    this.logger.as('BlockMap').info(`Registered ${BlockMap.count} blocks`)
+
     BedrockData.loadData()
     Attribute.initAttributes()
-    BlockMap.populate()
     GlobalTick.start(Server.TPS)
 
     await this.level.init()

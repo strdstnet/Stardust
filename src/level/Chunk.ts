@@ -1,22 +1,5 @@
-import { Block } from '../block/Block'
-import { BlockMap } from '../block/BlockMap'
-import { EntityPosition } from '../entity/EntityPosition'
-import { CompoundTag } from '../nbt/CompoundTag'
-import { ChunkDelta } from './Level'
 import { SubChunk } from './SubChunk'
-
-export function ensureLength(arr: number[], length: number, filler = 0): void {
-  if(arr.length === length) return
-
-  if(arr.length > length) {
-    arr.splice(0, length)
-  }
-
-  for(let i = 0; i < length; i++) {
-    const v = arr[i]
-    if(typeof v === 'undefined' || v === null) arr[i] = filler
-  }
-}
+import { ensureLength } from '../utils/ensureLength'
 
 export class Chunk {
 
@@ -104,3 +87,10 @@ export class Chunk {
   }
 
 }
+
+import { Block } from '../block/Block'
+import { BlockMap } from '../block/BlockMap'
+import { EntityPosition } from '../entity/EntityPosition'
+import { CompoundTag } from '../nbt/CompoundTag'
+import { ChunkDelta } from './Level'
+

@@ -31,6 +31,10 @@ export abstract class Tag<V = any> {
     return this
   }
 
+  public toJSON(): any {
+    return this.value
+  }
+
 }
 
 import { BinaryData } from '../utils/BinaryData'

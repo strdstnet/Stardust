@@ -6,7 +6,9 @@ export class ItemMap {
   private static items: Map<string, Item> = new Map()
   private static idToName: Map<number, string> = new Map()
 
-  public static AIR: Item
+  public static get AIR(): Item {
+    return this.items.get('minecraft:air') as Item
+  }
 
   public static get count(): number {
     return this.items.size
@@ -24,7 +26,7 @@ export class ItemMap {
     this.idToName.clear()
   }
 
-  public static get(name: string, clone = true): Item | null{
+  public static get(name: string, clone = true): Item | null {
     const item = this.items.get(name)
 
     return item ? (clone ? item.clone() : item) : null
@@ -74,12 +76,6 @@ export class ItemMap {
         ))
       }
     }
-
-    this.AIR = this.get('minecraft:air', false) as Item
-    // this.AIR = this.registerItem('minecraft:air', 0)
-    // this.registerItem('minecraft:stone', 1)
-    // this.registerItem('minecraft:grass', 2)
-    // this.registerItem('minecraft:dirt', 3)
   }
 
 }

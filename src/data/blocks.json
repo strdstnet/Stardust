@@ -1,0 +1,2640 @@
+{
+  "defaults": {
+    "hardness": 0,
+    "vars": 0,
+    "edu": false
+  },
+  "blocks": [
+    {
+      "id": 0,
+      "name": "minecraft:air"
+    },
+    {
+      "id": 1,
+      "name": "minecraft:stone",
+      "hardness": 1.5,
+      "vars": 7
+    },
+    {
+      "id": 2,
+      "name": "minecraft:grass",
+      "hardness": 0.6
+    },
+    {
+      "id": 3,
+      "name": "minecraft:dirt",
+      "hardness": 0.5,
+      "vars": 2
+    },
+    {
+      "id": 4,
+      "name": "minecraft:cobblestone",
+      "hardness": 2
+    },
+    {
+      "id": 5,
+      "name": "minecraft:planks",
+      "hardness": 2,
+      "vars": 6
+    },
+    {
+      "id": 6,
+      "name": "minecraft:sapling",
+      "vars": 6
+    },
+    {
+      "id": 7,
+      "name": "minecraft:bedrock",
+      "hardness": -1
+    },
+    {
+      "id": 8,
+      "name": "minecraft:flowing_water",
+      "hardness": 100
+    },
+    {
+      "id": 9,
+      "name": "minecraft:water",
+      "hardness": 100
+    },
+    {
+      "id": 10,
+      "name": "minecraft:flowing_lava",
+      "hardness": 100
+    },
+    {
+      "id": 11,
+      "name": "minecraft:lava",
+      "hardness": 100
+    },
+    {
+      "id": 12,
+      "name": "minecraft:sand",
+      "hardness": 0.5,
+      "vars": 2
+    },
+    {
+      "id": 13,
+      "name": "minecraft:gravel",
+      "hardness": 0.6
+    },
+    {
+      "id": 14,
+      "name": "minecraft:gold_ore",
+      "hardness": 3
+    },
+    {
+      "id": 15,
+      "name": "minecraft:iron_ore",
+      "hardness": 3
+    },
+    {
+      "id": 16,
+      "name": "minecraft:coal_ore",
+      "hardness": 3
+    },
+    {
+      "id": 17,
+      "name": "minecraft:log",
+      "hardness": 2,
+      "vars": 4
+    },
+    {
+      "id": 18,
+      "name": "minecraft:leaves",
+      "hardness": 0.2,
+      "vars": 4
+    },
+    {
+      "id": 19,
+      "name": "minecraft:sponge",
+      "hardness": 0.6,
+      "vars": 2
+    },
+    {
+      "id": 20,
+      "name": "minecraft:glass",
+      "hardness": 0.3
+    },
+    {
+      "id": 21,
+      "name": "minecraft:lapis_ore",
+      "hardness": 3
+    },
+    {
+      "id": 22,
+      "name": "minecraft:lapis_block",
+      "hardness": 3
+    },
+    {
+      "id": 23,
+      "name": "minecraft:dispenser",
+      "hardness": 3.5
+    },
+    {
+      "id": 24,
+      "name": "minecraft:sandstone",
+      "hardness": 0.8,
+      "vars": 2
+    },
+    {
+      "id": 25,
+      "name": "minecraft:noteblock",
+      "hardness": 0.8
+    },
+    {
+      "id": 26,
+      "name": "minecraft:bed",
+      "hardness": 0.2,
+      "vars": 16
+    },
+    {
+      "id": 27,
+      "name": "minecraft:golden_rail",
+      "hardness": 0.7
+    },
+    {
+      "id": 28,
+      "name": "minecraft:detector_rail",
+      "hardness": 0.7
+    },
+    {
+      "id": 29,
+      "name": "minecraft:sticky_piston",
+      "hardness": 1.5
+    },
+    {
+      "id": 30,
+      "name": "minecraft:web",
+      "hardness": 4
+    },
+    {
+      "id": 31,
+      "name": "minecraft:tallgrass",
+      "vars": 4
+    },
+    {
+      "id": 32,
+      "name": "minecraft:deadbush"
+    },
+    {
+      "id": 33,
+      "name": "minecraft:piston",
+      "hardness": 1.5
+    },
+    {
+      "id": 34,
+      "name": "minecraft:pistonarmcollision",
+      "hardness": 1.5
+    },
+    {
+      "id": 35,
+      "name": "minecraft:wool",
+      "hardness": 0.8,
+      "vars": 16
+    },
+    {
+      "id": 36,
+      "name": "minecraft:element_0",
+      "edu": true
+    },
+    {
+      "id": 37,
+      "name": "minecraft:yellow_flower"
+    },
+    {
+      "id": 38,
+      "name": "minecraft:red_flower"
+    },
+    {
+      "id": 39,
+      "name": "minecraft:brown_mushroom"
+    },
+    {
+      "id": 40,
+      "name": "minecraft:red_mushroom"
+    },
+    {
+      "id": 41,
+      "name": "minecraft:gold_block",
+      "hardness": 3
+    },
+    {
+      "id": 42,
+      "name": "minecraft:iron_block",
+      "hardness": 5
+    },
+    {
+      "id": 43,
+      "name": "minecraft:double_stone_slab",
+      "hardness": 2,
+      "vars": 16
+    },
+    {
+      "id": 44,
+      "name": "minecraft:stone_slab",
+      "hardness": 2,
+      "vars": 16
+    },
+    {
+      "id": 45,
+      "name": "minecraft:brick_block",
+      "hardness": 2
+    },
+    {
+      "id": 46,
+      "name": "minecraft:tnt"
+    },
+    {
+      "id": 47,
+      "name": "minecraft:bookshelf",
+      "hardness": 1.5
+    },
+    {
+      "id": 48,
+      "name": "minecraft:mossy_cobblestone",
+      "hardness": 2
+    },
+    {
+      "id": 49,
+      "name": "minecraft:obsidian",
+      "hardness": 50
+    },
+    {
+      "id": 50,
+      "name": "minecraft:torch"
+    },
+    {
+      "id": 51,
+      "name": "minecraft:fire"
+    },
+    {
+      "id": 52,
+      "name": "minecraft:mob_spawner",
+      "hardness": 5
+    },
+    {
+      "id": 53,
+      "name": "minecraft:oak_stairs",
+      "hardness": 2
+    },
+    {
+      "id": 54,
+      "name": "minecraft:chest",
+      "hardness": 2.5
+    },
+    {
+      "id": 55,
+      "name": "minecraft:redstone_wire"
+    },
+    {
+      "id": 56,
+      "name": "minecraft:diamond_ore",
+      "hardness": 3
+    },
+    {
+      "id": 57,
+      "name": "minecraft:diamond_block",
+      "hardness": 5
+    },
+    {
+      "id": 58,
+      "name": "minecraft:crafting_table",
+      "hardness": 2.5
+    },
+    {
+      "id": 59,
+      "name": "minecraft:wheat",
+      "vars": 8
+    },
+    {
+      "id": 60,
+      "name": "minecraft:farmland",
+      "hardness": 0.6,
+      "vars": 8
+    },
+    {
+      "id": 61,
+      "name": "minecraft:furnace",
+      "hardness": 3.5
+    },
+    {
+      "id": 62,
+      "name": "minecraft:lit_furnace",
+      "hardness": 3.5
+    },
+    {
+      "id": 63,
+      "name": "minecraft:standing_sign",
+      "hardness": 1
+    },
+    {
+      "id": 64,
+      "name": "minecraft:wooden_door",
+      "hardness": 3
+    },
+    {
+      "id": 65,
+      "name": "minecraft:ladder",
+      "hardness": 0.4
+    },
+    {
+      "id": 66,
+      "name": "minecraft:rail",
+      "hardness": 0.7,
+      "vars": 10
+    },
+    {
+      "id": 67,
+      "name": "minecraft:stone_stairs",
+      "hardness": 1.5
+    },
+    {
+      "id": 68,
+      "name": "minecraft:wall_sign",
+      "hardness": 1
+    },
+    {
+      "id": 69,
+      "name": "minecraft:lever",
+      "hardness": 0.5
+    },
+    {
+      "id": 70,
+      "name": "minecraft:stone_pressure_plate",
+      "hardness": 0.5
+    },
+    {
+      "id": 71,
+      "name": "minecraft:iron_door",
+      "hardness": 5
+    },
+    {
+      "id": 72,
+      "name": "minecraft:wooden_pressure_plate",
+      "hardness": 0.5
+    },
+    {
+      "id": 73,
+      "name": "minecraft:redstone_ore",
+      "hardness": 3
+    },
+    {
+      "id": 74,
+      "name": "minecraft:lit_redstone_ore",
+      "hardness": 3
+    },
+    {
+      "id": 75,
+      "name": "minecraft:unlit_redstone_torch"
+    },
+    {
+      "id": 76,
+      "name": "minecraft:redstone_torch"
+    },
+    {
+      "id": 77,
+      "name": "minecraft:stone_button",
+      "hardness": 0.5
+    },
+    {
+      "id": 78,
+      "name": "minecraft:snow_layer",
+      "hardness": 0.1
+    },
+    {
+      "id": 79,
+      "name": "minecraft:ice",
+      "hardness": 0.5
+    },
+    {
+      "id": 80,
+      "name": "minecraft:snow",
+      "hardness": 0.2
+    },
+    {
+      "id": 81,
+      "name": "minecraft:cactus",
+      "hardness": 0.4
+    },
+    {
+      "id": 82,
+      "name": "minecraft:clay",
+      "hardness": 0.6
+    },
+    {
+      "id": 83,
+      "name": "minecraft:reeds"
+    },
+    {
+      "id": 84,
+      "name": "minecraft:jukebox",
+      "hardness": 2
+    },
+    {
+      "id": 85,
+      "name": "minecraft:fence",
+      "hardness": 2
+    },
+    {
+      "id": 86,
+      "name": "minecraft:pumpkin",
+      "hardness": 1
+    },
+    {
+      "id": 87,
+      "name": "minecraft:netherrack",
+      "hardness": 0.4
+    },
+    {
+      "id": 88,
+      "name": "minecraft:soul_sand",
+      "hardness": 0.5
+    },
+    {
+      "id": 89,
+      "name": "minecraft:glowstone",
+      "hardness": 0.3
+    },
+    {
+      "id": 90,
+      "name": "minecraft:portal",
+      "hardness": -1
+    },
+    {
+      "id": 91,
+      "name": "minecraft:lit_pumpkin",
+      "hardness": 1
+    },
+    {
+      "id": 92,
+      "name": "minecraft:cake",
+      "hardness": 0.5
+    },
+    {
+      "id": 93,
+      "name": "minecraft:unpowered_repeater"
+    },
+    {
+      "id": 94,
+      "name": "minecraft:powered_repeater"
+    },
+    {
+      "id": 95,
+      "name": "minecraft:invisiblebedrock",
+      "hardness": -1
+    },
+    {
+      "id": 96,
+      "name": "minecraft:wooden_trapdoor",
+      "hardness": 3
+    },
+    {
+      "id": 97,
+      "name": "minecraft:monster_egg"
+    },
+    {
+      "id": 98,
+      "name": "minecraft:stonebrick"
+    },
+    {
+      "id": 99,
+      "name": "minecraft:brown_mushroom_block",
+      "hardness": 0.2
+    },
+    {
+      "id": 100,
+      "name": "minecraft:red_mushroom_block",
+      "hardness": 0.2
+    },
+    {
+      "id": 101,
+      "name": "minecraft:iron_bars",
+      "hardness": 5
+    },
+    {
+      "id": 102,
+      "name": "minecraft:glass_pane",
+      "hardness": 0.3
+    },
+    {
+      "id": 103,
+      "name": "minecraft:melon_block",
+      "hardness": 1
+    },
+    {
+      "id": 104,
+      "name": "minecraft:pumpkin_stem"
+    },
+    {
+      "id": 105,
+      "name": "minecraft:melon_stem"
+    },
+    {
+      "id": 106,
+      "name": "minecraft:vine",
+      "hardness": 0.2
+    },
+    {
+      "id": 107,
+      "name": "minecraft:fence_gate",
+      "hardness": 2
+    },
+    {
+      "id": 108,
+      "name": "minecraft:brick_stairs",
+      "hardness": 2
+    },
+    {
+      "id": 109,
+      "name": "minecraft:stone_brick_stairs",
+      "hardness": 1.5
+    },
+    {
+      "id": 110,
+      "name": "minecraft:mycelium",
+      "hardness": 0.6
+    },
+    {
+      "id": 111,
+      "name": "minecraft:waterlily"
+    },
+    {
+      "id": 112,
+      "name": "minecraft:nether_brick_block",
+      "hardness": 2
+    },
+    {
+      "id": 113,
+      "name": "minecraft:nether_brick_fence",
+      "hardness": 2
+    },
+    {
+      "id": 114,
+      "name": "minecraft:nether_brick_stairs",
+      "hardness": 2
+    },
+    {
+      "id": 115,
+      "name": "minecraft:nether_wart"
+    },
+    {
+      "id": 116,
+      "name": "minecraft:enchanting_table",
+      "hardness": 5
+    },
+    {
+      "id": 117,
+      "name": "minecraft:brewing_stand",
+      "hardness": 0.5
+    },
+    {
+      "id": 118,
+      "name": "minecraft:cauldron",
+      "hardness": 2
+    },
+    {
+      "id": 119,
+      "name": "minecraft:end_portal",
+      "hardness": -1
+    },
+    {
+      "id": 120,
+      "name": "minecraft:end_portal_frame",
+      "hardness": -1
+    },
+    {
+      "id": 121,
+      "name": "minecraft:end_stone",
+      "hardness": 3
+    },
+    {
+      "id": 122,
+      "name": "minecraft:dragon_egg",
+      "hardness": 3
+    },
+    {
+      "id": 123,
+      "name": "minecraft:redstone_lamp",
+      "hardness": 0.3
+    },
+    {
+      "id": 124,
+      "name": "minecraft:lit_redstone_lamp",
+      "hardness": 0.3
+    },
+    {
+      "id": 125,
+      "name": "minecraft:dropper",
+      "hardness": 3.5
+    },
+    {
+      "id": 126,
+      "name": "minecraft:activator_rail",
+      "hardness": 0.7
+    },
+    {
+      "id": 127,
+      "name": "minecraft:cocoa",
+      "hardness": 0.2
+    },
+    {
+      "id": 128,
+      "name": "minecraft:sandstone_stairs",
+      "hardness": 0.8
+    },
+    {
+      "id": 129,
+      "name": "minecraft:emerald_ore",
+      "hardness": 3
+    },
+    {
+      "id": 130,
+      "name": "minecraft:ender_chest",
+      "hardness": 22
+    },
+    {
+      "id": 131,
+      "name": "minecraft:tripwire_hook"
+    },
+    {
+      "id": 132,
+      "name": "minecraft:tripwire"
+    },
+    {
+      "id": 133,
+      "name": "minecraft:emerald_block",
+      "hardness": 5
+    },
+    {
+      "id": 134,
+      "name": "minecraft:spruce_stairs"
+    },
+    {
+      "id": 135,
+      "name": "minecraft:birch_stairs"
+    },
+    {
+      "id": 136,
+      "name": "minecraft:jungle_stairs"
+    },
+    {
+      "id": 137,
+      "name": "minecraft:command_block",
+      "hardness": -1
+    },
+    {
+      "id": 138,
+      "name": "minecraft:beacon",
+      "hardness": 3
+    },
+    {
+      "id": 139,
+      "name": "minecraft:cobblestone_wall",
+      "hardness": 2
+    },
+    {
+      "id": 140,
+      "name": "minecraft:flower_pot"
+    },
+    {
+      "id": 141,
+      "name": "minecraft:carrots"
+    },
+    {
+      "id": 142,
+      "name": "minecraft:potatoes"
+    },
+    {
+      "id": 143,
+      "name": "minecraft:wooden_button",
+      "hardness": 0.5
+    },
+    {
+      "id": 144,
+      "name": "minecraft:skull",
+      "hardness": 1
+    },
+    {
+      "id": 145,
+      "name": "minecraft:anvil",
+      "hardness": 5
+    },
+    {
+      "id": 146,
+      "name": "minecraft:trapped_chest",
+      "hardness": 2.5
+    },
+    {
+      "id": 147,
+      "name": "minecraft:light_weighted_pressure_plate",
+      "hardness": 0.5
+    },
+    {
+      "id": 148,
+      "name": "minecraft:heavy_weighted_pressure_plate",
+      "hardness": 0.5
+    },
+    {
+      "id": 149,
+      "name": "minecraft:unpowered_comparator"
+    },
+    {
+      "id": 150,
+      "name": "minecraft:powered_comparator"
+    },
+    {
+      "id": 151,
+      "name": "minecraft:daylight_detector",
+      "hardness": 0.2
+    },
+    {
+      "id": 152,
+      "name": "minecraft:redstone_block",
+      "hardness": 5
+    },
+    {
+      "id": 153,
+      "name": "minecraft:quartz_ore",
+      "hardness": 3
+    },
+    {
+      "id": 154,
+      "name": "minecraft:hopper",
+      "hardness": 3
+    },
+    {
+      "id": 155,
+      "name": "minecraft:quartz_block",
+      "hardness": 0.8
+    },
+    {
+      "id": 156,
+      "name": "minecraft:quartz_stairs",
+      "hardness": 0.8
+    },
+    {
+      "id": 157,
+      "name": "minecraft:double_wooden_slab",
+      "hardness": 2
+    },
+    {
+      "id": 158,
+      "name": "minecraft:wooden_slab",
+      "hardness": 2
+    },
+    {
+      "id": 159,
+      "name": "minecraft:stained_hardened_clay",
+      "hardness": 1.25
+    },
+    {
+      "id": 160,
+      "name": "minecraft:stained_glass_pane",
+      "hardness": 0.3
+    },
+    {
+      "id": 161,
+      "name": "minecraft:leaves2",
+      "vars": 2
+    },
+    {
+      "id": 162,
+      "name": "minecraft:log2",
+      "vars": 2
+    },
+    {
+      "id": 163,
+      "name": "minecraft:acacia_stairs"
+    },
+    {
+      "id": 164,
+      "name": "minecraft:dark_oak_stairs"
+    },
+    {
+      "id": 165,
+      "name": "minecraft:slime"
+    },
+    {
+      "id": 166,
+      "name": "minecraft:glow_stick"
+    },
+    {
+      "id": 167,
+      "name": "minecraft:iron_trapdoor",
+      "hardness": 5
+    },
+    {
+      "id": 168,
+      "name": "minecraft:prismarine",
+      "hardness": 1.5
+    },
+    {
+      "id": 169,
+      "name": "minecraft:sealantern",
+      "hardness": 0.3
+    },
+    {
+      "id": 170,
+      "name": "minecraft:hay_block",
+      "hardness": 0.5
+    },
+    {
+      "id": 171,
+      "name": "minecraft:carpet",
+      "hardness": 0.1
+    },
+    {
+      "id": 172,
+      "name": "minecraft:hardened_clay",
+      "hardness": 1.25
+    },
+    {
+      "id": 173,
+      "name": "minecraft:coal_block",
+      "hardness": 5
+    },
+    {
+      "id": 174,
+      "name": "minecraft:packed_ice",
+      "hardness": 0.5
+    },
+    {
+      "id": 175,
+      "name": "minecraft:double_plant"
+    },
+    {
+      "id": 176,
+      "name": "minecraft:standing_banner",
+      "hardness": 1
+    },
+    {
+      "id": 177,
+      "name": "minecraft:wall_banner",
+      "hardness": 1
+    },
+    {
+      "id": 178,
+      "name": "minecraft:daylight_detector_inverted"
+    },
+    {
+      "id": 179,
+      "name": "minecraft:red_sandstone",
+      "hardness": 0.8
+    },
+    {
+      "id": 180,
+      "name": "minecraft:red_sandstone_stairs",
+      "hardness": 0.8
+    },
+    {
+      "id": 181,
+      "name": "minecraft:double_stone_slab2",
+      "hardness": 2
+    },
+    {
+      "id": 182,
+      "name": "minecraft:stone_slab2",
+      "hardness": 2
+    },
+    {
+      "id": 183,
+      "name": "minecraft:spruce_fence_gate"
+    },
+    {
+      "id": 184,
+      "name": "minecraft:birch_fence_gate"
+    },
+    {
+      "id": 185,
+      "name": "minecraft:jungle_fence_gate"
+    },
+    {
+      "id": 186,
+      "name": "minecraft:dark_oak_fence_gate"
+    },
+    {
+      "id": 187,
+      "name": "minecraft:acacia_fence_gate"
+    },
+    {
+      "id": 188,
+      "name": "minecraft:repeating_command_block"
+    },
+    {
+      "id": 189,
+      "name": "minecraft:chain_command_block"
+    },
+    {
+      "id": 190,
+      "name": "minecraft:hard_glass_pane",
+      "hardness": 10
+    },
+    {
+      "id": 191,
+      "name": "minecraft:hard_stained_glass_pane"
+    },
+    {
+      "id": 192,
+      "name": "minecraft:chemical_heat"
+    },
+    {
+      "id": 193,
+      "name": "minecraft:spruce_door",
+      "hardness": 3
+    },
+    {
+      "id": 194,
+      "name": "minecraft:birch_door",
+      "hardness": 3
+    },
+    {
+      "id": 195,
+      "name": "minecraft:jungle_door",
+      "hardness": 3
+    },
+    {
+      "id": 196,
+      "name": "minecraft:acacia_door",
+      "hardness": 3
+    },
+    {
+      "id": 197,
+      "name": "minecraft:dark_oak_door",
+      "hardness": 3
+    },
+    {
+      "id": 198,
+      "name": "minecraft:grass_path",
+      "hardness": 0.6
+    },
+    {
+      "id": 199,
+      "name": "minecraft:frame"
+    },
+    {
+      "id": 200,
+      "name": "minecraft:chorus_flower",
+      "hardness": 0.4
+    },
+    {
+      "id": 201,
+      "name": "minecraft:purpur_block",
+      "hardness": 1.5
+    },
+    {
+      "id": 202,
+      "name": "minecraft:colored_torch_rg"
+    },
+    {
+      "id": 203,
+      "name": "minecraft:purpur_stairs",
+      "hardness": 1.5
+    },
+    {
+      "id": 204,
+      "name": "minecraft:colored_torch_bp"
+    },
+    {
+      "id": 205,
+      "name": "minecraft:undyed_shulker_box"
+    },
+    {
+      "id": 206,
+      "name": "minecraft:end_bricks",
+      "hardness": 3
+    },
+    {
+      "id": 207,
+      "name": "minecraft:frosted_ice",
+      "hardness": 0.5
+    },
+    {
+      "id": 208,
+      "name": "minecraft:end_rod"
+    },
+    {
+      "id": 209,
+      "name": "minecraft:end_gateway",
+      "hardness": -1
+    },
+    {
+      "id": 210,
+      "name": "minecraft:allow",
+      "edu": true
+    },
+    {
+      "id": 211,
+      "name": "minecraft:deny",
+      "edu": true
+    },
+    {
+      "id": 212,
+      "name": "minecraft:border_block",
+      "edu": true
+    },
+    {
+      "id": 213,
+      "name": "minecraft:magma",
+      "hardness": 0.5
+    },
+    {
+      "id": 214,
+      "name": "minecraft:nether_wart_block",
+      "hardness": 1
+    },
+    {
+      "id": 215,
+      "name": "minecraft:red_nether_brick",
+      "hardness": 2
+    },
+    {
+      "id": 216,
+      "name": "minecraft:bone_block",
+      "hardness": 2
+    },
+    {
+      "id": 217,
+      "name": "minecraft:structure_void"
+    },
+    {
+      "id": 218,
+      "name": "minecraft:shulker_box",
+      "hardness": 2
+    },
+    {
+      "id": 219,
+      "name": "minecraft:purple_glazed_terracotta",
+      "hardness": 1.4
+    },
+    {
+      "id": 220,
+      "name": "minecraft:white_glazed_terracotta",
+      "hardness": 1.4
+    },
+    {
+      "id": 221,
+      "name": "minecraft:orange_glazed_terracotta",
+      "hardness": 1.4
+    },
+    {
+      "id": 222,
+      "name": "minecraft:magenta_glazed_terracotta",
+      "hardness": 1.4
+    },
+    {
+      "id": 223,
+      "name": "minecraft:light_blue_glazed_terracotta",
+      "hardness": 1.4
+    },
+    {
+      "id": 224,
+      "name": "minecraft:yellow_glazed_terracotta",
+      "hardness": 1.4
+    },
+    {
+      "id": 225,
+      "name": "minecraft:lime_glazed_terracotta",
+      "hardness": 1.4
+    },
+    {
+      "id": 226,
+      "name": "minecraft:pink_glazed_terracotta",
+      "hardness": 1.4
+    },
+    {
+      "id": 227,
+      "name": "minecraft:gray_glazed_terracotta",
+      "hardness": 1.4
+    },
+    {
+      "id": 228,
+      "name": "minecraft:silver_glazed_terracotta",
+      "hardness": 1.4
+    },
+    {
+      "id": 229,
+      "name": "minecraft:cyan_glazed_terracotta",
+      "hardness": 1.4
+    },
+    {
+      "id": 230,
+      "name": "minecraft:chalkboard",
+      "edu": true
+    },
+    {
+      "id": 231,
+      "name": "minecraft:blue_glazed_terracotta"
+    },
+    {
+      "id": 232,
+      "name": "minecraft:brown_glazed_terracotta"
+    },
+    {
+      "id": 233,
+      "name": "minecraft:green_glazed_terracotta"
+    },
+    {
+      "id": 234,
+      "name": "minecraft:red_glazed_terracotta"
+    },
+    {
+      "id": 235,
+      "name": "minecraft:black_glazed_terracotta"
+    },
+    {
+      "id": 236,
+      "name": "minecraft:concrete",
+      "hardness": 1.8
+    },
+    {
+      "id": 237,
+      "name": "minecraft:concretepowder",
+      "hardness": 0.5
+    },
+    {
+      "id": 238,
+      "name": "minecraft:chemistry_table"
+    },
+    {
+      "id": 239,
+      "name": "minecraft:underwater_torch"
+    },
+    {
+      "id": 240,
+      "name": "minecraft:chorus_plant",
+      "hardness": 0.4
+    },
+    {
+      "id": 241,
+      "name": "minecraft:stained_glass",
+      "hardness": 0.3
+    },
+    {
+      "id": 242,
+      "name": "minecraft:camera"
+    },
+    {
+      "id": 243,
+      "name": "minecraft:podzol",
+      "hardness": 0.5
+    },
+    {
+      "id": 244,
+      "name": "minecraft:beetroot"
+    },
+    {
+      "id": 245,
+      "name": "minecraft:stonecutter",
+      "hardness": 3.5
+    },
+    {
+      "id": 246,
+      "name": "minecraft:glowingobsidian"
+    },
+    {
+      "id": 247,
+      "name": "minecraft:netherreactor"
+    },
+    {
+      "id": 248,
+      "name": "minecraft:info_update"
+    },
+    {
+      "id": 249,
+      "name": "minecraft:info_update2"
+    },
+    {
+      "id": 250,
+      "name": "minecraft:movingblock"
+    },
+    {
+      "id": 251,
+      "name": "minecraft:observer",
+      "hardness": 3.5
+    },
+    {
+      "id": 252,
+      "name": "minecraft:structure_block",
+      "hardness": -1
+    },
+    {
+      "id": 253,
+      "name": "minecraft:hard_glass",
+      "hardness": 10
+    },
+    {
+      "id": 254,
+      "name": "minecraft:hard_stained_glass"
+    },
+    {
+      "id": 255,
+      "name": "minecraft:reserved6"
+    },
+    {
+      "id": 256,
+      "name": "minecraft:data_table"
+    },
+    {
+      "id": 257,
+      "name": "minecraft:prismarine_stairs",
+      "hardness": 1.5
+    },
+    {
+      "id": 258,
+      "name": "minecraft:dark_prismarine_stairs",
+      "hardness": 1.5
+    },
+    {
+      "id": 259,
+      "name": "minecraft:prismarine_bricks_stairs",
+      "hardness": 1.5
+    },
+    {
+      "id": 260,
+      "name": "minecraft:stripped_spruce_log"
+    },
+    {
+      "id": 261,
+      "name": "minecraft:stripped_birch_log"
+    },
+    {
+      "id": 262,
+      "name": "minecraft:stripped_jungle_log"
+    },
+    {
+      "id": 263,
+      "name": "minecraft:stripped_acacia_log"
+    },
+    {
+      "id": 264,
+      "name": "minecraft:stripped_dark_oak_log"
+    },
+    {
+      "id": 265,
+      "name": "minecraft:stripped_oak_log"
+    },
+    {
+      "id": 266,
+      "name": "minecraft:blue_ice",
+      "hardness": 2.8
+    },
+    {
+      "id": 267,
+      "name": "minecraft:element_1",
+      "edu": true
+    },
+    {
+      "id": 268,
+      "name": "minecraft:element_2",
+      "edu": true
+    },
+    {
+      "id": 269,
+      "name": "minecraft:element_3",
+      "edu": true
+    },
+    {
+      "id": 270,
+      "name": "minecraft:element_4",
+      "edu": true
+    },
+    {
+      "id": 271,
+      "name": "minecraft:element_5",
+      "edu": true
+    },
+    {
+      "id": 272,
+      "name": "minecraft:element_6",
+      "edu": true
+    },
+    {
+      "id": 273,
+      "name": "minecraft:element_7",
+      "edu": true
+    },
+    {
+      "id": 274,
+      "name": "minecraft:element_8",
+      "edu": true
+    },
+    {
+      "id": 275,
+      "name": "minecraft:element_9",
+      "edu": true
+    },
+    {
+      "id": 276,
+      "name": "minecraft:element_10",
+      "edu": true
+    },
+    {
+      "id": 277,
+      "name": "minecraft:element_11",
+      "edu": true
+    },
+    {
+      "id": 278,
+      "name": "minecraft:element_12",
+      "edu": true
+    },
+    {
+      "id": 279,
+      "name": "minecraft:element_13",
+      "edu": true
+    },
+    {
+      "id": 280,
+      "name": "minecraft:element_14",
+      "edu": true
+    },
+    {
+      "id": 281,
+      "name": "minecraft:element_15",
+      "edu": true
+    },
+    {
+      "id": 282,
+      "name": "minecraft:element_16",
+      "edu": true
+    },
+    {
+      "id": 283,
+      "name": "minecraft:element_17",
+      "edu": true
+    },
+    {
+      "id": 284,
+      "name": "minecraft:element_18",
+      "edu": true
+    },
+    {
+      "id": 285,
+      "name": "minecraft:element_19",
+      "edu": true
+    },
+    {
+      "id": 286,
+      "name": "minecraft:element_20",
+      "edu": true
+    },
+    {
+      "id": 287,
+      "name": "minecraft:element_21",
+      "edu": true
+    },
+    {
+      "id": 288,
+      "name": "minecraft:element_22",
+      "edu": true
+    },
+    {
+      "id": 289,
+      "name": "minecraft:element_23",
+      "edu": true
+    },
+    {
+      "id": 290,
+      "name": "minecraft:element_24",
+      "edu": true
+    },
+    {
+      "id": 291,
+      "name": "minecraft:element_25",
+      "edu": true
+    },
+    {
+      "id": 292,
+      "name": "minecraft:element_26",
+      "edu": true
+    },
+    {
+      "id": 293,
+      "name": "minecraft:element_27",
+      "edu": true
+    },
+    {
+      "id": 294,
+      "name": "minecraft:element_28",
+      "edu": true
+    },
+    {
+      "id": 295,
+      "name": "minecraft:element_29",
+      "edu": true
+    },
+    {
+      "id": 296,
+      "name": "minecraft:element_30",
+      "edu": true
+    },
+    {
+      "id": 297,
+      "name": "minecraft:element_31",
+      "edu": true
+    },
+    {
+      "id": 298,
+      "name": "minecraft:element_32",
+      "edu": true
+    },
+    {
+      "id": 299,
+      "name": "minecraft:element_33",
+      "edu": true
+    },
+    {
+      "id": 300,
+      "name": "minecraft:element_34",
+      "edu": true
+    },
+    {
+      "id": 301,
+      "name": "minecraft:element_35",
+      "edu": true
+    },
+    {
+      "id": 302,
+      "name": "minecraft:element_36",
+      "edu": true
+    },
+    {
+      "id": 303,
+      "name": "minecraft:element_37",
+      "edu": true
+    },
+    {
+      "id": 304,
+      "name": "minecraft:element_38",
+      "edu": true
+    },
+    {
+      "id": 305,
+      "name": "minecraft:element_39",
+      "edu": true
+    },
+    {
+      "id": 306,
+      "name": "minecraft:element_40",
+      "edu": true
+    },
+    {
+      "id": 307,
+      "name": "minecraft:element_41",
+      "edu": true
+    },
+    {
+      "id": 308,
+      "name": "minecraft:element_42",
+      "edu": true
+    },
+    {
+      "id": 309,
+      "name": "minecraft:element_43",
+      "edu": true
+    },
+    {
+      "id": 310,
+      "name": "minecraft:element_44",
+      "edu": true
+    },
+    {
+      "id": 311,
+      "name": "minecraft:element_45",
+      "edu": true
+    },
+    {
+      "id": 312,
+      "name": "minecraft:element_46",
+      "edu": true
+    },
+    {
+      "id": 313,
+      "name": "minecraft:element_47",
+      "edu": true
+    },
+    {
+      "id": 314,
+      "name": "minecraft:element_48",
+      "edu": true
+    },
+    {
+      "id": 315,
+      "name": "minecraft:element_49",
+      "edu": true
+    },
+    {
+      "id": 316,
+      "name": "minecraft:element_50",
+      "edu": true
+    },
+    {
+      "id": 317,
+      "name": "minecraft:element_51",
+      "edu": true
+    },
+    {
+      "id": 318,
+      "name": "minecraft:element_52",
+      "edu": true
+    },
+    {
+      "id": 319,
+      "name": "minecraft:element_53",
+      "edu": true
+    },
+    {
+      "id": 320,
+      "name": "minecraft:element_54",
+      "edu": true
+    },
+    {
+      "id": 321,
+      "name": "minecraft:element_55",
+      "edu": true
+    },
+    {
+      "id": 322,
+      "name": "minecraft:element_56",
+      "edu": true
+    },
+    {
+      "id": 323,
+      "name": "minecraft:element_57",
+      "edu": true
+    },
+    {
+      "id": 324,
+      "name": "minecraft:element_58",
+      "edu": true
+    },
+    {
+      "id": 325,
+      "name": "minecraft:element_59",
+      "edu": true
+    },
+    {
+      "id": 326,
+      "name": "minecraft:element_60",
+      "edu": true
+    },
+    {
+      "id": 327,
+      "name": "minecraft:element_61",
+      "edu": true
+    },
+    {
+      "id": 328,
+      "name": "minecraft:element_62",
+      "edu": true
+    },
+    {
+      "id": 329,
+      "name": "minecraft:element_63",
+      "edu": true
+    },
+    {
+      "id": 330,
+      "name": "minecraft:element_64",
+      "edu": true
+    },
+    {
+      "id": 331,
+      "name": "minecraft:element_65",
+      "edu": true
+    },
+    {
+      "id": 332,
+      "name": "minecraft:element_66",
+      "edu": true
+    },
+    {
+      "id": 333,
+      "name": "minecraft:element_67",
+      "edu": true
+    },
+    {
+      "id": 334,
+      "name": "minecraft:element_68",
+      "edu": true
+    },
+    {
+      "id": 335,
+      "name": "minecraft:element_69",
+      "edu": true
+    },
+    {
+      "id": 336,
+      "name": "minecraft:element_70",
+      "edu": true
+    },
+    {
+      "id": 337,
+      "name": "minecraft:element_71",
+      "edu": true
+    },
+    {
+      "id": 338,
+      "name": "minecraft:element_72",
+      "edu": true
+    },
+    {
+      "id": 339,
+      "name": "minecraft:element_73",
+      "edu": true
+    },
+    {
+      "id": 340,
+      "name": "minecraft:element_74",
+      "edu": true
+    },
+    {
+      "id": 341,
+      "name": "minecraft:element_75",
+      "edu": true
+    },
+    {
+      "id": 342,
+      "name": "minecraft:element_76",
+      "edu": true
+    },
+    {
+      "id": 343,
+      "name": "minecraft:element_77",
+      "edu": true
+    },
+    {
+      "id": 344,
+      "name": "minecraft:element_78",
+      "edu": true
+    },
+    {
+      "id": 345,
+      "name": "minecraft:element_79",
+      "edu": true
+    },
+    {
+      "id": 346,
+      "name": "minecraft:element_80",
+      "edu": true
+    },
+    {
+      "id": 347,
+      "name": "minecraft:element_81",
+      "edu": true
+    },
+    {
+      "id": 348,
+      "name": "minecraft:element_82",
+      "edu": true
+    },
+    {
+      "id": 349,
+      "name": "minecraft:element_83",
+      "edu": true
+    },
+    {
+      "id": 350,
+      "name": "minecraft:element_84",
+      "edu": true
+    },
+    {
+      "id": 351,
+      "name": "minecraft:element_85",
+      "edu": true
+    },
+    {
+      "id": 352,
+      "name": "minecraft:element_86",
+      "edu": true
+    },
+    {
+      "id": 353,
+      "name": "minecraft:element_87",
+      "edu": true
+    },
+    {
+      "id": 354,
+      "name": "minecraft:element_88",
+      "edu": true
+    },
+    {
+      "id": 355,
+      "name": "minecraft:element_89",
+      "edu": true
+    },
+    {
+      "id": 356,
+      "name": "minecraft:element_90",
+      "edu": true
+    },
+    {
+      "id": 357,
+      "name": "minecraft:element_91",
+      "edu": true
+    },
+    {
+      "id": 358,
+      "name": "minecraft:element_92",
+      "edu": true
+    },
+    {
+      "id": 359,
+      "name": "minecraft:element_93",
+      "edu": true
+    },
+    {
+      "id": 360,
+      "name": "minecraft:element_94",
+      "edu": true
+    },
+    {
+      "id": 361,
+      "name": "minecraft:element_95",
+      "edu": true
+    },
+    {
+      "id": 362,
+      "name": "minecraft:element_96",
+      "edu": true
+    },
+    {
+      "id": 363,
+      "name": "minecraft:element_97",
+      "edu": true
+    },
+    {
+      "id": 364,
+      "name": "minecraft:element_98",
+      "edu": true
+    },
+    {
+      "id": 365,
+      "name": "minecraft:element_99",
+      "edu": true
+    },
+    {
+      "id": 366,
+      "name": "minecraft:element_100",
+      "edu": true
+    },
+    {
+      "id": 367,
+      "name": "minecraft:element_101",
+      "edu": true
+    },
+    {
+      "id": 368,
+      "name": "minecraft:element_102",
+      "edu": true
+    },
+    {
+      "id": 369,
+      "name": "minecraft:element_103",
+      "edu": true
+    },
+    {
+      "id": 370,
+      "name": "minecraft:element_104",
+      "edu": true
+    },
+    {
+      "id": 371,
+      "name": "minecraft:element_105",
+      "edu": true
+    },
+    {
+      "id": 372,
+      "name": "minecraft:element_106",
+      "edu": true
+    },
+    {
+      "id": 373,
+      "name": "minecraft:element_107",
+      "edu": true
+    },
+    {
+      "id": 374,
+      "name": "minecraft:element_108",
+      "edu": true
+    },
+    {
+      "id": 375,
+      "name": "minecraft:element_109",
+      "edu": true
+    },
+    {
+      "id": 376,
+      "name": "minecraft:element_110",
+      "edu": true
+    },
+    {
+      "id": 377,
+      "name": "minecraft:element_111",
+      "edu": true
+    },
+    {
+      "id": 378,
+      "name": "minecraft:element_112",
+      "edu": true
+    },
+    {
+      "id": 379,
+      "name": "minecraft:element_113",
+      "edu": true
+    },
+    {
+      "id": 380,
+      "name": "minecraft:element_114",
+      "edu": true
+    },
+    {
+      "id": 381,
+      "name": "minecraft:element_115",
+      "edu": true
+    },
+    {
+      "id": 382,
+      "name": "minecraft:element_116",
+      "edu": true
+    },
+    {
+      "id": 383,
+      "name": "minecraft:element_117",
+      "edu": true
+    },
+    {
+      "id": 384,
+      "name": "minecraft:element_118",
+      "edu": true
+    },
+    {
+      "id": 385,
+      "name": "minecraft:seagrass"
+    },
+    {
+      "id": 386,
+      "name": "minecraft:coral"
+    },
+    {
+      "id": 387,
+      "name": "minecraft:coral_block",
+      "hardness": 1.5
+    },
+    {
+      "id": 388,
+      "name": "minecraft:coral_fan"
+    },
+    {
+      "id": 389,
+      "name": "minecraft:coral_fan_dead"
+    },
+    {
+      "id": 390,
+      "name": "minecraft:coral_fan_hang"
+    },
+    {
+      "id": 391,
+      "name": "minecraft:coral_fan_hang2"
+    },
+    {
+      "id": 392,
+      "name": "minecraft:coral_fan_hang3"
+    },
+    {
+      "id": 393,
+      "name": "minecraft:kelp"
+    },
+    {
+      "id": 394,
+      "name": "minecraft:dried_kelp_block",
+      "hardness": 0.5
+    },
+    {
+      "id": 395,
+      "name": "minecraft:acacia_button"
+    },
+    {
+      "id": 396,
+      "name": "minecraft:birch_button"
+    },
+    {
+      "id": 397,
+      "name": "minecraft:dark_oak_button"
+    },
+    {
+      "id": 398,
+      "name": "minecraft:jungle_button"
+    },
+    {
+      "id": 399,
+      "name": "minecraft:spruce_button"
+    },
+    {
+      "id": 400,
+      "name": "minecraft:acacia_trapdoor"
+    },
+    {
+      "id": 401,
+      "name": "minecraft:birch_trapdoor"
+    },
+    {
+      "id": 402,
+      "name": "minecraft:dark_oak_trapdoor"
+    },
+    {
+      "id": 403,
+      "name": "minecraft:jungle_trapdoor"
+    },
+    {
+      "id": 404,
+      "name": "minecraft:spruce_trapdoor"
+    },
+    {
+      "id": 405,
+      "name": "minecraft:acacia_pressure_plate"
+    },
+    {
+      "id": 406,
+      "name": "minecraft:birch_pressure_plate"
+    },
+    {
+      "id": 407,
+      "name": "minecraft:dark_oak_pressure_plate"
+    },
+    {
+      "id": 408,
+      "name": "minecraft:jungle_pressure_plate"
+    },
+    {
+      "id": 409,
+      "name": "minecraft:spruce_pressure_plate"
+    },
+    {
+      "id": 410,
+      "name": "minecraft:carved_pumpkin"
+    },
+    {
+      "id": 411,
+      "name": "minecraft:sea_pickle"
+    },
+    {
+      "id": 412,
+      "name": "minecraft:conduit",
+      "hardness": 3
+    },
+    {
+      "id": 414,
+      "name": "minecraft:turtle_egg",
+      "hardness": 0.5
+    },
+    {
+      "id": 415,
+      "name": "minecraft:bubble_column"
+    },
+    {
+      "id": 416,
+      "name": "minecraft:barrier",
+      "hardness": -1
+    },
+    {
+      "id": 417,
+      "name": "minecraft:stone_slab3",
+      "hardness": 2
+    },
+    {
+      "id": 418,
+      "name": "minecraft:bamboo",
+      "hardness": 1
+    },
+    {
+      "id": 419,
+      "name": "minecraft:bamboo_sapling"
+    },
+    {
+      "id": 420,
+      "name": "minecraft:scaffolding"
+    },
+    {
+      "id": 421,
+      "name": "minecraft:stone_slab4",
+      "hardness": 2
+    },
+    {
+      "id": 422,
+      "name": "minecraft:double_stone_slab3"
+    },
+    {
+      "id": 423,
+      "name": "minecraft:double_stone_slab4"
+    },
+    {
+      "id": 424,
+      "name": "minecraft:granite_stairs",
+      "hardness": 1.5
+    },
+    {
+      "id": 425,
+      "name": "minecraft:diorite_stairs",
+      "hardness": 1.5
+    },
+    {
+      "id": 426,
+      "name": "minecraft:andesite_stairs",
+      "hardness": 1.5
+    },
+    {
+      "id": 427,
+      "name": "minecraft:polished_granite_stairs",
+      "hardness": 1.5
+    },
+    {
+      "id": 428,
+      "name": "minecraft:polished_diorite_stairs",
+      "hardness": 1.5
+    },
+    {
+      "id": 429,
+      "name": "minecraft:polished_andesite_stairs",
+      "hardness": 1.5
+    },
+    {
+      "id": 430,
+      "name": "minecraft:mossy_stone_brick_stairs",
+      "hardness": 1.5
+    },
+    {
+      "id": 431,
+      "name": "minecraft:smooth_red_sandstone_stairs",
+      "hardness": 2
+    },
+    {
+      "id": 432,
+      "name": "minecraft:smooth_sandstone_stairs",
+      "hardness": 2
+    },
+    {
+      "id": 433,
+      "name": "minecraft:end_brick_stairs",
+      "hardness": 3
+    },
+    {
+      "id": 434,
+      "name": "minecraft:mossy_cobblestone_stairs",
+      "hardness": 2
+    },
+    {
+      "id": 435,
+      "name": "minecraft:normal_stone_stairs"
+    },
+    {
+      "id": 436,
+      "name": "minecraft:spruce_standing_sign"
+    },
+    {
+      "id": 437,
+      "name": "minecraft:spruce_wall_sign"
+    },
+    {
+      "id": 438,
+      "name": "minecraft:smooth_stone",
+      "hardness": 2
+    },
+    {
+      "id": 439,
+      "name": "minecraft:red_nether_brick_stairs",
+      "hardness": 2
+    },
+    {
+      "id": 440,
+      "name": "minecraft:smooth_quartz_stairs",
+      "hardness": 2
+    },
+    {
+      "id": 441,
+      "name": "minecraft:birch_standing_sign"
+    },
+    {
+      "id": 442,
+      "name": "minecraft:birch_wall_sign"
+    },
+    {
+      "id": 443,
+      "name": "minecraft:jungle_standing_sign"
+    },
+    {
+      "id": 444,
+      "name": "minecraft:jungle_wall_sign"
+    },
+    {
+      "id": 445,
+      "name": "minecraft:acacia_standing_sign"
+    },
+    {
+      "id": 446,
+      "name": "minecraft:acacia_wall_sign"
+    },
+    {
+      "id": 447,
+      "name": "minecraft:darkoak_standing_sign"
+    },
+    {
+      "id": 448,
+      "name": "minecraft:darkoak_wall_sign"
+    },
+    {
+      "id": 449,
+      "name": "minecraft:lectern",
+      "hardness": 2.5
+    },
+    {
+      "id": 450,
+      "name": "minecraft:grindstone",
+      "hardness": 2
+    },
+    {
+      "id": 451,
+      "name": "minecraft:blast_furnace",
+      "hardness": 3.5
+    },
+    {
+      "id": 452,
+      "name": "minecraft:stonecutter_block"
+    },
+    {
+      "id": 453,
+      "name": "minecraft:smoker",
+      "hardness": 3.5
+    },
+    {
+      "id": 454,
+      "name": "minecraft:lit_smoker"
+    },
+    {
+      "id": 455,
+      "name": "minecraft:cartography_table",
+      "hardness": 2.5
+    },
+    {
+      "id": 456,
+      "name": "minecraft:fletching_table",
+      "hardness": 2.5
+    },
+    {
+      "id": 457,
+      "name": "minecraft:smithing_table",
+      "hardness": 2.5
+    },
+    {
+      "id": 458,
+      "name": "minecraft:barrel",
+      "hardness": 2.5
+    },
+    {
+      "id": 459,
+      "name": "minecraft:loom",
+      "hardness": 2.5
+    },
+    {
+      "id": 461,
+      "name": "minecraft:bell",
+      "hardness": 5
+    },
+    {
+      "id": 462,
+      "name": "minecraft:sweet_berry_bush"
+    },
+    {
+      "id": 463,
+      "name": "minecraft:lantern",
+      "hardness": 3.5
+    },
+    {
+      "id": 464,
+      "name": "minecraft:campfire",
+      "hardness": 2
+    },
+    {
+      "id": 465,
+      "name": "minecraft:lava_cauldron"
+    },
+    {
+      "id": 466,
+      "name": "minecraft:jigsaw",
+      "hardness": -1
+    },
+    {
+      "id": 467,
+      "name": "minecraft:wood",
+      "hardness": 2
+    },
+    {
+      "id": 468,
+      "name": "minecraft:composter",
+      "hardness": 0.6
+    },
+    {
+      "id": 469,
+      "name": "minecraft:lit_blast_furnace"
+    },
+    {
+      "id": 470,
+      "name": "minecraft:light_block"
+    },
+    {
+      "id": 471,
+      "name": "minecraft:wither_rose"
+    },
+    {
+      "id": 472,
+      "name": "minecraft:stickypistonarmcollision",
+      "hardness": 1.5
+    },
+    {
+      "id": 473,
+      "name": "minecraft:bee_nest",
+      "hardness": 0.3
+    },
+    {
+      "id": 474,
+      "name": "minecraft:beehive",
+      "hardness": 0.6
+    },
+    {
+      "id": 475,
+      "name": "minecraft:honey_block"
+    },
+    {
+      "id": 476,
+      "name": "minecraft:honeycomb_block",
+      "hardness": 0.6
+    },
+    {
+      "id": 477,
+      "name": "minecraft:lodestone",
+      "hardness": 3.5
+    },
+    {
+      "id": 478,
+      "name": "minecraft:crimson_roots"
+    },
+    {
+      "id": 479,
+      "name": "minecraft:warped_roots"
+    },
+    {
+      "id": 480,
+      "name": "minecraft:crimson_stem"
+    },
+    {
+      "id": 481,
+      "name": "minecraft:warped_stem"
+    },
+    {
+      "id": 482,
+      "name": "minecraft:warped_wart_block",
+      "hardness": 1
+    },
+    {
+      "id": 483,
+      "name": "minecraft:crimson_fungus"
+    },
+    {
+      "id": 484,
+      "name": "minecraft:warped_fungus"
+    },
+    {
+      "id": 485,
+      "name": "minecraft:shroomlight",
+      "hardness": 1
+    },
+    {
+      "id": 486,
+      "name": "minecraft:weeping_vines"
+    },
+    {
+      "id": 487,
+      "name": "minecraft:crimson_nylium",
+      "hardness": 0.4
+    },
+    {
+      "id": 488,
+      "name": "minecraft:warped_nylium",
+      "hardness": 0.4
+    },
+    {
+      "id": 489,
+      "name": "minecraft:basalt",
+      "hardness": 1.25
+    },
+    {
+      "id": 490,
+      "name": "minecraft:polished_basalt"
+    },
+    {
+      "id": 491,
+      "name": "minecraft:soul_soil",
+      "hardness": 0.5
+    },
+    {
+      "id": 492,
+      "name": "minecraft:soul_fire"
+    },
+    {
+      "id": 493,
+      "name": "minecraft:nether_sprouts"
+    },
+    {
+      "id": 494,
+      "name": "minecraft:target",
+      "hardness": 0.5
+    },
+    {
+      "id": 495,
+      "name": "minecraft:stripped_crimson_stem"
+    },
+    {
+      "id": 496,
+      "name": "minecraft:stripped_warped_stem"
+    },
+    {
+      "id": 497,
+      "name": "minecraft:crimson_planks"
+    },
+    {
+      "id": 498,
+      "name": "minecraft:warped_planks"
+    },
+    {
+      "id": 499,
+      "name": "minecraft:crimson_door",
+      "hardness": 3
+    },
+    {
+      "id": 500,
+      "name": "minecraft:warped_door",
+      "hardness": 3
+    },
+    {
+      "id": 501,
+      "name": "minecraft:crimson_trapdoor"
+    },
+    {
+      "id": 502,
+      "name": "minecraft:warped_trapdoor"
+    },
+    {
+      "id": 503,
+      "name": "minecraft:data_table"
+    },
+    {
+      "id": 504,
+      "name": "minecraft:data_table"
+    },
+    {
+      "id": 505,
+      "name": "minecraft:crimson_standing_sign"
+    },
+    {
+      "id": 506,
+      "name": "minecraft:warped_standing_sign"
+    },
+    {
+      "id": 507,
+      "name": "minecraft:crimson_wall_sign"
+    },
+    {
+      "id": 508,
+      "name": "minecraft:warped_wall_sign"
+    },
+    {
+      "id": 509,
+      "name": "minecraft:crimson_stairs"
+    },
+    {
+      "id": 510,
+      "name": "minecraft:warped_stairs"
+    },
+    {
+      "id": 511,
+      "name": "minecraft:crimson_fence"
+    },
+    {
+      "id": 512,
+      "name": "minecraft:warped_fence"
+    },
+    {
+      "id": 513,
+      "name": "minecraft:crimson_fence_gate"
+    },
+    {
+      "id": 514,
+      "name": "minecraft:warped_fence_gate"
+    },
+    {
+      "id": 515,
+      "name": "minecraft:crimson_button"
+    },
+    {
+      "id": 516,
+      "name": "minecraft:warped_button"
+    },
+    {
+      "id": 517,
+      "name": "minecraft:crimson_pressure_plate"
+    },
+    {
+      "id": 518,
+      "name": "minecraft:warped_pressure_plate"
+    },
+    {
+      "id": 519,
+      "name": "minecraft:crimson_slab"
+    },
+    {
+      "id": 520,
+      "name": "minecraft:warped_slab"
+    },
+    {
+      "id": 521,
+      "name": "minecraft:crimson_double_slab"
+    },
+    {
+      "id": 522,
+      "name": "minecraft:warped_double_slab"
+    },
+    {
+      "id": 523,
+      "name": "minecraft:soul_torch"
+    },
+    {
+      "id": 524,
+      "name": "minecraft:soul_lantern"
+    },
+    {
+      "id": 525,
+      "name": "minecraft:netherite_block",
+      "hardness": 50
+    },
+    {
+      "id": 526,
+      "name": "minecraft:ancient_debris",
+      "hardness": 30
+    },
+    {
+      "id": 527,
+      "name": "minecraft:respawn_anchor",
+      "hardness": 50
+    },
+    {
+      "id": 528,
+      "name": "minecraft:blackstone",
+      "hardness": 1.5
+    },
+    {
+      "id": 529,
+      "name": "minecraft:polished_blackstone_bricks",
+      "hardness": 1.5
+    },
+    {
+      "id": 530,
+      "name": "minecraft:polished_blackstone_brick_stairs",
+      "hardness": 1.5
+    },
+    {
+      "id": 531,
+      "name": "minecraft:blackstone_stairs",
+      "hardness": 1.5
+    },
+    {
+      "id": 532,
+      "name": "minecraft:blackstone_wall",
+      "hardness": 1.5
+    },
+    {
+      "id": 533,
+      "name": "minecraft:polished_blackstone_brick_wall",
+      "hardness": 1.5
+    },
+    {
+      "id": 534,
+      "name": "minecraft:chiseled_polished_blackstone",
+      "hardness": 1.5
+    },
+    {
+      "id": 535,
+      "name": "minecraft:cracked_polished_blackstone_bricks",
+      "hardness": 1.5
+    },
+    {
+      "id": 536,
+      "name": "minecraft:gilded_blackstone",
+      "hardness": 1.5
+    },
+    {
+      "id": 537,
+      "name": "minecraft:blackstone_slab"
+    },
+    {
+      "id": 538,
+      "name": "minecraft:blackstone_double_slab"
+    },
+    {
+      "id": 539,
+      "name": "minecraft:polished_blackstone_brick_slab"
+    },
+    {
+      "id": 540,
+      "name": "minecraft:polished_blackstone_brick_double_slab"
+    },
+    {
+      "id": 541,
+      "name": "minecraft:chain",
+      "hardness": 5
+    },
+    {
+      "id": 542,
+      "name": "minecraft:twisting_vines"
+    },
+    {
+      "id": 543,
+      "name": "minecraft:nether_gold_ore",
+      "hardness": 3
+    },
+    {
+      "id": 544,
+      "name": "minecraft:crying_obsidian",
+      "hardness": 50
+    },
+    {
+      "id": 545,
+      "name": "minecraft:soul_campfire",
+      "hardness": 2
+    },
+    {
+      "id": 546,
+      "name": "minecraft:polished_blackstone",
+      "hardness": 2
+    },
+    {
+      "id": 547,
+      "name": "minecraft:polished_blackstone_stairs",
+      "hardness": 2
+    },
+    {
+      "id": 548,
+      "name": "minecraft:polished_blackstone_slab"
+    },
+    {
+      "id": 549,
+      "name": "minecraft:polished_blackstone_double_slab"
+    },
+    {
+      "id": 550,
+      "name": "minecraft:polished_blackstone_pressure_plate",
+      "hardness": 0.5
+    },
+    {
+      "id": 551,
+      "name": "minecraft:polished_blackstone_button",
+      "hardness": 0.5
+    },
+    {
+      "id": 552,
+      "name": "minecraft:polished_blackstone_wall",
+      "hardness": 1.5
+    },
+    {
+      "id": 553,
+      "name": "minecraft:warped_hyphae"
+    },
+    {
+      "id": 554,
+      "name": "minecraft:crimson_hyphae"
+    },
+    {
+      "id": 555,
+      "name": "minecraft:stripped_crimson_hyphae"
+    },
+    {
+      "id": 556,
+      "name": "minecraft:stripped_warped_hyphae"
+    },
+    {
+      "id": 557,
+      "name": "minecraft:chiseled_nether_bricks",
+      "hardness": 2
+    },
+    {
+      "id": 558,
+      "name": "minecraft:cracked_nether_bricks",
+      "hardness": 2
+    },
+    {
+      "id": 559,
+      "name": "minecraft:quartz_bricks",
+      "hardness": 0.8
+    }
+  ]
+}
