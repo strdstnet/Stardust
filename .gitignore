@@ -109,3 +109,5 @@ dist
 .yarnrc.yml
 lib/
 nodemon.json
+
+src/block/test.ts
