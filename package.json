@@ -25,7 +25,7 @@
     "@babel/preset-env": "^7.11.5",
     "@babel/preset-typescript": "^7.9.0",
     "@types/chalk": "^2.2.0",
-    "@types/jest": "^25.1.4",
+    "@types/jest": "^26.0.14",
     "@types/math3d": "^0.2.3",
     "@types/node": "^14.11.8",
     "@types/pbf": "^3.0.2",
