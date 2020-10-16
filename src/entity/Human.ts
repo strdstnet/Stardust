@@ -25,6 +25,7 @@ export class Human<Events, Containers extends Container[] = []> extends Creature
     this.inventory.add(ItemMap.get('minecraft:netherite_axe'))
     this.inventory.add(ItemMap.get('minecraft:netherite_shovel'))
     this.inventory.add(ItemMap.get('minecraft:diamond_sword'))
+    this.inventory.add(ItemMap.get('minecraft:diamond_pickaxe'))
   }
 
   protected addAttributes(): void {

@@ -310,7 +310,7 @@ export class Server implements IServer {
     this.broadcast(new Animate({
       action,
       entityRuntimeId: player.id,
-    }))
+    }), player.clientId)
   }
 
   public broadcastLevelSound(
