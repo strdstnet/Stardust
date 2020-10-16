@@ -36,10 +36,10 @@ export class BlockMap {
     return this.blocks.size
   }
 
-  public static add(name: string, id: number, meta = 0, hardness = 0, item?: string, edu = false): Block {
+  public static add(name: string, id: number, meta = 0, hardness = 0, item?: string, edu = false, toolType = BlockToolType.NONE): Block {
     if(this.idToName.has(id)) return this.blocks.get(name) as Block
 
-    const block = new Block(name, meta, id, hardness, item || name, edu)
+    const block = new Block(name, meta, id, hardness, item || name, edu, toolType)
 
     this.blocks.set(name, block)
     this.nameToId.set(name, id)
@@ -85,8 +85,9 @@ export class BlockMap {
   private static async registerBlocks(): Promise<void> {
     this.clear()
 
-    for await(const { name, id, edu, hardness, item } of BlockDefinition.blocks as any) {
-      this.add(name, id, 0, hardness, item, edu)
+    for await(const block of BlockDefinition.blocks) {
+      const { name, id, edu, hardness, item, toolType } = Object.assign({}, BlockDefinition.defaults, block)
+      this.add(name, id, 0, hardness, item, edu, toolType)
     }
   }
 
@@ -109,3 +110,4 @@ import { ShortTag } from '../nbt/ShortTag'
 import { StringTag } from '../nbt/StringTag'
 import { IntTag } from '../nbt/IntTag'
 import BlockDefinition from '../data/blocks.json'
+import { BlockToolType } from '../item/Tool'

@@ -42,8 +42,29 @@ export class Item extends EventEmitter {
     }
   }
 
+  public compatibleWith(block: Block): boolean {
+    if(block.hardness < 0) return false
+
+    if(this instanceof Tool) {
+      const type = this.blockType
+      const lvl = this.harvestLevel
+      
+      console.log(type)
+      console.log(lvl)
+      console.log(lvl === 0 || (type === block.toolType && lvl >= block.toolHarvestLevel))
+
+      return lvl === 0 || (type === block.toolType && lvl >= block.toolHarvestLevel)
+    }
+
+    console.log(3)
+    return true
+  }
+
 }
 
 import { CompoundTag } from '../nbt/CompoundTag'
 import { BlockMap } from '../block/BlockMap'
 import { BlockIds } from '../block/types'
+import { Block } from '../block/Block'
+import { Tool } from './Tool'
+

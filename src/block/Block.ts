@@ -21,6 +21,7 @@ export class Block {
     public hardness = 0,
     protected itemName: string = name,
     public fromEdu = false,
+    public toolType = BlockToolType.NONE,
   ) {
     this.id = typeof id === 'undefined' ? BlockMap.getId(name) : id
     this.metaVal = meta
@@ -58,7 +59,31 @@ export class Block {
   }
 
   public get breakTime(): number {
-    return 1000
+    return this.hardness * 1.5
+  }
+
+  public get toolHarvestLevel(): number {
+    return 0 // TODO
+  }
+
+  public getItemBreakTime(item: Item): number {
+    console.log(item)
+
+    let base = this.hardness
+
+    if(item.compatibleWith(this)) {
+      console.log('\n\nYES\n\n')
+      base *= 1.5
+    } else {
+      console.log('\n\nNO\n\n')
+      base *= 5
+    }
+
+    if(item instanceof Tool) {
+      base /= item.miningEfficiency
+    }
+
+    return base
   }
 
   public clone(): Block {
@@ -85,4 +110,5 @@ import { ItemMap } from '../item/ItemMap'
 import { BlockMap } from './BlockMap'
 import { BlockIds } from './types'
 import { Server } from '../Server'
+import { BlockToolType, Tool } from '../item/Tool'
 

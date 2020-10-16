@@ -40,6 +40,14 @@ export class Tool extends Durable {
     }
   }
 
+  public get harvestLevel(): number {
+    return this.baseHarvestLevel // TODO
+  }
+
+  public get miningEfficiency(): number {
+    return this.baseMiningEfficiency // TODO
+  }
+
   public useOnBlock(): void {
     this.damage -= this.damageOnBlock
   }

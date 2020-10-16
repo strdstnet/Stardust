@@ -2,7 +2,8 @@
   "defaults": {
     "hardness": 0,
     "vars": 0,
-    "edu": false
+    "edu": false,
+    "toolType": 0
   },
   "blocks": [
     {
@@ -13,29 +14,34 @@
       "id": 1,
       "name": "minecraft:stone",
       "hardness": 1.5,
-      "vars": 7
+      "vars": 7,
+      "toolType": 4
     },
     {
       "id": 2,
       "name": "minecraft:grass",
-      "hardness": 0.6
+      "hardness": 0.6,
+      "toolType": 2
     },
     {
       "id": 3,
       "name": "minecraft:dirt",
       "hardness": 0.5,
-      "vars": 2
+      "vars": 2,
+      "toolType": 2
     },
     {
       "id": 4,
       "name": "minecraft:cobblestone",
-      "hardness": 2
+      "hardness": 2,
+      "toolType": 4
     },
     {
       "id": 5,
       "name": "minecraft:planks",
       "hardness": 2,
-      "vars": 6
+      "vars": 6,
+      "toolType": 8
     },
     {
       "id": 6,
@@ -71,33 +77,39 @@
       "id": 12,
       "name": "minecraft:sand",
       "hardness": 0.5,
-      "vars": 2
+      "vars": 2,
+      "toolType": 2
     },
     {
       "id": 13,
       "name": "minecraft:gravel",
-      "hardness": 0.6
+      "hardness": 0.6,
+      "toolType": 2
     },
     {
       "id": 14,
       "name": "minecraft:gold_ore",
-      "hardness": 3
+      "hardness": 3,
+      "toolType": 4
     },
     {
       "id": 15,
       "name": "minecraft:iron_ore",
-      "hardness": 3
+      "hardness": 3,
+      "toolType": 4
     },
     {
       "id": 16,
       "name": "minecraft:coal_ore",
-      "hardness": 3
+      "hardness": 3,
+      "toolType": 4
     },
     {
       "id": 17,
       "name": "minecraft:log",
       "hardness": 2,
-      "vars": 4
+      "vars": 4,
+      "toolType": 8
     },
     {
       "id": 18,

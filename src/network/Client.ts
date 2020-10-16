@@ -544,10 +544,12 @@ export class Client {
     const { action, actionX, actionY, actionZ, face } = packet.props
 
     const block = this.level.getBlockAt(actionX, actionY, actionZ)
+    const item = this.player.inventory.itemHolding
 
     switch(action) {
       case PlayerEventAction.START_BREAK:
-        Server.i.broadcastLevelEvent(LevelEventType.BLOCK_START_BREAK, actionX, actionY, actionZ, 65536 / (block.breakTime / 50))
+        const breakTime = Math.ceil(block.getItemBreakTime(item) * 20)
+        Server.i.broadcastLevelEvent(LevelEventType.BLOCK_START_BREAK, actionX, actionY, actionZ, 65535 / breakTime)
         break
       case PlayerEventAction.CONTINUE_BREAK:
         Server.i.broadcastLevelEvent(LevelEventType.PARTICLE_PUNCH_BLOCK, actionX, actionY, actionZ, block.runtimeId | (face << 24))
