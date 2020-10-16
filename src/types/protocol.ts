@@ -95,6 +95,7 @@ export enum Packets {
   BIOME_DEFINITION_LIST = 0x7a, // 122
   LEVEL_SOUND = 0x7b, // 123
   EMOTE = 0x8a, // 138
+  CREATIVE_CONTENT = 0x91, // 145
   PACKET_VIOLATION_WARNING = 0x9c, // 156
 }
 

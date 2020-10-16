@@ -608,8 +608,6 @@ export class Client {
   private handleEntityFall(packet: EntityFall) {
     const { fallDistance, isInVoid } = packet.props
 
-    console.log('ENTITY FELL', { fallDistance, isInVoid })
-
     const fallDamage = Math.ceil(fallDistance - 3)
 
     if (fallDamage > 0) {
