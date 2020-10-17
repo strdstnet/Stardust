@@ -102,7 +102,7 @@ export interface IPlayer {
   clientId: bigint,
   skinData: SkinData,
   position: IPlayerPosition,
-  sendMessage: (message: string, type?: number, parameters?: string[]) => void,
+  sendMessage: (message: string, xboxUserId: string, type?: number, parameters?: string[]) => void,
   teleport: (x: number, y: number, z: number) => void,
 }
 

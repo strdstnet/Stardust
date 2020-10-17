@@ -306,6 +306,10 @@ export class Client {
     this.player = Player.createFrom(packet, this.id)
     this.initPlayerListeners()
 
+    // if (!this.player.XUID) {
+    //   this.disconnect('You are not authenticated with Xbox Live.')
+    // }
+
     // TODO: Actually implement packs
     this.sendBatchedMulti([
       new PlayStatus({
@@ -819,7 +823,7 @@ export class Client {
   }
 
   private sendAvailableCommands() {
-    this.sendBatched(new AvailableCommands(), Reliability.Unreliable)
+    this.sendBatched(new AvailableCommands())
   }
 
   private sendAdventureSettings() {
@@ -860,11 +864,12 @@ export class Client {
       }))
     })
 
-    this.player.on('Client:sendMessage', (message, type, parameters) => {
+    this.player.on('Client:sendMessage', (message, xboxUserId, type, parameters) => {
       this.sendBatched(new Text({
         type,
         message,
         parameters,
+        xboxUserId,
       }))
     })
 

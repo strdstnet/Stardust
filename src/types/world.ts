@@ -122,5 +122,6 @@ export enum Items {
 }
 
 export enum WorldSound {
+  STEP = 2,
   PLACE = 6,
 }

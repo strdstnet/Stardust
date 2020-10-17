@@ -18,7 +18,7 @@ export class EntityPosition {
     public yaw: number,
     public headYaw: number = 0,
     public motion = new Vector3(0, 0, 0),
-    public onGround = false,
+    public onGround = true,
   ) {}
 
   public get coords(): Vector3 {
