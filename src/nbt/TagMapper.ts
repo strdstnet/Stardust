@@ -24,6 +24,8 @@ export class TagMapper {
         return new CompoundTag()
       case TagType.IntArray:
         return new IntArrayTag()
+      case TagType.LongArray:
+        return new LongArrayTag()
       default:
         throw new Error(`Unknow tag type: ${type}`)
     }
@@ -39,6 +41,7 @@ import { FloatTag } from './FloatTag'
 import { IntArrayTag } from './IntArrayTag'
 import { IntTag } from './IntTag'
 import { ListTag } from './ListTag'
+import { LongArrayTag } from './LongArrayTag'
 import { LongTag } from './LongTag'
 import { ShortTag } from './ShortTag'
 import { StringTag } from './StringTag'

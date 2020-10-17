@@ -15,16 +15,17 @@ export class Chat {
   }
 
   public broadcastPlayerJoined(player: IPlayer): void {
-    this.broadcast(`${ChatColour.YELLOW}%multiplayer.player.joined`, TextType.TRANSLATION, [player.username])
+    this.broadcast(`${ChatColour.YELLOW}%multiplayer.player.joined`, player.XUID, TextType.TRANSLATION, [player.username])
   }
 
   public playerChat(sender: IPlayer, message: string): void {
-    this.broadcast(`${sender.username}: ${message}`, TextType.RAW)
+    this.broadcast(`${sender.username}: ${message}`, sender.XUID, TextType.RAW)
   }
 
-  private broadcast(message: string, type: TextType, parameters: string[] = []): void {
+  private broadcast(message: string, xuid: string, type: TextType, parameters: string[] = []): void {
     for(const [, player ] of this.server.players) {
-      player.sendMessage(message, type, parameters)
+      player.sendMessage(message, xuid, type, parameters)
+      console.log(xuid)
     }
   }
 
