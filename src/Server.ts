@@ -394,6 +394,12 @@ export class Server implements IServer {
     }), player.clientId)
   }
 
+  public despawn(player: Player): void {
+    this.broadcast(new RemoveEntity({
+      entityRuntimeId: player.id,
+    }), player.clientId)
+  }
+
   public send({ packet, socket, address }: ISendPacketArgs): void {
     socket.send(packet.encode().toBuffer(), address.port, address.ip)
   }

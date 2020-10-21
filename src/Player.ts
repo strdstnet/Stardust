@@ -5,7 +5,7 @@ import { getSkinData } from './utils/skins'
 import { Login } from './network/bedrock/Login'
 import { TextType } from './network/bedrock/Text'
 import { ContainerId } from './types/containers'
-import { MetadataFlag, MetadataType, SkinData } from './types/player'
+import { EntityAnimationType, MetadataFlag, MetadataType, SkinData } from './types/player'
 import { Item } from './item/Item'
 import { Server } from './Server'
 import { Chat } from './Chat'
@@ -78,8 +78,8 @@ export class Player extends Human<IPlayerEvents> {
     Chat.i.playerChat(this, message)
   }
 
-  public sendMessage(message: string, xboxUserId: string, type = TextType.RAW, parameters: string[] = []): void {
-    this.emit('Client:sendMessage', message, xboxUserId, type, parameters)
+  public sendMessage(message: string, xboxUserId?: string, type = TextType.RAW, parameters: string[] = []): void {
+    this.emit('Client:sendMessage', message, xboxUserId || '', type, parameters)
   }
 
   public teleport(x: number, y: number, z: number): void {
@@ -114,6 +114,20 @@ export class Player extends Human<IPlayerEvents> {
 
   public updateHealth(): void {
     this.emit('Client:updateHealth', this.health)
+
+    if(this.health <= 0) {
+      Server.i.despawn(this)
+      Server.i.broadcastEntityAnimation(this, EntityAnimationType.DEATH, 0)
+    }
+  }
+
+  public respawn(): void {
+    this.notifySelf()
+    this.notifyContainers()
+    this.notifyHeldItem()
+
+    Server.i.broadcastMetadata(this, this.metadata, true)
+    Server.i.spawnToAll(this)
   }
 
   // temporary

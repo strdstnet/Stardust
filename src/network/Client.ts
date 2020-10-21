@@ -675,6 +675,7 @@ export class Client {
         state: RespawnState.SERVER_READY,
         entityRuntimeId,
       }))
+      this.player.respawn()
     }
     this.player.health = this.player.maxHealth
   }
@@ -779,7 +780,7 @@ export class Client {
         chunk,
         cache: false,
         usedHashes: [],
-      }), Reliability.Unreliable)
+      }))
     }
 
     if(neededChunks.length > 1) {
@@ -969,3 +970,4 @@ import { SetHealth } from './bedrock/SetHealth'
 import { EntityAnimation } from './bedrock/EntityAnimation'
 import { FormRequest } from './bedrock/FormRequest'
 import { Respawn } from './bedrock/Respawn'
+
