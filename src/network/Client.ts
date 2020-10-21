@@ -580,11 +580,11 @@ export class Client {
         break
       case PlayerEventAction.START_SWIMMING:
         this.player.metadata.setGeneric(MetadataGeneric.SWIMMING, true)
-        Server.i.broadcastMetadata(this.player, this.player.metadata)
+        Server.i.broadcastMetadata(this.player, this.player.metadata, true)
         break
       case PlayerEventAction.STOP_SWIMMING:
         this.player.metadata.setGeneric(MetadataGeneric.SWIMMING, false)
-        Server.i.broadcastMetadata(this.player, this.player.metadata)
+        Server.i.broadcastMetadata(this.player, this.player.metadata, true)
         break
       default:
         this.logger.error(`Unhandled PlayerAction ID: ${action}`)
