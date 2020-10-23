@@ -116,8 +116,8 @@ export class Player extends Human<IPlayerEvents> {
     this.emit('Client:updateHealth', this.health)
 
     if(this.health <= 0) {
-      Server.i.despawn(this)
       Server.i.broadcastEntityAnimation(this, EntityAnimationType.DEATH, 0)
+      Server.i.despawn(this)
     }
   }
 

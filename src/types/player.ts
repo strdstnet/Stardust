@@ -160,6 +160,7 @@ export enum PlayerEventAction {
   ABORT_BREAK = 1,
   STOP_BREAK = 2,
   RESPAWN = 7,
+  JUMP = 8,
   START_SPRINT = 9,
   STOP_SPRINT = 10,
   START_SNEAK = 11,

@@ -25,7 +25,6 @@ export class Chat {
   private broadcast(message: string, xuid: string, type: TextType, parameters: string[] = []): void {
     for(const [, player ] of this.server.players) {
       player.sendMessage(message, xuid, type, parameters)
-      console.log(xuid)
     }
   }
 

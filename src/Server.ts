@@ -396,9 +396,11 @@ export class Server implements IServer {
   }
 
   public despawn(player: Player): void {
-    this.broadcast(new RemoveEntity({
-      entityRuntimeId: player.id,
-    }), player.clientId)
+    setTimeout(() => {
+      this.broadcast(new RemoveEntity({
+        entityRuntimeId: player.id,
+      }), player.clientId)
+    }, 1.5 * 1000)
   }
 
   public send({ packet, socket, address }: ISendPacketArgs): void {
