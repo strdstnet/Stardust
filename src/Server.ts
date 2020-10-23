@@ -74,7 +74,7 @@ export class Server implements IServer {
   private clients: Map<string, Client> = new Map()
   public players: Map<bigint, Player> = new Map() // Map<Player ID (Entity Runtime ID, Player)>
 
-  public static level: Level = Level.TestWorld()
+  public static level: Level
 
   private chat = new Chat(this)
 
@@ -116,6 +116,7 @@ export class Server implements IServer {
     Attribute.initAttributes()
     GlobalTick.start(Server.TPS)
 
+    this.level = await Level.TestWorld()
     await this.level.init()
 
     return new Server(Object.assign({}, DEFAULT_OPTS, opts))

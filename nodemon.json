@@ -2,5 +2,8 @@
   "ignore": [".git", "node_modules"],
   "watch": ["src"],
   "exec": "clear && ts-node -T src/start.ts",
-  "ext": "ts,json"
+  "ext": "ts,json",
+  "env": {
+    "NODE_ENV": "development"
+  }
 }

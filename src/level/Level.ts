@@ -46,8 +46,8 @@ export class Level {
     return `chunk:${x}:${z}`
   }
 
-  public static TestWorld(): Level {
-    return new Level('TestLevel', new Anvil('hsn'))
+  public static async TestWorld(): Promise<Level> {
+    return new Level('TestLevel', await Anvil.init('hsn'))
   }
 
   public static Flat(): Level {
