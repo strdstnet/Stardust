@@ -498,17 +498,9 @@ export class Client {
 
         if(!(target instanceof Living)) throw new Error(`Attempted to attack non-Living entity: ${target.type}`)
 
-        const action = item.useOnEntity()
+        if (!this.player.canAttack) return
 
-        if(!action) return
-
-        target.health -= action.damage
-        const deltaX = target.position.x - this.player.position.x
-        const deltaZ = target.position.z - this.player.position.z
-        console.log('X', deltaX)
-        console.log('Z', deltaZ)
-        Server.i.broadcastEntityAnimation(target, EntityAnimationType.HURT, 0)
-        target.knockBack(deltaX, deltaZ, 0.4)
+        this.player.attack(target, item)
         break
       default:
         this.logger.error(`Unknown UseItemOnEntityType: ${type}`)
