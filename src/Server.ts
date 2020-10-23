@@ -47,6 +47,7 @@ import { Item } from './item/Item'
 import { EntityEquipment } from './network/bedrock/EntityEquipment'
 import { EntityAnimation } from './network/bedrock/EntityAnimation'
 import { RemoveEntity } from './network/bedrock/RemoveEntity'
+import { SetEntityMotion } from './network/bedrock/SetEntityMotion'
 
 const DEFAULT_OPTS: ServerOpts = {
   address: '0.0.0.0',
@@ -401,6 +402,14 @@ export class Server implements IServer {
         entityRuntimeId: player.id,
       }), player.clientId)
     }, 1.5 * 1000)
+  }
+
+  public sendMotion(entity: Entity, motion: Vector3): void {
+    console.log(motion)
+    this.broadcast(new SetEntityMotion({
+      runtimeEntityId: entity.id,
+      motion,
+    })) 
   }
 
   public send({ packet, socket, address }: ISendPacketArgs): void {

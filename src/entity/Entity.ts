@@ -171,6 +171,37 @@ export abstract class Entity<Events = any, Containers extends Container[] = any>
     })
   }
 
+  public knockBack(x: number, z: number, base: number): void {
+    let f = Math.sqrt(x * x + z * z)
+
+    if(f <= 0) return
+
+    const knockBackResistance = this.attributeMap.get(Attr.KNOCKBACK_RESISTANCE)
+    const resistance = knockBackResistance ? knockBackResistance.value : 0
+
+    if(mtRand() / 2147483647 > resistance) {
+      f = 1 / f
+
+      let mX = this.position.motion.x / 2
+      let mY = this.position.motion.y / 2
+      let mZ = this.position.motion.z / 2
+
+      mX += x * f * base
+      mY += base
+      mZ += z * f * base
+
+      if (mY > base) {
+        mY = base
+      }
+      this.position.motion = new Vector3(mX, mY, mZ)
+      this.setMotion()
+    }
+  }
+
+  public setMotion(): void {
+    Server.i.sendMotion(this, this.position.motion)
+  }
+
   public get scale(): number {
     const data = this.metadata.get(MetadataFlag.SCALE)
 
@@ -226,4 +257,6 @@ import { EntityPosition } from './EntityPosition'
 import { Server } from '../Server'
 import { Vector3 } from 'math3d'
 import { BoundingBox } from '../utils/BoundingBox'
+import { mtRand } from '../utils/mtRand'
+import { Attr } from './Attribute'
 

@@ -457,7 +457,7 @@ export class Client {
   }
 
   private handleNormalTransaction(transaction: ContainerTransaction): void {
-    console.log(transaction.props)
+    // console.log(transaction.props)
   }
 
   private handleUseItem(transaction: ITransaction): void {
@@ -503,7 +503,12 @@ export class Client {
         if(!action) return
 
         target.health -= action.damage
+        const deltaX = target.position.x - this.player.position.x
+        const deltaZ = target.position.z - this.player.position.z
+        console.log('X', deltaX)
+        console.log('Z', deltaZ)
         Server.i.broadcastEntityAnimation(target, EntityAnimationType.HURT, 0)
+        target.knockBack(deltaX, deltaZ, 0.4)
         break
       default:
         this.logger.error(`Unknown UseItemOnEntityType: ${type}`)
@@ -570,6 +575,9 @@ export class Client {
         this.player.metadata.setGeneric(MetadataGeneric.SNEAKING, false)
         Server.i.broadcastMetadata(this.player, this.player.metadata)
         break
+      case PlayerEventAction.JUMP:
+        //
+        break
       case PlayerEventAction.START_SPRINT:
         this.player.metadata.setGeneric(MetadataGeneric.SPRINTING, true)
         Server.i.broadcastMetadata(this.player, this.player.metadata)
@@ -585,6 +593,9 @@ export class Client {
       case PlayerEventAction.STOP_SWIMMING:
         this.player.metadata.setGeneric(MetadataGeneric.SWIMMING, false)
         Server.i.broadcastMetadata(this.player, this.player.metadata, true)
+        break
+      case PlayerEventAction.INTERACT_BLOCK:
+        //
         break
       default:
         this.logger.error(`Unhandled PlayerAction ID: ${action}`)
@@ -651,8 +662,8 @@ export class Client {
 
     this.player.inventory.itemInHand = hotbarSlot
 
-    console.log('sending metadata')
-    console.log(this.player, item, inventorySlot, hotbarSlot, containerId)
+    // console.log('sending metadata')
+    // console.log(this.player, item, inventorySlot, hotbarSlot, containerId)
 
     Server.i.broadcastEntityEquipment(this.player, item, inventorySlot, hotbarSlot, containerId)
 
@@ -970,4 +981,5 @@ import { SetHealth } from './bedrock/SetHealth'
 import { EntityAnimation } from './bedrock/EntityAnimation'
 import { FormRequest } from './bedrock/FormRequest'
 import { Respawn } from './bedrock/Respawn'
+import { NBTFile, NBTFileId } from '../data/NBTFile'
 
