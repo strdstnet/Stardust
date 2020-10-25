@@ -48,15 +48,10 @@ export class Item extends EventEmitter {
     if(this instanceof Tool) {
       const type = this.blockType
       const lvl = this.harvestLevel
-      
-      console.log(type)
-      console.log(lvl)
-      console.log(lvl === 0 || (type === block.toolType && lvl >= block.toolHarvestLevel))
 
       return lvl === 0 || (type === block.toolType && lvl >= block.toolHarvestLevel)
     }
 
-    console.log(3)
     return true
   }
 

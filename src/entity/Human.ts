@@ -31,24 +31,24 @@ export class Human<Events, Containers extends Container[] = []> extends Creature
   protected addAttributes(): void {
     super.addAttributes()
 
-    this.attributeMap.addAttribute(Attribute.getAttribute(Attr.SATURATION))
-    this.attributeMap.addAttribute(Attribute.getAttribute(Attr.EXHAUSTION))
-    this.attributeMap.addAttribute(Attribute.getAttribute(Attr.HUNGER))
-    this.attributeMap.addAttribute(Attribute.getAttribute(Attr.EXPERIENCE_LEVEL))
-    this.attributeMap.addAttribute(Attribute.getAttribute(Attr.EXPERIENCE))
+    this.setAttribute(Attribute.getAttribute(Attr.SATURATION))
+    this.setAttribute(Attribute.getAttribute(Attr.EXHAUSTION))
+    this.setAttribute(Attribute.getAttribute(Attr.HUNGER))
+    this.setAttribute(Attribute.getAttribute(Attr.EXPERIENCE_LEVEL))
+    this.setAttribute(Attribute.getAttribute(Attr.EXPERIENCE))
   }
 
   public exhaust(amount: number): void {
     let exhaustion = this.exhaustion
     exhaustion += amount
 
-    while(exhaustion >= 4.0) {
-      exhaustion -= 4.0
+    while(exhaustion >= 4) {
+      exhaustion -= 4
 
       let saturation = this.saturation
 
       if(saturation > 0) {
-        saturation = Math.max(0, saturation - 1.0)
+        saturation = Math.max(0, saturation - 1)
       } else {
         let food = this.food
         if(food > 0) {
@@ -58,6 +58,8 @@ export class Human<Events, Containers extends Container[] = []> extends Creature
       }
     }
     this.exhaustion = exhaustion
+
+    console.log(`EXAUSTION: ${this.exhaustion}`)
   }
 
   public get inventory(): Inventory {
@@ -69,27 +71,27 @@ export class Human<Events, Containers extends Container[] = []> extends Creature
   }
 
   public get exhaustion(): number {
-    return this.attributeMap.get(Attr.EXHAUSTION).value
+    return this.getAttributeValue(Attr.EXHAUSTION)
   }
 
   public set exhaustion(amount: number) {
-    this.attributeMap.set(Attr.EXHAUSTION, new Attribute(Attr.EXHAUSTION, 'minecraft:player.exhaustionr', 0, 5, 0, true, amount))
+    this.setAttribute(Attribute.getAttribute(Attr.EXHAUSTION, amount))
   }
 
   public get saturation(): number {
-    return this.attributeMap.get(Attr.SATURATION).value
+    return this.getAttributeValue(Attr.SATURATION)
   }
 
   public set saturation(amount: number) {
-    this.attributeMap.set(Attr.SATURATION, new Attribute(Attr.SATURATION, 'minecraft:player.saturation', 0, 20, 20, true, amount))
+    this.setAttribute(Attribute.getAttribute(Attr.SATURATION, amount))
   }
 
   public get food(): number {
-    return this.attributeMap.get(Attr.HUNGER).value
+    return this.getAttributeValue(Attr.HUNGER)
   }
 
   public set food(amount: number) {
-    this.attributeMap.set(Attr.HUNGER, new Attribute(Attr.HUNGER, 'minecraft:player.hunger', 0, 20, 20, true, amount))
+    this.setAttribute(Attribute.getAttribute(Attr.HUNGER, amount))
   }
 
 }

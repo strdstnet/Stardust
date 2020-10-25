@@ -38,7 +38,7 @@ export class Attribute {
   public static initAttributes(): void {
     Attribute.attributes.set(Attr.ABSORPTION, new Attribute(Attr.ABSORPTION, 'minecraft:absorption', 0, FLOAT_MAX_VAL, 0))
     Attribute.attributes.set(Attr.SATURATION, new Attribute(Attr.SATURATION, 'minecraft:player.saturation', 0, 20, 20))
-    Attribute.attributes.set(Attr.EXHAUSTION, new Attribute(Attr.EXHAUSTION, 'minecraft:player.exhaustion', 0, 5, 0, false))
+    Attribute.attributes.set(Attr.EXHAUSTION, new Attribute(Attr.EXHAUSTION, 'minecraft:player.exhaustion', 0, 5, 0))
     Attribute.attributes.set(Attr.KNOCKBACK_RESISTANCE, new Attribute(Attr.KNOCKBACK_RESISTANCE, 'minecraft:knockback_resistance', 0, 1, 0))
     Attribute.attributes.set(Attr.HEALTH, new Attribute(Attr.HEALTH, 'minecraft:health', 0, 20, 20))
     Attribute.attributes.set(Attr.MOVEMENT_SPEED, new Attribute(Attr.MOVEMENT_SPEED, 'minecraft:movement', 0, FLOAT_MAX_VAL, 0.1))
@@ -55,8 +55,16 @@ export class Attribute {
     Attribute.attributes.set(Attr.LAVA_MOVEMENT, new Attribute(Attr.LAVA_MOVEMENT, 'minecraft:lava_movement', 0, FLOAT_MAX_VAL, 0.02))
   }
 
-  public static getAttribute(id: Attr): Attribute | null {
-    return Attribute.attributes.get(id) || null
+  public static getAttribute(id: Attr, value?: number): Attribute | null {
+    let attr = Attribute.attributes.get(id)
+
+    if(attr) {
+      attr = attr.clone()
+
+      if(value) attr.value = value
+    }
+
+    return attr || null
   }
 
   public static getByName(name: string): Attribute | null {

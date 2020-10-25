@@ -26,7 +26,6 @@ interface IPlayerCreate {
   clientUUID: string,
   XUID: string,
   identityPublicKey: string,
-  clientId: bigint,
   skinData: SkinData,
 }
 
@@ -41,17 +40,20 @@ export class Player extends Human<IPlayerEvents> {
   public clientUUID!: string
   public XUID!: string
   public identityPublicKey!: string
-  public clientId!: bigint
   public skinData!: SkinData
 
-  constructor(player: IPlayerCreate) {
+  constructor(player: IPlayerCreate, protected client: Client) {
     super(player.username, 'minecraft:player')
 
     Object.assign(this, player)
     this.UUID = UUID.fromString(player.clientUUID)
   }
 
-  public static createFrom(login: Login, clientId: bigint): Player {
+  public get clientId(): bigint {
+    return this.client.id
+  }
+
+  public static createFrom(login: Login, client: Client): Player {
     const { props } = login
 
     return new Player({
@@ -59,9 +61,18 @@ export class Player extends Human<IPlayerEvents> {
       clientUUID: props.clientUUID,
       XUID: props.XUID,
       identityPublicKey: props.identityPublicKey,
-      clientId,
       skinData: getSkinData(props),
-    })
+    }, client)
+  }
+
+  public async onTick(): Promise<void> {
+    await super.onTick()
+
+    if(this.attributeMap.dirty) {
+      this.attributeMap.dirty = false
+
+      this.client.sendAttributes()
+    }
   }
 
   public kill(cause?: DamageCause, args?: string[]): void {
@@ -102,7 +113,6 @@ export class Player extends Human<IPlayerEvents> {
 
   public notifyContainers(players: Player[] = [this]): void {
     for(const container of this.containers) {
-      // console.log(container)
       for(const player of players) {
         player.emit('Client:containerNotification', container)
       }
@@ -156,3 +166,5 @@ export class Player extends Human<IPlayerEvents> {
   }
 
 }
+
+import { Client } from './network/Client'

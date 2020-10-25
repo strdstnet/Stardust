@@ -820,13 +820,10 @@ export class BinaryData {
   }
 
   public writeTag(val: Tag): void {
-    console.log(`Writing ${val.constructor.name}...`)
-
     this.writeByte(val.type)
 
     if(val.type === TagType.End) return
 
-    console.log(`...${val.name}`, val.value)
     this.writeString(val.name)
     val.writeValue(this)
   }

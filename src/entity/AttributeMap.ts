@@ -1,19 +1,34 @@
 import { Attribute } from './Attribute'
 
-export class AttributeMap extends Map<number, Attribute> {
+export class AttributeMap {
 
-  public addAttribute(attr: Attribute | null): void {
+  private map: Map<number, Attribute> = new Map()
+
+  public dirty = false
+
+  public setAttribute(attr: Attribute | null): void {
     if(!attr) return
 
-    this.set(attr.id, attr)
+    this.dirty = true
+
+    this.map.set(attr.id, attr)
+  }
+
+  /** @deprecated Use AttributeMap.setAttribute instead */
+  public addAttribute(attr: Attribute | null): void {
+    this.setAttribute(attr)
   }
 
   public all(): Attribute[] {
-    return Array.from(this.values())
+    return Array.from(this.map.values())
+  }
+
+  public get(id: number): Attribute | null {
+    return this.map.get(id) || null
   }
 
   public needSend(): Attribute[] {
-    return Array.from(this)
+    return Array.from(this.map)
       .filter(([, v]) => v.isDesynchronized())
       .map(([, v]) => v)
   }

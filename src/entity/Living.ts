@@ -13,12 +13,19 @@ export abstract class Living<Events, Containers extends Container[] = []> extend
 
   public maxHealth = 20
   private _health = this.maxHealth
+  private lastTickHealth = this.health
 
   protected lastDamageCause: DamageCause = DamageCause.GENERIC
   protected lastDamageArgs: string[] = []
 
   public async onTick(): Promise<void> {
-    super.onTick()
+    await super.onTick()
+
+    if(this.lastTickHealth !== this.health) {
+      this.updateHealth()
+    }
+
+    this.lastTickHealth = this.health
 
     if(this.lastAttack > 0) this.lastAttack--
   }

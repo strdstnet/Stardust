@@ -77,7 +77,7 @@ export class Client {
       // console.log('GOT ACK:', sequences)
     } else if(flags & BitFlag.NAK) {
       const { props: { sequences } } = new NAK().parse(data)
-      console.log('GOT NAK, resending:', sequences)
+      // console.log('GOT NAK, resending:', sequences)
 
       for(const sequence of sequences) {
         const bundle = this.sentPackets.get(sequence)
@@ -169,7 +169,7 @@ export class Client {
 
   public onTick(): void {
     this.processSendQueue()
-    this.sendAttributes()
+    // this.sendAttributes()
   }
 
   private processSendQueue() {
@@ -304,7 +304,7 @@ export class Client {
   private handleLogin(packet: Login) {
     // TODO: Login verification, already logged in?, ...
 
-    this.player = Player.createFrom(packet, this.id)
+    this.player = Player.createFrom(packet, this)
     this.initPlayerListeners()
 
     // if (!this.player.XUID) {
@@ -495,9 +495,8 @@ export class Client {
 
     switch(type) {
       case UseItemOnEntityType.ATTACK:
-        if(!target.alive) return
-
         if(!(target instanceof Living)) throw new Error(`Attempted to attack non-Living entity: ${target.type}`)
+        if(!target.alive) return
 
         if (!this.player.canAttack) return
 
@@ -572,7 +571,7 @@ export class Client {
         //
         break
       case PlayerEventAction.START_SPRINT:
-        this.player.exhaust(0.1)
+        // this.player.exhaust(0.1)
         this.player.metadata.setGeneric(MetadataGeneric.SPRINTING, true)
         Server.i.broadcastMetadata(this.player, this.player.metadata)
         break
@@ -643,8 +642,6 @@ export class Client {
 
   private handleEmote(packet: Emote) {
     const { runtimeEntityId, emoteId, flags } = packet.props
-
-    console.log('EMOTE', { runtimeEntityId, emoteId, flags })
 
     this.player.sendMessage('Emotes are currently disabled on this server.')
 
@@ -806,9 +803,8 @@ export class Client {
     return ((this.viewDistance * this.viewDistance) + this.viewDistance) * 4
   }
 
-  private sendAttributes(all = false): void {
+  public sendAttributes(all = false): void {
     const entries = all ? this.player.attributeMap.all() : this.player.attributeMap.needSend()
-
 
     if(entries.length) {
       this.sendBatched(new UpdateAttributes({

@@ -125,7 +125,7 @@ export class StartGame extends BatchedPacket<IStartGame> {
       { name: 'dimension', parser: DataType.VARINT, resolve: def(Dimension.OVERWOLD) },
       { name: 'generator', parser: DataType.VARINT, resolve: def(GeneratorType.OVERWORLD) },
       { name: 'worldGamemode', parser: DataType.VARINT, resolve: def(Gamemode.SURVIVAL) },
-      { name: 'difficulty', parser: DataType.VARINT, resolve: def(Difficulty.PEACEFUL) },
+      { name: 'difficulty', parser: DataType.VARINT, resolve: def(Difficulty.NORMAL) },
       {
         name: 'spawnLocation',
         parser({ type, data, props, value }) {

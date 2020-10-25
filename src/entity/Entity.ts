@@ -26,7 +26,6 @@ export abstract class Entity<Events = any, Containers extends Container[] = any>
   protected dragBeforeGravity = false
 
   private tickExtenders: Array<() => void | Promise<void>> = []
-  private lastTickHealth = this.health
 
   constructor(
     public name: string, // Ex. Zombie
@@ -67,12 +66,6 @@ export abstract class Entity<Events = any, Containers extends Container[] = any>
       this.updateLocation()
       this.position.acknowledgeUpdate()
     }
-
-    if(this.lastTickHealth !== this.health) {
-      this.updateHealth()
-    }
-
-    this.lastTickHealth = this.health
   }
 
   protected applyForces(): void {
@@ -177,6 +170,16 @@ export abstract class Entity<Events = any, Containers extends Container[] = any>
     }
   }
 
+  public getAttributeValue(attr: Attr, def = 0): number {
+    const attribute = this.attributeMap.get(attr)
+
+    return attribute ? attribute.value : def
+  }
+
+  public setAttribute(attribute: Attribute | null): void {
+    this.attributeMap.setAttribute(attribute)
+  }
+
   public setMotion(): void {
     Server.i.sendMotion(this, this.position.motion)
   }
@@ -237,5 +240,5 @@ import { Server } from '../Server'
 import { Vector3 } from 'math3d'
 import { BoundingBox } from '../utils/BoundingBox'
 import { mtRand } from '../utils/mtRand'
-import { Attr } from './Attribute'
+import { Attr, Attribute } from './Attribute'
 

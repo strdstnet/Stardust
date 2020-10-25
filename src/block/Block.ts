@@ -67,21 +67,12 @@ export class Block {
   }
 
   public getItemBreakTime(item: Item): number {
-    console.log(item)
-
     let base = this.hardness
 
-    if(item.compatibleWith(this)) {
-      console.log('\n\nYES\n\n')
-      base *= 1.5
-    } else {
-      console.log('\n\nNO\n\n')
-      base *= 5
-    }
+    if(item.compatibleWith(this)) base *= 1.5
+    else base *= 5
 
-    if(item instanceof Tool) {
-      base /= item.miningEfficiency
-    }
+    if(item instanceof Tool) base /= item.miningEfficiency
 
     return base
   }

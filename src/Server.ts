@@ -258,10 +258,6 @@ export class Server implements IServer {
   public updatePlayerLocation(player: Player, includeSelf = false, mode?: MovePlayerMode.NORMAL): void {
     const pos = player.position
 
-    if(includeSelf) {
-      console.log('SENDING MOVE TO SELF')
-    }
-
     this.broadcast(new MovePlayer({
       runtimeEntityId: player.id,
       positionX: pos.x,
@@ -405,11 +401,10 @@ export class Server implements IServer {
   }
 
   public sendMotion(entity: Entity, motion: Vector3): void {
-    console.log(motion)
     this.broadcast(new SetEntityMotion({
       runtimeEntityId: entity.id,
       motion,
-    })) 
+    }))
   }
 
   public send({ packet, socket, address }: ISendPacketArgs): void {
