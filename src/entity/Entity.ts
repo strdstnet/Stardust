@@ -25,11 +25,6 @@ export abstract class Entity<Events = any, Containers extends Container[] = any>
 
   protected dragBeforeGravity = false
 
-  private _alive = true
-
-  public maxHealth = 20
-  private _health = this.maxHealth
-
   private tickExtenders: Array<() => void | Promise<void>> = []
   private lastTickHealth = this.health
 
@@ -95,22 +90,6 @@ export abstract class Entity<Events = any, Containers extends Container[] = any>
 
     this.position.motion.x *= friction
     this.position.motion.z *= friction
-  }
-
-  public get alive(): boolean {
-    return this._alive
-  }
-
-  public get health(): number {
-    return this._health
-  }
-
-  public set health(val: number) {
-    this._health = val
-
-    if(this._health === 0) {
-      this._alive = false
-    }
   }
 
   public get type(): string {

@@ -5,7 +5,7 @@ import { getSkinData } from './utils/skins'
 import { Login } from './network/bedrock/Login'
 import { TextType } from './network/bedrock/Text'
 import { ContainerId } from './types/containers'
-import { EntityAnimationType, MetadataFlag, MetadataType, SkinData } from './types/player'
+import { EntityAnimationType, MetadataFlag, MetadataType, DamageCause, SkinData } from './types/player'
 import { Item } from './item/Item'
 import { Server } from './Server'
 import { Chat } from './Chat'
@@ -17,7 +17,7 @@ interface IPlayerEvents {
   'Client:entityNotification': (id: bigint, meta: Metadata) => void,
   'Client:containerNotification': (container: Container) => void,
   'Client:heldItemNotification': (id: bigint, item: Item, inventoySlot: number, hotbarSlot: number, containerId: number) => void,
-  'Client:sendMessage': (message: string, xboxUserId: string, type: TextType, parameters: string[]) => void,
+  'Client:sendMessage': (message: string, type: TextType, parameters: string[]) => void,
   'Client:updateHealth': (health: number) => void,
 }
 
@@ -64,6 +64,12 @@ export class Player extends Human<IPlayerEvents> {
     })
   }
 
+  public kill(cause?: DamageCause, args?: string[]): void {
+    super.kill(cause, args)
+
+    Chat.i.playerDied(this.lastDamageCause, this.lastDamageArgs)
+  }
+
   protected addMetadata(): void {
     super.addMetadata()
 
@@ -78,8 +84,8 @@ export class Player extends Human<IPlayerEvents> {
     Chat.i.playerChat(this, message)
   }
 
-  public sendMessage(message: string, xboxUserId?: string, type = TextType.RAW, parameters: string[] = []): void {
-    this.emit('Client:sendMessage', message, xboxUserId || '', type, parameters)
+  public sendMessage(message: string, type = TextType.RAW, parameters: string[] = []): void {
+    this.emit('Client:sendMessage', message, type, parameters)
   }
 
   public teleport(x: number, y: number, z: number): void {
@@ -122,6 +128,9 @@ export class Player extends Human<IPlayerEvents> {
   }
 
   public respawn(): void {
+    this.resetLastDamage()
+    this.resetHealth()
+
     this.notifySelf()
     this.notifyContainers()
     this.notifyHeldItem()

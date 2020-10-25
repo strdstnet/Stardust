@@ -622,7 +622,7 @@ export class Client {
     const fallDamage = Math.ceil(fallDistance - 3)
 
     if (fallDamage > 0) {
-      this.player.health -= fallDamage
+      this.player.doDamage(fallDamage, DamageCause.FALL_ACCIDENT)
 
       Server.i.broadcastEntityAnimation(this.player, EntityAnimationType.HURT, 0)
     }
@@ -682,7 +682,6 @@ export class Client {
       }))
       this.player.respawn()
     }
-    this.player.health = this.player.maxHealth
   }
 
   private async completeLogin() {
@@ -870,12 +869,11 @@ export class Client {
       }))
     })
 
-    this.player.on('Client:sendMessage', (message, xboxUserId, type, parameters) => {
+    this.player.on('Client:sendMessage', (message, type, parameters) => {
       this.sendBatched(new Text({
         type,
         message,
         parameters,
-        xboxUserId,
       }))
     })
 
@@ -950,7 +948,7 @@ import { MovePlayer } from './bedrock/MovePlayer'
 import { SetLocalPlayerInitialized } from './bedrock/SetLocalPlayerInitialized'
 import { Chat } from '../Chat'
 import { AddPlayer } from './bedrock/AddPlayer'
-import { InteractAction, LevelEventType, MetadataGeneric, PlayerEventAction, EntityAnimationType, PlayerAnimation } from '../types/player'
+import { InteractAction, LevelEventType, MetadataGeneric, PlayerEventAction, EntityAnimationType, PlayerAnimation, DamageCause } from '../types/player'
 import { Interact } from './bedrock/Interact'
 import { ContainerOpen } from './bedrock/ContainerOpen'
 import { PlayerAction } from './bedrock/PlayerAction'

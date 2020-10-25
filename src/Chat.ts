@@ -1,5 +1,5 @@
 import { TextType } from './network/bedrock/Text'
-import { IPlayer } from './types/player'
+import { IPlayer, DamageCause } from './types/player'
 import { IServer } from './types/server'
 
 export const ChatColour = {
@@ -15,17 +15,21 @@ export class Chat {
   }
 
   public broadcastPlayerJoined(player: IPlayer): void {
-    this.broadcast(`${ChatColour.YELLOW}%multiplayer.player.joined`, player.XUID, TextType.TRANSLATION, [player.username])
+    this.broadcast(`${ChatColour.YELLOW}%multiplayer.player.joined`, TextType.TRANSLATION, [player.username])
   }
 
   public playerChat(sender: IPlayer, message: string): void {
-    this.broadcast(`${sender.username}: ${message}`, sender.XUID, TextType.RAW)
+    this.broadcast(`${sender.username}: ${message}`, TextType.RAW)
   }
 
-  private broadcast(message: string, xuid: string, type: TextType, parameters: string[] = []): void {
+  private broadcast(message: string, type: TextType, parameters: string[] = []): void {
     for(const [, player ] of this.server.players) {
-      player.sendMessage(message, xuid, type, parameters)
+      player.sendMessage(message, type, parameters)
     }
+  }
+
+  public playerDied(cause: DamageCause = DamageCause.GENERIC, args: string[]): void {
+    this.broadcast(`${ChatColour.YELLOW}%${cause}`, TextType.TRANSLATION, args)
   }
 
 }
