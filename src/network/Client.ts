@@ -169,6 +169,7 @@ export class Client {
 
   public onTick(): void {
     this.processSendQueue()
+    this.sendAttributes()
   }
 
   private processSendQueue() {
@@ -571,6 +572,7 @@ export class Client {
         //
         break
       case PlayerEventAction.START_SPRINT:
+        this.player.exhaust(0.1)
         this.player.metadata.setGeneric(MetadataGeneric.SPRINTING, true)
         Server.i.broadcastMetadata(this.player, this.player.metadata)
         break
