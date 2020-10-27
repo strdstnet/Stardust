@@ -27,7 +27,7 @@
     "@types/chalk": "^2.2.0",
     "@types/jest": "^26.0.15",
     "@types/math3d": "^0.2.3",
-    "@types/node": "^14.14.2",
+    "@types/node": "^14.14.5",
     "@types/pbf": "^3.0.2",
     "@types/uuid": "^8.3.0",
     "@typescript-eslint/eslint-plugin": "^4.5.0",
