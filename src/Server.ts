@@ -49,6 +49,7 @@ import { EntityAnimation } from './network/bedrock/EntityAnimation'
 import { RemoveEntity } from './network/bedrock/RemoveEntity'
 import { SetEntityMotion } from './network/bedrock/SetEntityMotion'
 import { Event, EventEmitter } from '@hyperstonenet/utils.events'
+import { PluginManager } from './PluginManager'
 
 const DEFAULT_OPTS: ServerOpts = {
   address: '0.0.0.0',
@@ -62,7 +63,13 @@ const DEFAULT_OPTS: ServerOpts = {
 
 class PlayerJoinEvent extends Event<{
   player: Player,
-}> {}
+}> {
+
+  public get player(): Player {
+    return this.data.player
+  }
+
+}
 
 type ServerEvents = {
   playerJoined: PlayerJoinEvent,
@@ -105,8 +112,6 @@ export class Server extends EventEmitter<ServerEvents> implements IServer {
       ['IPv4', dgram.createSocket({ type: 'udp4', reuseAddr: true })],
       // ['IPv6', dgram.createSocket({ type: 'udp6', reuseAddr: true })],
     ]
-
-    this.init()
   }
 
   public get runningTime(): bigint {
@@ -131,14 +136,18 @@ export class Server extends EventEmitter<ServerEvents> implements IServer {
     this.level = await Level.TestWorld()
     await this.level.init()
 
-    return new Server(Object.assign({}, DEFAULT_OPTS, opts))
+    const server = new Server(Object.assign({}, DEFAULT_OPTS, opts))
+
+    await PluginManager.start()
+
+    return server.init()
   }
 
   private get logger() {
     return Server.logger
   }
 
-  private init() {
+  private init(): Server {
     const {
       address,
       port,
@@ -193,6 +202,8 @@ export class Server extends EventEmitter<ServerEvents> implements IServer {
         }
       })
     })
+
+    return this
   }
 
   public addCommand(command: ICommand): void {

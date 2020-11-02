@@ -111,3 +111,4 @@ lib/
 nodemon.json
 
 src/block/test.ts
+plugins/
