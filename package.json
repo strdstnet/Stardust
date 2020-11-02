@@ -1,5 +1,5 @@
 {
-  "name": "@hyperstone/stardust",
+  "name": "@hyperstonenet/stardust",
   "repository": "https://github.com/HyperstoneNet/Stardust.git",
   "author": "Hyperstone Developers <devs@hyperstone.io>",
   "main": "lib/index.js",
