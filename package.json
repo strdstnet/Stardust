@@ -26,6 +26,7 @@
     "@babel/core": "^7.12.3",
     "@babel/preset-env": "^7.12.1",
     "@babel/preset-typescript": "^7.12.1",
+    "@strdst/tsconfig": "^1.0.3",
     "@types/chalk": "^2.2.0",
     "@types/jest": "^26.0.15",
     "@types/math3d": "^0.2.3",

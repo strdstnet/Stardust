@@ -1152,6 +1152,13 @@
   dependencies:
     "@sinonjs/commons" "^1.7.0"
 
+"@strdst/tsconfig@^1.0.3":
+  version "1.0.3"
+  resolved "https://npm.pkg.github.com/download/@strdst/tsconfig/1.0.3/ce0fcc97e9ff1634f449cd3812a355cc1749d1ec6afb0c75b61f640f3ba5cd6e#d52e1e5b27f7967715df03cca76f3620fa3f831a"
+  integrity sha512-Tmml1gR9pYMvoVjB5/ekW4ZcrzyUhKMQE/oKD/lwe95xRbBd5ULKPalClK7/1Mf/eBIM+oe7v2vYBRjhfUQKOw==
+  dependencies:
+    "@tsconfig/node14" "^1.0.0"
+
 "@strdst/utils.binary@^1.0.3":
   version "1.0.3"
   resolved "https://npm.pkg.github.com/download/@strdst/utils.binary/1.0.3/315d47a48363d89002d5fdadb3fdf5fd6581fcd178bfab4e9e91b6b03d5ff821#117ee3093ab9a7ebfa7b69ae020c2dc9c4c8efd8"
@@ -1171,6 +1178,11 @@
   integrity sha512-XIB2XbzHTN6ieIjfIMV9hlVcfPU26s2vafYWQcZHWXHOxiaRZYEDKEwdl129Zyg50+foYV2jCgtrqSA6qNuNSA==
   dependencies:
     defer-to-connect "^1.0.1"
+
+"@tsconfig/node14@^1.0.0":
+  version "1.0.0"
+  resolved "https://registry.yarnpkg.com/@tsconfig/node14/-/node14-1.0.0.tgz#5bd046e508b1ee90bc091766758838741fdefd6e"
+  integrity sha512-RKkL8eTdPv6t5EHgFKIVQgsDapugbuOptNd9OOunN/HAkzmmTnZELx1kNCK0rSdUYGmiFMM3rRQMAWiyp023LQ==
 
 "@types/babel__core@^7.0.0", "@types/babel__core@^7.1.7":
   version "7.1.9"
