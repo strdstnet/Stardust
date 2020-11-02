@@ -13,14 +13,6 @@ import { PosUpdateType } from './entity/EntityPosition'
 import { Metadata } from './entity/Metadata'
 import { Vector3 } from 'math3d'
 
-interface IPlayerEvents {
-  'Client:entityNotification': (id: bigint, meta: Metadata) => void,
-  'Client:containerNotification': (container: Container) => void,
-  'Client:heldItemNotification': (id: bigint, item: Item, inventoySlot: number, hotbarSlot: number, containerId: number) => void,
-  'Client:sendMessage': (message: string, type: TextType, parameters: string[]) => void,
-  'Client:updateHealth': (health: number) => void,
-}
-
 interface IPlayerCreate {
   username: string,
   clientUUID: string,
@@ -29,7 +21,11 @@ interface IPlayerCreate {
   skinData: SkinData,
 }
 
-export class Player extends Human<IPlayerEvents> {
+type PlayerEvents = {
+
+}
+
+export class Player extends Human<PlayerEvents> {
 
   public autoJump = true
   public allowFlight = false
@@ -96,7 +92,7 @@ export class Player extends Human<IPlayerEvents> {
   }
 
   public sendMessage(message: string, type = TextType.RAW, parameters: string[] = []): void {
-    this.emit('Client:sendMessage', message, type, parameters)
+    this.client.sendMessage(message, type, parameters)
   }
 
   public teleport(x: number, y: number, z: number): void {
@@ -114,9 +110,13 @@ export class Player extends Human<IPlayerEvents> {
   public notifyContainers(players: Player[] = [this]): void {
     for(const container of this.containers) {
       for(const player of players) {
-        player.emit('Client:containerNotification', container)
+        player.client.sendContainer(container)
       }
     }
+  }
+
+  public sendEntityMetadata(entityRuntimeId: bigint, metadata: Metadata): void {
+    this.client.sendEntityMetadata(entityRuntimeId, metadata)
   }
 
   public notifyHeldItem(players: Player[] = [this]): void {
@@ -124,12 +124,12 @@ export class Player extends Human<IPlayerEvents> {
 
     for(const player of players) {
       const slot = this.inventory.itemInHand
-      player.emit('Client:heldItemNotification', this.id, item, slot, slot, ContainerId.INVENTORY)
+      player.client.sendEntityEquipment(this.id, item, slot, slot, ContainerId.INVENTORY)
     }
   }
 
   public updateHealth(): void {
-    this.emit('Client:updateHealth', this.health)
+    this.client.setHealth(this.health)
 
     if(this.health <= 0) {
       Server.i.broadcastEntityAnimation(this, EntityAnimationType.DEATH, 0)
@@ -149,22 +149,8 @@ export class Player extends Human<IPlayerEvents> {
     Server.i.spawnToAll(this)
   }
 
-  // temporary
-  public makeBig(scale = 5): void {
-    const difY = this.height * scale
-
-    const human = new Human(this.name, 'minecraft:npc')
-    human.scale = scale
-    human.mime(this, new Vector3(0, -difY, 0))
-
-    setTimeout(() => {
-      Server.i.addEntity(human)
-    }, 8000)
-
-    this.affectedByGravity = false
-    this.position.y = this.position.y + difY
-  }
-
 }
 
 import { Client } from './network/Client'
+import { EventDict } from '@hyperstonenet/utils.events'
+

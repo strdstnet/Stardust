@@ -1,11 +1,11 @@
 import { Container } from '../containers/Container'
-import { EventEmitter, DefaultEventMap } from 'tsee'
+import { EventEmitter, EventDict } from '@hyperstonenet/utils.events'
 
-interface IEntityEvents extends DefaultEventMap {
-  _: () => void, // TODO: Remove when events are added
+interface IEntityEvents {
+  _: () => void,
 }
 
-export abstract class Entity<Events = any, Containers extends Container[] = any> extends EventEmitter<IEntityEvents & Events> {
+export abstract class Entity<Events extends EventDict = EventDict, Containers extends Container[] = any> extends EventEmitter<Events & IEntityEvents> {
 
   public static entityCount = 0
 
@@ -127,20 +127,8 @@ export abstract class Entity<Events = any, Containers extends Container[] = any>
 
   public notifyPlayers(players: Player[], data: Metadata = this.metadata): void {
     for(const player of players) {
-      player.emit('Client:entityNotification', this.id, data)
+      player.sendEntityMetadata(this.id, data)
     }
-  }
-
-  public mime(entity: Entity, offset = new Vector3(0, 0, 0)): void {
-    this.tickExtenders.push(() => {
-      if(!this.position.equals(entity.position)) {
-        const pos = entity.position.clone()
-        pos.x += offset.x
-        pos.y += offset.y
-        pos.z += offset.z
-        this.position.update(pos)
-      }
-    })
   }
 
   public knockBack(x: number, z: number, base: number): void {

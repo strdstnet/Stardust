@@ -2,7 +2,11 @@ import { Creature } from './Creature'
 
 type HumanContainers = [Inventory, EnderChest, Armor, ...Container[]]
 
-export class Human<Events, Containers extends Container[] = []> extends Creature<Events, [...HumanContainers, ...Containers]> {
+interface IHumanEvents {
+  _: () => void,
+}
+
+export class Human<Events extends EventDict = EventDict, Containers extends Container[] = []> extends Creature<Events & IHumanEvents, [...HumanContainers, ...Containers]> {
 
   public baseOffset = 1.62
 
@@ -103,4 +107,5 @@ import { EnderChest } from '../containers/EnderChest'
 import { Inventory } from '../containers/Inventory'
 import { Item } from '../item/Item'
 import { ItemMap } from '../item/ItemMap'
+import { EventDict } from '@hyperstonenet/utils.events'
 

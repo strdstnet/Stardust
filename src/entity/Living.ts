@@ -3,7 +3,11 @@ import { DamageCause } from '../types/player'
 
 type LivingContainers = [Armor]
 
-export abstract class Living<Events, Containers extends Container[] = []> extends Entity<Events, [...LivingContainers, ...Containers]> {
+interface ILivingEvents {
+  _: () => void,
+}
+
+export abstract class Living<Events extends EventDict = EventDict, Containers extends Container[] = []> extends Entity<Events & ILivingEvents, [...LivingContainers, ...Containers]> {
 
   protected gravity = 0.08
   protected drag = 0.02
@@ -123,4 +127,5 @@ import { EntityAnimationType } from '../types/player'
 import { Item } from '../item/Item'
 import { Server } from '../Server'
 import { Tool } from '../item/Tool'
+import { EventDict } from '@hyperstonenet/utils.events'
 

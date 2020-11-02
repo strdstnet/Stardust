@@ -15,7 +15,7 @@ export class Level {
   private chunkDelta: ChunkDeltaList = new Map() // Map<ChunkIndex, Map<BlockIndex, Block>>
   private dirtyBlocks: Set<[Vector3, Block]> = new Set()
 
-  private entities: Map<bigint, Entity> = new Map()
+  private entities: Map<bigint, Entity<any>> = new Map()
 
   constructor(public name: string, public generator: Generator) {}
 
@@ -157,11 +157,11 @@ export class Level {
     return canPlace
   }
 
-  public addEntity(entity: Entity): void {
+  public addEntity(entity: Entity<any>): void {
     this.entities.set(entity.id, entity)
   }
 
-  public getEntity(entityId: bigint): Entity | null {
+  public getEntity(entityId: bigint): Entity<any> | null {
     return this.entities.get(entityId) || null
   }
 

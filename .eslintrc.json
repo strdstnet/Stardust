@@ -42,7 +42,8 @@
     "deprecation/deprecation": "warn",
     "@typescript-eslint/no-explicit-any": "off",
     "no-case-declarations": "off",
-    "@typescript-eslint/no-empty-function": "off"
+    "@typescript-eslint/no-empty-function": "off",
+    "@typescript-eslint/no-unused-vars": "off"
   },
   "root": true
 }

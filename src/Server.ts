@@ -279,7 +279,7 @@ export class Server implements IServer {
     }))
   }
 
-  public moveEntity(entity: Entity): void {
+  public moveEntity(entity: Entity<any>): void {
     this.broadcast(new MoveEntity({
       runtimeEntityId: entity.id,
       position: entity.position.coords,
@@ -353,7 +353,7 @@ export class Server implements IServer {
     }), player.clientId)
   }
 
-  public broadcastEntityAnimation(target: Entity, event: number, data: number): void {
+  public broadcastEntityAnimation(target: Entity<any>, event: number, data: number): void {
     this.broadcast(new EntityAnimation({
       entityRuntimeId: target.id,
       event,
@@ -400,7 +400,7 @@ export class Server implements IServer {
     }, 1.5 * 1000)
   }
 
-  public sendMotion(entity: Entity, motion: Vector3): void {
+  public sendMotion(entity: Entity<any>, motion: Vector3): void {
     this.broadcast(new SetEntityMotion({
       runtimeEntityId: entity.id,
       motion,

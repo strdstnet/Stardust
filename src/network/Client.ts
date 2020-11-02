@@ -305,7 +305,6 @@ export class Client {
     // TODO: Login verification, already logged in?, ...
 
     this.player = Player.createFrom(packet, this)
-    this.initPlayerListeners()
 
     // if (!this.player.XUID) {
     //   this.disconnect('You are not authenticated with Xbox Live.')
@@ -843,42 +842,36 @@ export class Client {
     }))
   }
 
-  private initPlayerListeners() {
-    this.player.on('Client:entityNotification', (entityRuntimeId, metadata) => {
-      this.sendBatched(new EntityMetadata({
-        entityRuntimeId,
-        metadata,
-      }))
-    })
-
-    this.player.on('Client:containerNotification', container => {
-      this.sendContainer(container)
-    })
-
-    this.player.on('Client:heldItemNotification', (entityRuntimeId, item, inventorySlot, hotbarSlot, containerId) => {
-      this.sendBatched(new EntityEquipment({
-        entityRuntimeId,
-        item,
-        inventorySlot,
-        hotbarSlot,
-        containerId,
-      }))
-    })
-
-    this.player.on('Client:sendMessage', (message, type, parameters) => {
-      this.sendBatched(new Text({
-        type,
-        message,
-        parameters,
-      }))
-    })
-
-    this.player.on('Client:updateHealth', health => {
-      this.sendBatched(new SetHealth({ health }))
-    })
+  public sendEntityMetadata(entityRuntimeId: bigint, metadata: Metadata): void {
+    this.sendBatched(new EntityMetadata({
+      entityRuntimeId,
+      metadata,
+    }))
   }
 
-  private sendContainer(container: Container) {
+  public sendMessage(message: string, type: TextType, parameters: string[]): void {
+    this.sendBatched(new Text({
+      type,
+      message,
+      parameters,
+    }))
+  }
+
+  public sendEntityEquipment(entityRuntimeId: bigint, item: Item, inventorySlot: number, hotbarSlot: number, containerId: number): void {
+    this.sendBatched(new EntityEquipment({
+      entityRuntimeId,
+      item,
+      inventorySlot,
+      hotbarSlot,
+      containerId,
+    }))
+  }
+
+  public setHealth(health: number): void {
+    this.sendBatched(new SetHealth({ health }))
+  }
+
+  public sendContainer(container: Container) {
     this.sendBatched(new ContainerNotification({
       containerId: container.id,
       items: container.items,
@@ -970,4 +963,5 @@ import { EntityAnimation } from './bedrock/EntityAnimation'
 import { FormRequest } from './bedrock/FormRequest'
 import { Respawn } from './bedrock/Respawn'
 import { NBTFile, NBTFileId } from '../data/NBTFile'
+import { Metadata } from '../entity/Metadata'
 
