@@ -3,6 +3,7 @@
   "repository": "https://github.com/HyperstoneNet/Stardust.git",
   "author": "Hyperstone Developers <devs@hyperstone.io>",
   "main": "lib/index.js",
+  "types": "lib/index.d.ts",
   "scripts": {
     "start": "nodemon",
     "start:client": "ts-node src/client/test.ts",

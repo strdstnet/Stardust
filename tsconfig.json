@@ -13,7 +13,8 @@
     "typeRoots": [
       "./src/@types/",
       "./node_modules/@types",
-    ]
+    ],
+    "declaration": true
   },
   "exclude": ["./src/tests"]
 }
