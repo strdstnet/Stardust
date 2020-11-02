@@ -1,17 +1,15 @@
 import { Human } from './entity/Human'
-import { Container } from './containers/Container'
 import { UUID } from './utils/UUID'
 import { getSkinData } from './utils/skins'
 import { Login } from './network/bedrock/Login'
 import { TextType } from './network/bedrock/Text'
 import { ContainerId } from './types/containers'
 import { EntityAnimationType, MetadataFlag, MetadataType, DamageCause, SkinData } from './types/player'
-import { Item } from './item/Item'
 import { Server } from './Server'
 import { Chat } from './Chat'
 import { PosUpdateType } from './entity/EntityPosition'
 import { Metadata } from './entity/Metadata'
-import { Vector3 } from 'math3d'
+import { Event } from '@hyperstonenet/utils.events'
 
 interface IPlayerCreate {
   username: string,
@@ -152,5 +150,4 @@ export class Player extends Human<PlayerEvents> {
 }
 
 import { Client } from './network/Client'
-import { EventDict } from '@hyperstonenet/utils.events'
 

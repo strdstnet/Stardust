@@ -48,6 +48,7 @@ import { EntityEquipment } from './network/bedrock/EntityEquipment'
 import { EntityAnimation } from './network/bedrock/EntityAnimation'
 import { RemoveEntity } from './network/bedrock/RemoveEntity'
 import { SetEntityMotion } from './network/bedrock/SetEntityMotion'
+import { Event, EventEmitter } from '@hyperstonenet/utils.events'
 
 const DEFAULT_OPTS: ServerOpts = {
   address: '0.0.0.0',
@@ -59,8 +60,16 @@ const DEFAULT_OPTS: ServerOpts = {
   },
 }
 
+class PlayerJoinEvent extends Event<{
+  player: Player,
+}> {}
+
+type ServerEvents = {
+  playerJoined: PlayerJoinEvent,
+}
+
 // TODO: Merge with Stardust.ts
-export class Server implements IServer {
+export class Server extends EventEmitter<ServerEvents> implements IServer {
 
   public static TPS = 100
 
@@ -82,6 +91,8 @@ export class Server implements IServer {
   public commands = new CommandMap()
 
   private constructor(public opts: ServerOpts) {
+    super()
+
     if(Server.i) {
       this.logger.error('Only one instance of Stardust can run per Node process')
       process.exit(1)
@@ -230,6 +241,10 @@ export class Server implements IServer {
   }
 
   public addPlayer(player: Player): void {
+    this.emit('playerJoined', new PlayerJoinEvent({
+      player,
+    }))
+
     this.players.set(player.id, player)
     this.level.addEntity(player)
 

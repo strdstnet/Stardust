@@ -915,10 +915,10 @@
     "@strdst/utils.nbt" "^1.0.2"
     fs-extra "^9.0.1"
 
-"@hyperstonenet/utils.events@^1.0.0":
-  version "1.0.1"
-  resolved "https://npm.pkg.github.com/download/@hyperstonenet/utils.events/1.0.1/0448a3430b30740bc929aa39f63d0d7ca9b3592d720ae07df40c680071448a80#b29af14d2783caf0bfc2cc248789627108d26f75"
-  integrity sha512-BQQj4hjPF6UF7Y/skdCudPhy90k8edV3sTSkjxOVtevbw1p7h/UFjC5YM3KCjTPKV5LZdblAcmKeSrbtGsP+sg==
+"@hyperstonenet/utils.events@^1.0.3":
+  version "1.0.3"
+  resolved "https://npm.pkg.github.com/download/@hyperstonenet/utils.events/1.0.3/f2dd526638b5d141d412a982f052110807a612828ebc2b1e3d87df3a0f3b6758#3d4a171c783619a97d40e081216528ea419a2a39"
+  integrity sha512-l0gMqM1j5xhdvTjNVFwyKVqfkbTZPDCy1Q721jIFZEXMbBvJOKS0FuoLcACj9tJ8K2EW7vd8goCnYkAY2mUxCA==
 
 "@istanbuljs/load-nyc-config@^1.0.0":
   version "1.1.0"
