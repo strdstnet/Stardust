@@ -50,6 +50,9 @@ import { RemoveEntity } from './network/bedrock/RemoveEntity'
 import { SetEntityMotion } from './network/bedrock/SetEntityMotion'
 import { Event, EventEmitter } from '@hyperstonenet/utils.events'
 import { PluginManager } from './PluginManager'
+import { Living } from './entity/Living'
+import { DroppedItem } from './entity/DroppedItem'
+import { AddDroppedItem } from './network/bedrock/AddDroppedItem'
 
 const DEFAULT_OPTS: ServerOpts = {
   address: '0.0.0.0',
@@ -407,15 +410,27 @@ export class Server extends EventEmitter<ServerEvents> implements IServer {
     })
   }
 
-  public spawnToAll(player: Player): void {
-    this.broadcast(new AddPlayer({
-      uuid: player.UUID,
-      username: player.username,
-      entityUniqueId: player.id,
-      entityRuntimeId: player.id,
-      position: player.position,
-      metadata: player.metadata,
-    }), player.clientId)
+  public spawnToAll(entity: Entity): void {
+    if (entity instanceof Player) {
+      this.broadcast(new AddPlayer({
+        uuid: entity.UUID,
+        username: entity.username,
+        entityUniqueId: entity.id,
+        entityRuntimeId: entity.id,
+        position: entity.position,
+        metadata: entity.metadata,
+      }), entity.clientId)
+    } else if (entity instanceof DroppedItem){
+      this.broadcast(new AddDroppedItem(entity))
+    } else {
+      this.broadcast(new AddEntity({
+        entityUniqueId: entity.id,
+        entityRuntimeId: entity.id,
+        position: entity.position,
+        metadata: entity.metadata,
+        type: entity.gameId,
+      }))
+    }
   }
 
   public despawn(player: Player): void {

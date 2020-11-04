@@ -157,6 +157,16 @@ export class Level {
     return canPlace
   }
 
+  public dropItem(location: Vector3, item: Item): void {
+    const motion = new Vector3(Math.random() * 0.2 - 0.1, 0.2, Math.random() * 0.2 - 0.1)
+    const droppedItem = new DroppedItem(item)
+
+    droppedItem.position.update(location.x, location.y, location.z)
+    droppedItem.position.motion = motion
+
+    Server.i.spawnToAll(droppedItem)
+  }
+
   public addEntity(entity: Entity<any>): void {
     this.entities.set(entity.id, entity)
   }
@@ -178,3 +188,6 @@ import { GlobalTick } from '../tick/GlobalTick'
 import { Server } from '../Server'
 import { Entity } from '../entity/Entity'
 import { BoundingBox } from '../utils/BoundingBox'
+import { Item } from '../item/Item'
+import { DroppedItem } from '../entity/DroppedItem'
+

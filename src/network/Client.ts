@@ -457,7 +457,7 @@ export class Client {
   }
 
   private handleNormalTransaction(transaction: ContainerTransaction): void {
-    // console.log(transaction.props)
+    console.log(transaction.props)
   }
 
   private handleUseItem(transaction: ITransaction): void {
@@ -472,6 +472,7 @@ export class Client {
         item.useOnBlock()
 
         Server.i.broadcastLevelEvent(LevelEventType.PARTICLE_DESTROY, pos.x + 0.5, pos.y + 0.5, pos.z + 0.5, block.runtimeId)
+        Server.i.level.dropItem(pos, block.item)
         this.sendContainerUpdate(this.player.inventory, this.player.inventory.add(block.item))
         Server.i.level.setBlock(pos.x, pos.y, pos.z, BlockMap.AIR)
         break
@@ -868,10 +869,12 @@ export class Client {
   }
 
   public setHealth(health: number): void {
-    this.sendBatched(new SetHealth({ health }))
+    // this.sendBatched(new SetHealth({ health }))
+
+    this.player.attributeMap.setAttribute(Attribute.getAttribute(Attr.HEALTH, health))
   }
 
-  public sendContainer(container: Container) {
+  public sendContainer(container: Container): void {
     this.sendBatched(new ContainerNotification({
       containerId: container.id,
       items: container.items,
@@ -964,4 +967,5 @@ import { FormRequest } from './bedrock/FormRequest'
 import { Respawn } from './bedrock/Respawn'
 import { NBTFile, NBTFileId } from '../data/NBTFile'
 import { Metadata } from '../entity/Metadata'
+import { Attr, Attribute } from '../entity/Attribute'
 

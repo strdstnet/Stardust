@@ -10,7 +10,7 @@ export enum BlockFace {
 export class Block {
 
   public id: number
-  public item: Item
+  protected _item: Item
 
   private metaVal: number
 
@@ -92,6 +92,14 @@ export class Block {
     if(!name) throw new Error(`Unable to create block from ID: ${id}`)
 
     return new Block(name)
+  }
+
+  public get item(): Item {
+    return this._item.clone()
+  }
+
+  public set item(item: Item) {
+    this._item = item
   }
 
 }
