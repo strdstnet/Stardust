@@ -161,7 +161,7 @@ export class Level {
     const motion = new Vector3(Math.random() * 0.2 - 0.1, 0.2, Math.random() * 0.2 - 0.1)
     const droppedItem = new DroppedItem(item)
 
-    droppedItem.position.update(location.x, location.y, location.z)
+    droppedItem.position.update(location.x + 0.5, location.y + 0.5, location.z + 0.5)
     droppedItem.position.motion = motion
 
     Server.i.spawnToAll(droppedItem)
