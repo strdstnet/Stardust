@@ -13,11 +13,8 @@ export abstract class Living<Events extends EventDict = EventDict, Containers ex
   protected drag = 0.02
   protected lastAttack = 0
 
-  private _alive = true
-
   public maxHealth = 20
-  private _health = this.maxHealth
-  private lastTickHealth = this.health
+  private _health = new NumberTracker(this.maxHealth, 0, this.maxHealth)
 
   protected lastDamageCause: DamageCause = DamageCause.GENERIC
   protected lastDamageArgs: string[] = []
@@ -25,11 +22,9 @@ export abstract class Living<Events extends EventDict = EventDict, Containers ex
   public async onTick(): Promise<void> {
     await super.onTick()
 
-    if(this.lastTickHealth !== this.health) {
+    if(this._health.isDirty()) {
       this.updateHealth()
     }
-
-    this.lastTickHealth = this.health
 
     if(this.lastAttack > 0) this.lastAttack--
   }
@@ -41,12 +36,12 @@ export abstract class Living<Events extends EventDict = EventDict, Containers ex
   protected addAttributes(): void {
     super.addAttributes()
 
-    this.attributeMap.addAttribute(Attribute.getAttribute(Attr.HEALTH))
-    this.attributeMap.addAttribute(Attribute.getAttribute(Attr.FOLLOW_RANGE))
-    this.attributeMap.addAttribute(Attribute.getAttribute(Attr.KNOCKBACK_RESISTANCE))
-    this.attributeMap.addAttribute(Attribute.getAttribute(Attr.MOVEMENT_SPEED))
-    this.attributeMap.addAttribute(Attribute.getAttribute(Attr.ATTACK_DAMAGE))
-    this.attributeMap.addAttribute(Attribute.getAttribute(Attr.ABSORPTION))
+    this.attributeMap.setAttribute(Attribute.getAttribute(Attr.HEALTH))
+    this.attributeMap.setAttribute(Attribute.getAttribute(Attr.FOLLOW_RANGE))
+    this.attributeMap.setAttribute(Attribute.getAttribute(Attr.KNOCKBACK_RESISTANCE))
+    this.attributeMap.setAttribute(Attribute.getAttribute(Attr.MOVEMENT_SPEED))
+    this.attributeMap.setAttribute(Attribute.getAttribute(Attr.ATTACK_DAMAGE))
+    this.attributeMap.setAttribute(Attribute.getAttribute(Attr.ABSORPTION))
   }
 
   public doDamage(halfHearts: number, cause: DamageCause = DamageCause.GENERIC, causeArgs: string[] = [this.name]): void {
@@ -54,9 +49,9 @@ export abstract class Living<Events extends EventDict = EventDict, Containers ex
 
     this.lastDamageCause = cause
     this.lastDamageArgs = causeArgs
-    this._health = Math.max(this._health - halfHearts, 0)
+    this._health.set(this.health - halfHearts)
 
-    if(this._health === 0) {
+    if(this.health <= 0) {
       this.kill()
     }
   }
@@ -64,7 +59,7 @@ export abstract class Living<Events extends EventDict = EventDict, Containers ex
   public regerate(halfHearts: number): void {
     if(halfHearts < 0) throw new Error(`Regeneration cannot be negative (${halfHearts} half hearts)`)
 
-    this._health = Math.max(this._health + halfHearts, this.maxHealth)
+    this._health.set(this.health + halfHearts)
   }
 
   public resetHealth(): void {
@@ -94,7 +89,7 @@ export abstract class Living<Events extends EventDict = EventDict, Containers ex
     if(cause) this.lastDamageCause = cause
     if(args) this.lastDamageArgs = args
 
-    this._health = 0
+    this._health.set(0)
   }
 
   public get canAttack(): boolean {
@@ -110,7 +105,7 @@ export abstract class Living<Events extends EventDict = EventDict, Containers ex
   }
 
   public get health(): number {
-    return this._health
+    return this._health.get()
   }
 
   protected resetLastDamage(): void {
@@ -128,4 +123,6 @@ import { Item } from '../item/Item'
 import { Server } from '../Server'
 import { Tool } from '../item/Tool'
 import { EventDict } from '@hyperstonenet/utils.events'
+import { ValueTracker } from '../utils/ValueTracker'
+import { NumberTracker } from '../utils/NumberTracker'
 
