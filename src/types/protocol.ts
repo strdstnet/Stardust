@@ -55,6 +55,7 @@ export enum Packets {
   ADD_ENTITY = 0x0d, // 13
   REMOVE_ENTITY = 0x0e, // 14
   ADD_DROPPED_ITEM = 0x0f, // 15
+  PICK_UP_DROPPED_ITEM = 0x11, // 17
   MOVE_ENTITY = 0x12, // 18
   MOVE_PLAYER = 0x13, // 19
   BLOCK_UPDATE = 0x15, // 21
