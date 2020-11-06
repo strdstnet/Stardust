@@ -125,4 +125,5 @@ import { Tool } from '../item/Tool'
 import { EventDict } from '@hyperstonenet/utils.events'
 import { ValueTracker } from '../utils/ValueTracker'
 import { NumberTracker } from '../utils/NumberTracker'
+import { DroppedItem } from './DroppedItem'
 

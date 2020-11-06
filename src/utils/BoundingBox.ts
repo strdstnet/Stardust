@@ -1,3 +1,5 @@
+import { Vector3 } from 'math3d'
+
 export class BoundingBox {
 
   constructor(
@@ -17,6 +19,17 @@ export class BoundingBox {
     }
 
     return false
+  }
+
+  public static from(v3: Vector3, maxD = 1): BoundingBox {
+    return new BoundingBox(
+      v3.x,
+      v3.y,
+      v3.z,
+      v3.x + maxD,
+      v3.y + maxD,
+      v3.z + maxD,
+    )
   }
 
 }

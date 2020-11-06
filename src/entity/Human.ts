@@ -14,6 +14,19 @@ export class Human<Events extends EventDict = EventDict, Containers extends Cont
     super(name, gameId, [0.6, 1.8])
   }
 
+  public async onTick(): Promise<void> {
+    await super.onTick()
+
+    const nearby = await Server.i.level.getEntitiesNear(this, 1)
+    for(const entity of nearby) {
+      if(entity instanceof DroppedItem && entity.canPickUp) {
+        this.pickUp(entity)
+        entity.despawn()
+      }
+    }
+  }
+
+
   protected initContainers(): void {
     super.initContainers()
 
@@ -98,6 +111,12 @@ export class Human<Events extends EventDict = EventDict, Containers extends Cont
     this.setAttribute(Attribute.getAttribute(Attr.HUNGER, amount))
   }
 
+  public pickUp(item: DroppedItem): void {
+    Server.i.pickupItem(item.id, this.id)
+
+    this.inventory.add(item.item.clone())
+  }
+
 }
 
 import { Attribute, Attr } from './Attribute'
@@ -108,4 +127,6 @@ import { Inventory } from '../containers/Inventory'
 import { Item } from '../item/Item'
 import { ItemMap } from '../item/ItemMap'
 import { EventDict } from '@hyperstonenet/utils.events'
+import { Server } from '../Server'
+import { DroppedItem } from './DroppedItem'
 

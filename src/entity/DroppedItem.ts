@@ -1,6 +1,6 @@
-import { Item } from '../item/Item';
+import { Item } from '../item/Item'
+import { Server } from '../Server'
 import { Entity } from './Entity'
-import { Living } from './Living';
 
 export class DroppedItem extends Entity {
 
@@ -11,7 +11,20 @@ export class DroppedItem extends Entity {
 
   public age = 0
 
+  private pickupDelay = Math.round(Server.TPS / 3)
+
   constructor(public item: Item) {
     super('Dropped Item', 'minecraft:item', [0.25, 0.25])
   }
+
+  public async onTick(): Promise<void> {
+    await super.onTick()
+
+    if(this.pickupDelay > 0) this.pickupDelay--
+  }
+
+  public get canPickUp(): boolean {
+    return this.pickupDelay <= 0
+  }
+
 }

@@ -53,6 +53,7 @@ import { PluginManager } from './PluginManager'
 import { Living } from './entity/Living'
 import { DroppedItem } from './entity/DroppedItem'
 import { AddDroppedItem } from './network/bedrock/AddDroppedItem'
+import { PickupDroppedItem } from './network/bedrock/PickupDroppedItem'
 
 const DEFAULT_OPTS: ServerOpts = {
   address: '0.0.0.0',
@@ -272,16 +273,28 @@ export class Server extends EventEmitter<ServerEvents> implements IServer {
   public removePlayer(id: bigint): void {
     this.players.delete(id)
 
+    this.removeEntity(id)
+
     this.broadcast(new PlayerList({
       type: PlayerListType.REMOVE,
       players: Array.from(this.players.values()),
     }))
 
+    this.updatePlayerList()
+  }
+
+  public removeEntity(id: bigint): void {
+    this.level.removeEntity(id)
     this.broadcast(new RemoveEntity({
       entityRuntimeId: id,
     }))
+  }
 
-    this.updatePlayerList()
+  public pickupItem(item: bigint, entity: bigint): void {
+    this.broadcast(new PickupDroppedItem({
+      target: item,
+      runtimeEntityId: entity,
+    }))
   }
 
   public updatePlayerLocation(player: Player, includeSelf = false, mode?: MovePlayerMode.NORMAL): void {

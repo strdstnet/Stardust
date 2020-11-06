@@ -1,10 +1,21 @@
-export abstract class Container {
+import { Event, EventEmitter } from '@hyperstonenet/utils.events'
+
+type ContainerEvents = {
+  slotChanged: Event<{
+    slot: number,
+    item: Item,
+  }>,
+}
+
+export abstract class Container extends EventEmitter<ContainerEvents> {
 
   public static MAX_STACK = 64
 
   public items: Item[]
 
   constructor(public id: number, public type: ContainerType = ContainerType.CONTAINER, items: Item[] = [], protected name = 'Container', protected size = 0) {
+    super()
+
     this.items = []
     for(let i = 0; i < this.size; i++) {
       this.items[i] = items[i] || ItemMap.AIR
@@ -15,8 +26,16 @@ export abstract class Container {
     return Container.MAX_STACK
   }
 
+  public emitSlotChanged(slot: number, item: Item): void {
+    this.emit('slotChanged', new Event({
+      slot, item,
+    }))
+  }
+
   public set(index: number, item: Item): void {
     this.items[index] = item
+
+    this.emitSlotChanged(index, item)
   }
 
   public add(item: Item | null): number {
@@ -30,6 +49,8 @@ export abstract class Container {
 
     if(existing && existing.id !== Items.AIR) {
       existing.count++
+
+      this.emitSlotChanged(index, existing)
     } else {
       this.set(index, item)
     }

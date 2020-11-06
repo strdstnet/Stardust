@@ -41,6 +41,10 @@ export class Player extends Human<PlayerEvents> {
 
     Object.assign(this, player)
     this.UUID = UUID.fromString(player.clientUUID)
+
+    this.inventory.on('slotChanged', (ev) => {
+      this.client.sendContainerUpdate(this.inventory, ev.data.slot)
+    })
   }
 
   public get clientId(): bigint {
@@ -67,6 +71,10 @@ export class Player extends Human<PlayerEvents> {
 
       this.client.sendAttributes()
     }
+  }
+
+  protected doFallTick(): void {
+    return // This is done client side, for now
   }
 
   public kill(cause?: DamageCause, args?: string[]): void {

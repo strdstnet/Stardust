@@ -164,6 +164,8 @@ export class Level {
     droppedItem.position.update(location.x + 0.5, location.y + 0.5, location.z + 0.5)
     droppedItem.position.motion = motion
 
+    this.entities.set(droppedItem.id, droppedItem)
+
     Server.i.spawnToAll(droppedItem)
   }
 
@@ -173,6 +175,10 @@ export class Level {
 
   public getEntity(entityId: bigint): Entity<any> | null {
     return this.entities.get(entityId) || null
+  }
+
+  public removeEntity(entityId: bigint): void {
+    this.entities.delete(entityId)
   }
 
   public async getEntitiesAt(location: Vector3): Promise<Entity[]> {
@@ -192,8 +198,62 @@ export class Level {
     return entities
   }
 
-  public async getEntitiesNear(location: Vector3, radius: number): Promise<Entity[]> {
-    const 
+  public isInRadius(pos: Vector3, center: Vector3, radius: number): boolean {
+    const xD = Math.abs(pos.x - center.x)
+    const yD = Math.abs(pos.y - center.y)
+
+    if(xD + yD <= radius) return true
+    if(xD > radius) return false
+    if(yD > radius) return false
+    if((xD * xD) + (yD * yD) <= (radius * radius)) return true
+
+    return false
+  }
+
+  // TODO: Convert {center} and return to Vector2
+  public getPointsAround2d(center: Vector3, radius: number): Array<[number, number]> {
+    const points: Array<[number, number]> = []
+
+    const maxY = center.y + radius
+    const minY = center.y - radius
+    const maxX = center.x + radius
+    const minX = center.x - radius
+
+    for(let y = minY; y <= maxY; y++) {
+      for(let x = minX; x <= maxX; x++) {
+        if(!(x === center.x && y === center.y)) points.push([x, y])
+      }
+    }
+
+    return points
+  }
+
+  public getPointsAround3d(center: Vector3, radius: number): Array<Vector3> {
+    const maxY = center.y + radius
+    const minY = center.y - radius
+
+    const points = []
+    for(let y = minY; y <= maxY; y++) {
+      const yPoints = this.getPointsAround2d(new Vector3(center.x, center.z, 0), radius)
+
+      points.push(...yPoints.map(([x, z]) => new Vector3(x, y, z)))
+    }
+
+    return points
+  }
+
+  public async getEntitiesNear(nearEntity: Entity, radius: number): Promise<Entity[]> {
+    const points = this.getPointsAround3d(nearEntity.position.coords, radius)
+
+    const entities = []
+    for(const point of points) {
+      for await(const [, entity] of this.entities) {
+        if(entity.id === nearEntity.id) continue
+        if(entity.boundingBox.intersectsWith(BoundingBox.from(point, 1))) entities.push(entity)
+      }
+    }
+
+    return entities
   }
 
 }

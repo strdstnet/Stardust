@@ -27,6 +27,11 @@ export abstract class Entity<Events extends EventDict = EventDict, Containers ex
 
   private tickExtenders: Array<() => void | Promise<void>> = []
 
+  public level = Server.level
+
+  public fallingTo: number | null = null // null if not falling else y coord falling to
+  public fallRate = 14 / Server.TPS // 14 blocks per second
+
   constructor(
     public name: string, // Ex. Zombie
     public gameId: string, // Ex. minecraft:zombie
@@ -61,10 +66,25 @@ export abstract class Entity<Events extends EventDict = EventDict, Containers ex
       await ext.call(this)
     }
 
+    this.doFallTick()
+
     if(this.position.hasUpdate) {
       // this.applyForces()
       this.updateLocation()
       this.position.acknowledgeUpdate()
+    }
+  }
+
+  protected doFallTick(): void {
+    const blockid = this.level.getBlockAt(Math.floor(this.position.x), Math.floor(this.position.y) - 1, Math.floor(this.position.z)).id
+    if(this.fallingTo) {
+      const fallRate = Math.min(this.fallRate, this.position.y - this.fallingTo)
+      this.position.update(this.position.x, this.position.y - fallRate, this.position.z)
+
+      if(this.position.y <= this.fallingTo + 1) this.fallingTo = null
+    } else if(blockid === BlockIds.AIR) {
+      this.fallingTo = this.position.y - 1
+      this.position.update(this.position.x, this.position.y - this.fallRate, this.position.z)
     }
   }
 
@@ -106,6 +126,10 @@ export abstract class Entity<Events extends EventDict = EventDict, Containers ex
 
   public destroy(): void {
     GlobalTick.detach(this)
+  }
+
+  public despawn(): void {
+    Server.i.removeEntity(this.id)
   }
 
   protected initContainers(): void {}
@@ -229,4 +253,5 @@ import { Vector3 } from 'math3d'
 import { BoundingBox } from '../utils/BoundingBox'
 import { mtRand } from '../utils/mtRand'
 import { Attr, Attribute } from './Attribute'
+import { BlockIds } from '../block/types'
 

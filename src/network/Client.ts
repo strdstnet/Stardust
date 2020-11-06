@@ -474,7 +474,6 @@ export class Client {
         Server.i.broadcastLevelEvent(LevelEventType.PARTICLE_DESTROY, pos.x + 0.5, pos.y + 0.5, pos.z + 0.5, block.runtimeId)
         Server.i.level.setBlock(pos.x, pos.y, pos.z, BlockMap.AIR)
         Server.i.level.dropItem(pos, block.item)
-        this.sendContainerUpdate(this.player.inventory, this.player.inventory.add(block.item))
         break
       case UseItemType.CLICK_BLOCK:
         this.handleClickBlock(pos, itemHolding, face as number)
@@ -881,7 +880,7 @@ export class Client {
     }), Reliability.Unreliable)
   }
 
-  private sendContainerUpdate(container: Container, slot: number) {
+  public sendContainerUpdate(container: Container, slot: number): void {
     this.sendBatched(new ContainerUpdate({
       containerId: container.id,
       slot,
