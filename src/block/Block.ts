@@ -33,8 +33,8 @@ export class Block {
       item = new Item(this.itemName, this.id)
     }
 
-    this.item = item
-    this.item.meta = this.metaVal
+    this._item = item
+    this._item.meta = this.metaVal
   }
 
   public get meta(): number {
