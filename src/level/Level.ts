@@ -175,6 +175,27 @@ export class Level {
     return this.entities.get(entityId) || null
   }
 
+  public async getEntitiesAt(location: Vector3): Promise<Entity[]> {
+    const box = new BoundingBox(
+      location.x,
+      location.y,
+      location.z,
+    )
+
+    const entities = []
+
+    for await(const [, entity] of this.entities) {
+      if(entity.boundingBox.intersectsWith(box)) {
+        entities.push(entity)
+      }
+    }
+    return entities
+  }
+
+  public async getEntitiesNear(location: Vector3, radius: number): Promise<Entity[]> {
+    const 
+  }
+
 }
 
 import { Chunk } from './Chunk'
