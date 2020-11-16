@@ -19,6 +19,7 @@ export class ValueTracker<T = any> extends EventEmitter<{
     value = this.filter(value)
 
     if(value !== this._value) {
+      this.dirty = true
       this.emit('changed', new Event({
         from: this._value,
         to: value,
@@ -35,7 +36,7 @@ export class ValueTracker<T = any> extends EventEmitter<{
   public isDirty(ack = true): boolean {
     const val = this.dirty
 
-    if(ack) this.dirty = !this.dirty
+    if(ack) this.dirty = false
 
     return val
   }

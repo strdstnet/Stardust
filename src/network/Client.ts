@@ -457,7 +457,11 @@ export class Client {
   }
 
   private handleNormalTransaction(transaction: ContainerTransaction): void {
-    //
+    const { actions, transaction: pos } = transaction.props
+
+    console.log(actions[0].newItem)
+
+    Server.i.level.dropItem(new Vector3(this.player.position.x, this.player.position.y + 1.3, this.player.position.z), actions[0].newItem)
   }
 
   private handleUseItem(transaction: ITransaction): void {
@@ -473,7 +477,7 @@ export class Client {
 
         Server.i.broadcastLevelEvent(LevelEventType.PARTICLE_DESTROY, pos.x + 0.5, pos.y + 0.5, pos.z + 0.5, block.runtimeId)
         Server.i.level.setBlock(pos.x, pos.y, pos.z, BlockMap.AIR)
-        Server.i.level.dropItem(pos, block.item)
+        Server.i.level.dropItem(new Vector3(pos.x + 0.5, pos.y + 0.5, pos.z + 0.5), block.item)
         break
       case UseItemType.CLICK_BLOCK:
         this.handleClickBlock(pos, itemHolding, face as number)
@@ -570,7 +574,6 @@ export class Client {
         //
         break
       case PlayerEventAction.START_SPRINT:
-        // this.player.exhaust(0.1)
         this.player.metadata.setGeneric(MetadataGeneric.SPRINTING, true)
         Server.i.broadcastMetadata(this.player, this.player.metadata)
         break
