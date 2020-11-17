@@ -48,12 +48,12 @@ import { EntityEquipment } from './network/bedrock/EntityEquipment'
 import { EntityAnimation } from './network/bedrock/EntityAnimation'
 import { RemoveEntity } from './network/bedrock/RemoveEntity'
 import { SetEntityMotion } from './network/bedrock/SetEntityMotion'
-import { Event, EventEmitter } from '@hyperstonenet/utils.events'
+import { EventEmitter } from '@hyperstonenet/utils.events'
 import { PluginManager } from './PluginManager'
-import { Living } from './entity/Living'
 import { DroppedItem } from './entity/DroppedItem'
 import { AddDroppedItem } from './network/bedrock/AddDroppedItem'
 import { PickupDroppedItem } from './network/bedrock/PickupDroppedItem'
+import { PlayerEvent } from './events/PlayerEvent'
 
 const DEFAULT_OPTS: ServerOpts = {
   address: '0.0.0.0',
@@ -65,24 +65,15 @@ const DEFAULT_OPTS: ServerOpts = {
   },
 }
 
-class PlayerJoinEvent extends Event<{
-  player: Player,
-}> {
-
-  public get player(): Player {
-    return this.data.player
-  }
-
-}
-
 type ServerEvents = {
-  playerJoined: PlayerJoinEvent,
+  playerJoined: PlayerEvent,
+  playerSpawned: PlayerEvent,
 }
 
 // TODO: Merge with Stardust.ts
 export class Server extends EventEmitter<ServerEvents> implements IServer {
 
-  public static TPS = 100
+  public static TPS = 20
 
   public static i: Server
 
@@ -137,7 +128,7 @@ export class Server extends EventEmitter<ServerEvents> implements IServer {
     Attribute.initAttributes()
     GlobalTick.start(Server.TPS)
 
-    this.level = await Level.TestWorld()
+    this.level = await Level.BedWars()
     await this.level.init()
 
     const server = new Server(Object.assign({}, DEFAULT_OPTS, opts))
@@ -256,7 +247,7 @@ export class Server extends EventEmitter<ServerEvents> implements IServer {
   }
 
   public addPlayer(player: Player): void {
-    this.emit('playerJoined', new PlayerJoinEvent({
+    this.emit('playerJoined', new PlayerEvent({
       player,
     }))
 
@@ -462,7 +453,9 @@ export class Server extends EventEmitter<ServerEvents> implements IServer {
   }
 
   public send({ packet, socket, address }: ISendPacketArgs): void {
-    socket.send(packet.encode().toBuffer(), address.port, address.ip)
+    const data = packet.encode()
+    // this.logger.debug('Sending', data.buf)
+    socket.send(data.toBuffer(), address.port, address.ip)
   }
 
   private broadcast(packet: BatchedPacket<any>, excludeClientId: bigint | null = null) {

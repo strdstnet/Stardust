@@ -17,7 +17,7 @@ export class Level {
 
   private entities: Map<bigint, Entity<any>> = new Map()
 
-  constructor(public name: string, public generator: Generator) {}
+  constructor(public name: string, public spawn: Vector3, public generator: Generator) {}
 
   public async init(): Promise<void> {
     await this.loadChunk(0, 0)
@@ -47,11 +47,15 @@ export class Level {
   }
 
   public static async TestWorld(): Promise<Level> {
-    return new Level('TestLevel', await Anvil.init('hsn'))
+    return new Level('TestLevel', new Vector3(0, 70, 0), await Anvil.init('hsn'))
+  }
+
+  public static async BedWars(): Promise<Level> {
+    return new Level('BedWars', new Vector3(0, 5, 0), await Anvil.init('BedWars'))
   }
 
   public static Flat(): Level {
-    return new Level('Flat', new Flat())
+    return new Level('Flat', new Vector3(0, 5, 0), new Flat())
   }
 
   public async loadChunk(x: number, z: number): Promise<Chunk> {

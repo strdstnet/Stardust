@@ -93,4 +93,16 @@ export class EntityPosition {
     return clone
   }
 
+  public static from(v3: Vector3, pitch = 0, yaw = 0, headYaw = 0, motion = new Vector3(0, 0, 0), onGround = true): EntityPosition {
+    return new EntityPosition(v3.x, v3.y, v3.z, pitch, yaw, headYaw, motion, onGround)
+  }
+
+  public forSpawn(): EntityPosition {
+    const pos = this.clone()
+
+    pos.y += 1.5
+
+    return pos
+  }
+
 }

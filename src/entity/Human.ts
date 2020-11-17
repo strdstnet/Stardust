@@ -21,7 +21,6 @@ export class Human<Events extends EventDict = EventDict, Containers extends Cont
     for(const entity of nearby) {
       if(entity instanceof DroppedItem && entity.canPickUp) {
         this.pickUp(entity)
-        entity.despawn()
       }
     }
   }
@@ -115,6 +114,8 @@ export class Human<Events extends EventDict = EventDict, Containers extends Cont
     Server.i.pickupItem(item.id, this.id)
 
     this.inventory.add(item.item.clone())
+
+    item.destroy()
   }
 
 }

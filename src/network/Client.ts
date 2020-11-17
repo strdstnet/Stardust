@@ -34,6 +34,8 @@ export class Client {
   private lastRightClickTime = 0
   private lastRightClickPos: Vector3 | null = null
 
+  private animateQueue: Map<number, Animate> = new Map()
+
   constructor({ id, address, socket, mtuSize }: IClientArgs) {
     this.id = id
     this.address = address
@@ -170,12 +172,17 @@ export class Client {
   public onTick(): void {
     this.processSendQueue()
     // this.sendAttributes()
+
+    for(const [type, animate] of this.animateQueue) {
+      this.handleAnimate(animate)
+      this.animateQueue.delete(type)
+    }
   }
 
   private processSendQueue() {
     if(!this.sendQueue.length) return
 
-    const count = this.sendQueue.length > Client.MAX_CHUNKS_PER_TICK ? Client.MAX_CHUNKS_PER_TICK : this.sendQueue.length
+    const count = this.sendQueue.length/* > Client.MAX_CHUNKS_PER_TICK ? Client.MAX_CHUNKS_PER_TICK : this.sendQueue.length*/
     const packets: BundledPacket<any>[] = this.sendQueue.splice(0, count)
 
     const [bundles, sequenceNumber, lastSplitId] = bundlePackets(packets, this.sequenceNumber, this.lastSplitId, this.mtuSize)
@@ -264,7 +271,7 @@ export class Client {
             this.handlePlayerAction(pk)
             break
           case Packets.ANIMATE:
-            this.handleAnimate(pk)
+            this.animateQueue.set((pk as Animate).props.action, pk)
             break
           case Packets.ENTITY_FALL:
             this.handleEntityFall(pk)
@@ -412,6 +419,10 @@ export class Client {
       }))
     })
     Chat.i.broadcastPlayerJoined(this.player)
+
+    Server.i.emit('playerSpawned', new PlayerEvent({
+      player: this.player,
+    }))
   }
 
   private handleInteract(packet: Interact) {
@@ -546,6 +557,8 @@ export class Client {
 
   private async handlePlayerAction(packet: PlayerAction) {
     const { action, actionX, actionY, actionZ, face } = packet.props
+    this.logger.debug('handlePlayerAction', action)
+    // if(!process.po)return
 
     const block = this.level.getBlockAt(actionX, actionY, actionZ)
     const item = this.player.inventory.itemHolding
@@ -597,7 +610,7 @@ export class Client {
     }
   }
 
-  private handleAnimate(packet: Animate) {
+  private async handleAnimate(packet: Animate) {
     const { action } = packet.props
 
     Server.i.broadcastAnimate(this.player, action)
@@ -625,7 +638,7 @@ export class Client {
     if (fallDamage > 0) {
       this.player.doDamage(fallDamage, DamageCause.FALL_ACCIDENT)
 
-      Server.i.broadcastEntityAnimation(this.player, EntityAnimationType.HURT, 0)
+      Server.i.broadcastEntityAnimation(this.player, EntityAnimationType.HURT, 0) // TODO: Move to player.doDamage
     }
   }
 
@@ -675,7 +688,7 @@ export class Client {
 
     if (state === RespawnState.CLIENT_READY) {
       this.sendBatched(new Respawn({
-        position: new Vector3(0, 80, 0),
+        position: Server.i.level.spawn,
         state: RespawnState.SERVER_READY,
         entityRuntimeId,
       }))
@@ -687,8 +700,8 @@ export class Client {
     this.sendBatched(new StartGame({
       entityUniqueId: this.player.id,
       entityRuntimeId: this.player.id,
-      playerPosition: this.player.position,
-      spawnLocation: new Vector3(0, 20, 0),
+      playerPosition: this.player.position.forSpawn(),
+      spawnLocation: Server.i.level.spawn,
     }))
 
     // // TODO: Name tag visible, can climb, immobile
@@ -716,9 +729,11 @@ export class Client {
 
     await this.sendNearbyChunks()
 
+    // setTimeout(() => {
     this.sendBatched(new PlayStatus({
       status: PlayStatusType.PLAYER_SPAWN,
     }))
+    // }, 5000)
   }
 
   private async sendNearbyChunks(): Promise<void> {
@@ -787,12 +802,14 @@ export class Client {
     }
 
     if(neededChunks.length > 1) {
+      // setTimeout(() => {
       this.sendBatched(new NetworkChunkPublisher({
         x: this.player.position.x,
         y: this.player.position.y,
         z: this.player.position.z,
         radius: this.viewDistance * 16,
       }))
+      // }, 2000)
     }
 
     if(this.recentlySentChunks.length > (this.nearbyChunkCount * 2)) {
@@ -860,6 +877,23 @@ export class Client {
     }))
   }
 
+  public sendTitle(text: string, type: TitleType, fadeInTime: number, stayTime: number, fadeOutTime: number): void {
+    this.sendBatched(new SetTitle({
+      command: TitleCommand.SET_ANIMATION_TIMES,
+      text: '',
+      fadeInTime,
+      stayTime,
+      fadeOutTime,
+    }))
+    this.sendBatched(new SetTitle({
+      command: type as any as TitleCommand,
+      text,
+      fadeInTime,
+      stayTime,
+      fadeOutTime,
+    }))
+  }
+
   public sendEntityEquipment(entityRuntimeId: bigint, item: Item, inventorySlot: number, hotbarSlot: number, containerId: number): void {
     this.sendBatched(new EntityEquipment({
       entityRuntimeId,
@@ -872,6 +906,8 @@ export class Client {
 
   public setHealth(health: number): void {
     // this.sendBatched(new SetHealth({ health }))
+
+    console.log('Setting health', health)
 
     this.player.attributeMap.setAttribute(Attribute.getAttribute(Attr.HEALTH, health))
   }
@@ -970,4 +1006,7 @@ import { Respawn } from './bedrock/Respawn'
 import { NBTFile, NBTFileId } from '../data/NBTFile'
 import { Metadata } from '../entity/Metadata'
 import { Attr, Attribute } from '../entity/Attribute'
+import { PlayerEvent } from '../events/PlayerEvent'
+import { TitleCommand, TitleType } from '../types/interface'
+import { SetTitle } from './bedrock/SetTitle'
 

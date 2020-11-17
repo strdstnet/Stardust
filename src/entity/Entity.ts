@@ -21,7 +21,7 @@ export abstract class Entity<Events extends EventDict = EventDict, Containers ex
 
   protected containers: Containers = ([] as any as Containers)
 
-  public position = new EntityPosition(0, 80, 0, 0, 0, 0)
+  public position = EntityPosition.from(Server.i.level.spawn)
 
   protected dragBeforeGravity = false
 
@@ -126,6 +126,8 @@ export abstract class Entity<Events extends EventDict = EventDict, Containers ex
 
   public destroy(): void {
     GlobalTick.detach(this)
+
+    this.despawn()
   }
 
   public despawn(): void {

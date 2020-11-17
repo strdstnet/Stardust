@@ -6,3 +6,9 @@ export enum TitleCommand {
   SET_ACTIONBAR = 4,
   SET_ANIMATION_TIMES = 5,
 }
+
+export enum TitleType {
+  TITLE = 2,
+  SUBTITLE = 3,
+  ACTIONBAR = 4,
+}

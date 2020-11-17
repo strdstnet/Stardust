@@ -8,6 +8,7 @@ Logger.defaults.showMilliseconds = true
 import { Server } from './Server'
 
 Server.start({
+  port: 19132,
   maxPlayers: 200000,
   motd: {
     line1: 'HyperstoneNetwork',

@@ -17,11 +17,17 @@ export abstract class GlobalTick {
   public static start(ticksPerSecond: number): void {
     if(GlobalTick.started) throw new Error('Already started.')
 
+    const interval = 1000 / ticksPerSecond
+
     GlobalTick.process = setInterval(() => {
       this.tickers.forEach(async ticker => {
-        ticker.onTick.call(ticker, Date.now())
+        const start = Date.now()
+        await ticker.onTick.call(ticker, Date.now())
+        
+        const ms = Date.now() - start
+        if(ms > interval) this.logger.warn(`[${ticker.constructor.name}] Tick took ${ms}ms to complete`)
       })
-    }, 1000 / ticksPerSecond)
+    }, interval)
 
     GlobalTick.logger.info(`Started, ${ticksPerSecond}t/s`)
   }

@@ -64,6 +64,12 @@ export abstract class Container extends EventEmitter<ContainerEvents> {
     return item || null
   }
 
+  public clear(): void {
+    for(let i = 0; i < this.size; i++) {
+      this.set(i, ItemMap.AIR)
+    }
+  }
+
 }
 
 import { Item } from '../item/Item'

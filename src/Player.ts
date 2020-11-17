@@ -101,8 +101,12 @@ export class Player extends Human<PlayerEvents> {
     this.client.sendMessage(message, type, parameters)
   }
 
+  public sendTitle(message: string, type = TitleType.TITLE, fadeInTime = 0, stayTime = 0, fadeOutTime = 0): void {
+    this.client.sendTitle(message, type, fadeInTime, stayTime, fadeOutTime)
+  }
+
   public teleport(x: number, y: number, z: number): void {
-    this.position.update(x, y, z)
+    this.position.update(x, y, z, PosUpdateType.OTHER)
   }
 
   public updateLocation(): void {
@@ -158,4 +162,5 @@ export class Player extends Human<PlayerEvents> {
 }
 
 import { Client } from './network/Client'
+import { TitleType } from './types/interface'
 

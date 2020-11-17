@@ -112,3 +112,4 @@ nodemon.json
 
 src/block/test.ts
 plugins/
+worlds/
