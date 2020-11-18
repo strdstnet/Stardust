@@ -32,7 +32,7 @@
     "@types/fs-extra": "^9.0.4",
     "@types/jest": "^26.0.15",
     "@types/math3d": "^0.2.3",
-    "@types/node": "^14.14.7",
+    "@types/node": "^14.14.8",
     "@types/pbf": "^3.0.2",
     "@types/uuid": "^8.3.0",
     "@typescript-eslint/eslint-plugin": "^4.7.0",
