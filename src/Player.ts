@@ -90,7 +90,7 @@ export class Player extends Human<PlayerEvents> {
   }
 
   public isSpectator(): boolean {
-    return true
+    return false
   }
 
   public chat(message: string): void {
