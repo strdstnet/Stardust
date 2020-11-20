@@ -2,6 +2,7 @@ import { Packets } from '../../types/protocol'
 import { DataType } from '../../types/data'
 import { ParserType } from '../Packet'
 import { BatchedPacket } from '../bedrock/BatchedPacket'
+import { Server } from '../../Server'
 
 export enum MovePlayerMode {
   NORMAL = 0,
@@ -23,7 +24,7 @@ interface IMovePlayer {
   ridingEntityRuntimeId: bigint,
   teleportCause: number,
   teleportItemId: number,
-  tick?: bigint
+  tick?: bigint,
 }
 
 const def = (val: any) => () => val
@@ -58,7 +59,7 @@ export class MovePlayer extends BatchedPacket<IMovePlayer> {
           }
         },
       },
-      { name: 'tick', parser: DataType.U_VARLONG, resolve: def(0n) },
+      { name: 'tick', parser: DataType.U_VARLONG, resolve: def(BigInt(Math.round(Date.now() / 50))) },
     ])
 
     if(p) this.props = p as IMovePlayer

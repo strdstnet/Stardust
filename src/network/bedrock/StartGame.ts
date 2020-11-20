@@ -26,6 +26,7 @@ import { ParserType, Packet } from '../Packet'
 import fs from 'fs'
 import path from 'path'
 import { EntityPosition } from '../../entity/EntityPosition'
+import { BedrockData } from '../../data/BedrockData'
 
 interface IStartGameRequired {
   entityUniqueId: bigint,
@@ -235,7 +236,7 @@ export class StartGame extends BatchedPacket<IStartGame> {
       { name: 'vanillaVersion', parser: DataType.STRING, resolve: def(Protocol.BEDROCK_VERSION) },
       { name: 'limitedWorldWidth', parser: DataType.L_INT, resolve: def(16) },
       { name: 'limitedWorldLength', parser: DataType.L_INT, resolve: def(16) },
-      { name: 'newNether', parser: DataType.BOOLEAN, resolve: def(true) },
+      { name: 'newNether', parser: DataType.BOOLEAN, resolve: def(false) },
       {
         name: 'someExperimentalBullshit',
         parser({ type, data }) {
@@ -250,7 +251,7 @@ export class StartGame extends BatchedPacket<IStartGame> {
       { name: 'worldName', parser: DataType.STRING, resolve: def('A Stardust Server') },
       { name: 'premiumWorldTemplateId', parser: DataType.STRING, resolve: def('') },
       { name: 'isTrial', parser: DataType.BOOLEAN, resolve: def(false) },
-      { name: 'isMovementServerAuthoritative', parser: DataType.U_VARINT, resolve: def(0) },
+      { name: 'isMovementServerAuthoritative', parser: DataType.VARINT, resolve: def(0) },
       { name: 'currentTick', parser: DataType.L_LONG, resolve: def(0n) },
       { name: 'enchantmentSeed', parser: DataType.VARINT, resolve: def(0) },
       { name: 'customBlocks', parser: DataType.U_VARINT, resolve: def(0) },
@@ -264,28 +265,36 @@ export class StartGame extends BatchedPacket<IStartGame> {
       //     }
       //   },
       // },
+      // {
+      //   name: 'legacyIdMap',
+      //   parser({ type, data, props, value }) {
+      //     if(type === ParserType.DECODE) {
+      //       props.legacyIdMap = {}
+
+      //       const count = data.readUnsignedVarInt()
+      //       for(let i = 0; i < count; i++) {
+      //         props.legacyIdMap[data.readString()] = data.readSignedLShort()
+      //       }
+      //     } else {
+      //       const ids = Object.entries(value as Record<string, number>)
+
+      //       data.writeUnsignedVarInt(ids.length)
+
+      //       for(const [newId, legacyId] of ids) {
+      //         data.writeString(newId)
+      //         data.writeSignedLShort(legacyId)
+      //       }
+      //     }
+      //   },
+      //   resolve: def({}),
+      // },
       {
-        name: 'legacyIdMap',
+        name: 'gosuckafuckingdickyoudirtylittlefuckingtwat',
         parser({ type, data, props, value }) {
-          if(type === ParserType.DECODE) {
-            props.legacyIdMap = {}
-
-            const count = data.readUnsignedVarInt()
-            for(let i = 0; i < count; i++) {
-              props.legacyIdMap[data.readString()] = data.readSignedLShort()
-            }
-          } else {
-            const ids = Object.entries(value as Record<string, number>)
-
-            data.writeUnsignedVarInt(ids.length)
-
-            for(const [newId, legacyId] of ids) {
-              data.writeString(newId)
-              data.writeSignedLShort(legacyId)
-            }
+          if(type === ParserType.ENCODE) {
+            data.append(BedrockData.ITEM_DATA_PALETTE)
           }
         },
-        resolve: def({}),
       },
       { name: 'multiplayerCorrelationId', parser: DataType.STRING, resolve: def('') },
       { name: 'enableNewInventorySystem', parser: DataType.BOOLEAN, resolve: def(false) }, // TODO: Automatic crafting, etc...

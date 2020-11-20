@@ -100,6 +100,7 @@ export enum Packets {
   EMOTE = 0x8a, // 138
   CREATIVE_CONTENT = 0x91, // 145
   PACKET_VIOLATION_WARNING = 0x9c, // 156
+  ITEM_COMPONENT = 0xA2, // 162
 }
 
 export const Protocol = {

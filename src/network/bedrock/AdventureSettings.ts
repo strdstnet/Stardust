@@ -18,14 +18,16 @@ export class AdventureSettings extends BatchedPacket<IAdventureSettings> {
         parser({ type, data, props }) {
           if(type === ParserType.ENCODE) {
             let flags = 0
-            let flags2 = -1
+            let flags2 = 0
 
             for(const [flag, value] of props.flags) {
-              if((flag & BITFLAG_SECOND_SET) !== 0) {
-                if(value) flags2 |= flag
-                else flags2 &= ~flag
+              let f = (flag & BITFLAG_SECOND_SET) !== 0
+
+              if(value) {
+                if(f) flags2 |= flag
+                else flags |= flag
               } else {
-                if(value) flags |= flag
+                if(f) flags2 &= ~flag
                 else flags &= ~flag
               }
             }
@@ -35,7 +37,7 @@ export class AdventureSettings extends BatchedPacket<IAdventureSettings> {
             data.writeUnsignedVarInt(flags2)
             data.writeUnsignedVarInt(props.playerPermission)
             data.writeUnsignedVarInt(0)
-            data.writeLLong(BigInt(props.entityUniqueId))
+            data.writeLLong(props.entityUniqueId)
           } else {
             // TODO: DECODE
           }

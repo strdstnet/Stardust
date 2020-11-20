@@ -1,4 +1,4 @@
-import { Event, EventEmitter } from '@hyperstonenet/utils.events'
+import { Event, EventEmitter } from '@strdstnet/utils.events'
 
 type ContainerEvents = {
   slotChanged: Event<{

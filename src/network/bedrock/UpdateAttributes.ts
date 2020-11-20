@@ -7,7 +7,10 @@ import { Attribute } from '../../entity/Attribute'
 export interface IUpdateAttributes {
   entityRuntimeId: bigint,
   entries: Attribute[],
+  tick?: bigint,
 }
+
+const def = (val: any) => () => val
 
 export class UpdateAttributes extends BatchedPacket<IUpdateAttributes> {
 
@@ -50,11 +53,11 @@ export class UpdateAttributes extends BatchedPacket<IUpdateAttributes> {
               data.writeLFloat(attr.defaultVal)
               data.writeString(attr.name)
             }
-            data.writeUnsignedVarLong(0n) // current tick?
           }
         },
         resolve: () => [],
       },
+      { name: 'tick', parser: DataType.U_VARLONG, resolve: def(BigInt(Math.round(Date.now() / 50))) },
     ])
 
     if(props) this.props = Object.assign({}, props)

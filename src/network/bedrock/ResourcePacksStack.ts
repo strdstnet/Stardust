@@ -50,7 +50,7 @@ export class ResourcePacksStack extends BatchedPacket<IResourcePacksStack> {
       { parser: parsePacks(true) },
       { parser: parsePacks(false) },
       { name: 'gameVersion', parser: DataType.STRING },
-      { 
+      {
         parser({ type, data }) {
           if (type === ParserType.ENCODE) {
             data.writeLInt(0)
@@ -58,7 +58,6 @@ export class ResourcePacksStack extends BatchedPacket<IResourcePacksStack> {
           }
         },
       },
-      
     ])
 
     if(p) this.props = Object.assign({}, p)

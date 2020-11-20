@@ -36,7 +36,7 @@ export class PlayerList extends BatchedPacket<IPlayerList> {
                 data.writeBoolean(false) // isHost
               }
 
-              props.players.forEach(pl => data.writeBoolean(pl.skinData.verified))
+              // props.players.forEach(pl => data.writeBoolean(pl.skinData.verified))
             } else {
               props.players.forEach(pl => data.writeUUID(pl.UUID))
             }

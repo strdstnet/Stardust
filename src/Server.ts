@@ -48,7 +48,7 @@ import { EntityEquipment } from './network/bedrock/EntityEquipment'
 import { EntityAnimation } from './network/bedrock/EntityAnimation'
 import { RemoveEntity } from './network/bedrock/RemoveEntity'
 import { SetEntityMotion } from './network/bedrock/SetEntityMotion'
-import { EventEmitter } from '@hyperstonenet/utils.events'
+import { EventEmitter } from '@strdstnet/utils.events'
 import { PluginManager } from './PluginManager'
 import { DroppedItem } from './entity/DroppedItem'
 import { AddDroppedItem } from './network/bedrock/AddDroppedItem'
@@ -353,14 +353,14 @@ export class Server extends EventEmitter<ServerEvents> implements IServer {
     isBabyMob: boolean,
     disableRelativeVolume: boolean,
   ): void {
-    this.broadcast(new LevelSound({
-      sound,
-      position,
-      extraData,
-      entityType,
-      isBabyMob,
-      disableRelativeVolume,
-    }))
+    // this.broadcast(new LevelSound({
+    //   sound,
+    //   position,
+    //   extraData,
+    //   entityType,
+    //   isBabyMob,
+    //   disableRelativeVolume,
+    // }))
   }
 
   public broadcastEmote(player: Player, emoteId: string, flags: number): void {

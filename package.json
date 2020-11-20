@@ -1,5 +1,5 @@
 {
-  "name": "@hyperstonenet/stardust",
+  "name": "@strdstnet/stardust",
   "repository": "https://github.com/HyperstoneNet/Stardust.git",
   "author": "Hyperstone Developers <devs@hyperstone.io>",
   "main": "lib/index.js",
@@ -15,8 +15,8 @@
   },
   "dependencies": {
     "@bwatton/logger": "^1.0.4",
-    "@hyperstonenet/utils.anvil": "^1.0.4",
-    "@hyperstonenet/utils.events": "^1.0.3",
+    "@strdstnet/utils.anvil": "^1.0.4",
+    "@strdstnet/utils.events": "^1.0.3",
     "chalk": "^3.0.0",
     "fs-extra": "^9.0.1",
     "math3d": "^0.2.2",

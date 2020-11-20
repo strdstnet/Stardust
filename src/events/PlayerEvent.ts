@@ -1,4 +1,4 @@
-import { Event } from '@hyperstonenet/utils.events'
+import { Event } from '@strdstnet/utils.events'
 import { Player } from '../Player'
 
 export class PlayerEvent extends Event<{

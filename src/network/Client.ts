@@ -238,6 +238,7 @@ export class Client {
       const { packets } = packet.props
 
       for(const pk of packets) {
+        this.logger.debug(`Received (${pk.id}) ${pk.constructor.name}`)
         switch(pk.id) {
           case Packets.LOGIN:
             this.handleLogin(pk)
@@ -297,6 +298,9 @@ export class Client {
             break
           case Packets.RESPAWN:
             this.handleRespawn(pk)
+            break
+          case Packets.TICK_SYNC:
+            this.handleTickSync(pk)
             break
           default:
             this.logger.debug(`UNKNOWN BATCHED PACKET ${pk.id}`)
@@ -697,6 +701,13 @@ export class Client {
     }
   }
 
+  private handleTickSync({ props }: TickSync) {
+    this.sendBatched(new TickSync({
+      clientRequestTimestamp: props.clientRequestTimestamp,
+      serverReceptionTimestamp: BigInt(Date.now()),
+    }))
+  }
+
   private async completeLogin() {
     this.sendBatched(new StartGame({
       entityUniqueId: this.player.id,
@@ -705,6 +716,9 @@ export class Client {
       spawnLocation: Server.i.level.spawn,
     }))
 
+    this.sendBatched(new ItemComponent())
+    // if(!process.po) return
+
     // // TODO: Name tag visible, can climb, immobile
     // // https://github.com/pmmp/PocketMine-MP/blob/e47a711494c20ac86fea567b44998f2e24f3dbc7/src/pocketmine/Player.php#L2255
 
@@ -712,15 +726,17 @@ export class Client {
 
     this.sendBatched(new BiomeDefinitionList())
     this.sendBatched(new EntityDefinitionList())
+    this.sendBatched(new CreativeContent())
 
-    this.sendAttributes(true)
-    this.sendMetadata()
+    this.sendAdventureSettings()
 
     this.sendAvailableCommands()
-    // this.sendAdventureSettings()
+    this.sendAttributes(true)
 
     // // TODO: Potion effects?
     // // https://github.com/pmmp/PocketMine-MP/blob/5910905e954f98fd1b1d24190ca26aa727a54a1d/src/network/mcpe/handler/PreSpawnPacketHandler.php#L96-L96
+
+    this.sendMetadata()
 
     Server.i.addPlayer(this.player)
 
@@ -1011,4 +1027,7 @@ import { Attr, Attribute } from '../entity/Attribute'
 import { PlayerEvent } from '../events/PlayerEvent'
 import { TitleCommand, TitleType } from '../types/interface'
 import { SetTitle } from './bedrock/SetTitle'
+import { TickSync } from './bedrock/TickSync'
+import { ItemComponent } from './bedrock/ItemComponent'
+import { CreativeContent } from './bedrock/CreativeContent'
 

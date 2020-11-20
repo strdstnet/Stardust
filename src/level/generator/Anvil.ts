@@ -1,5 +1,5 @@
 import { Generator } from './Generator'
-import { Anvil as McAnvil } from '@hyperstonenet/utils.anvil'
+import { Anvil as McAnvil } from '@strdstnet/utils.anvil'
 import path from 'path'
 import { Chunk } from '../Chunk'
 import { SubChunk } from '../SubChunk'

@@ -1,5 +1,5 @@
 import Logger from '@bwatton/logger'
-import { Event, EventEmitter } from '@hyperstonenet/utils.events'
+import { Event, EventEmitter } from '@strdstnet/utils.events'
 import { PluginManager } from './PluginManager'
 
 interface IPluginManifest {

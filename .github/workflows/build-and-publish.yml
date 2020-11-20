@@ -14,7 +14,7 @@ jobs:
         with:
           node-version: 14
           registry-url: https://npm.pkg.github.com/
-          scope: '@hyperstonenet'
+          scope: '@strdstnet'
       - run: yarn --ignore-scripts
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NODE_AUTH_TOKEN }}

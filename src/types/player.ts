@@ -16,6 +16,7 @@ export interface SkinAnimation {
   image: SkinImage,
   type: SkinAnimationType,
   frames: number,
+  expression: number,
 }
 
 export interface Cape {

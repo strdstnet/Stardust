@@ -28,6 +28,8 @@ import { ContainerTransaction } from './ContainerTransaction'
 import { EntityEquipment } from './EntityEquipment'
 import { EntityAnimation } from './EntityAnimation'
 import { Respawn } from './Respawn'
+import { TickSync } from './TickSync'
+import { RequestChunkRadius } from './RequestChunkRadius'
 
 interface IPacketBatch {
   packets: Array<BatchedPacket<any>>,
@@ -90,6 +92,9 @@ export class PacketBatch extends BundledPacket<IPacketBatch> {
                 case Packets.START_GAME:
                   packet = new StartGame()
                   break
+                case Packets.REQUEST_CHUNK_RADIUS:
+                  packet = new RequestChunkRadius()
+                  break
                 case Packets.CHUNK_RADIUS_UPDATED:
                   packet = new ChunkRadiusUpdated()
                   break
@@ -134,6 +139,9 @@ export class PacketBatch extends BundledPacket<IPacketBatch> {
                   break
                 case Packets.RESPAWN:
                   packet = new Respawn()
+                  break
+                case Packets.TICK_SYNC:
+                  packet = new TickSync()
                   break
                 // case Packets.RESOURCE_PACKS_STACK:
                 //   packet = new BatchedPacket(packetId, [])

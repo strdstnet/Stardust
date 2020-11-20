@@ -9,7 +9,7 @@ import { Server } from './Server'
 import { Chat } from './Chat'
 import { PosUpdateType } from './entity/EntityPosition'
 import { Metadata } from './entity/Metadata'
-import { Event } from '@hyperstonenet/utils.events'
+import { Event } from '@strdstnet/utils.events'
 
 interface IPlayerCreate {
   username: string,

@@ -1,4 +1,4 @@
-import { EventDict } from '@hyperstonenet/utils.events'
+import { EventDict } from '@strdstnet/utils.events'
 import { Container } from '../containers/Container'
 import { Living } from './Living'
 

@@ -9,7 +9,7 @@ interface IChunkRadiusUpdated {
 export class ChunkRadiusUpdated extends BatchedPacket<IChunkRadiusUpdated> {
 
   constructor(p?: IChunkRadiusUpdated) {
-    super(Packets.REQUEST_CHUNK_RADIUS, [
+    super(Packets.CHUNK_RADIUS_UPDATED, [
       { name: 'radius', parser: DataType.VARINT },
     ])
 

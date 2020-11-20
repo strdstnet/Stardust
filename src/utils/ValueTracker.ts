@@ -1,4 +1,4 @@
-import { Event, EventEmitter } from '@hyperstonenet/utils.events'
+import { Event, EventEmitter } from '@strdstnet/utils.events'
 
 export class ValueTracker<T = any> extends EventEmitter<{
   changed: Event<{ from: T, to: T }>,

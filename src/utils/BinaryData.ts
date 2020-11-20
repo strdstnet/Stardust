@@ -332,7 +332,7 @@ export class BinaryData {
   public writeLShort(val: number, skip = true): void {
     this.alloc(DataLengths.L_SHORT)
 
-    this.buf.writeUInt16LE(val, this.pos)
+    this.buf.writeUInt16LE(val & 0xffff, this.pos)
     if(skip) this.pos += DataLengths.L_SHORT
   }
 
@@ -605,7 +605,7 @@ export class BinaryData {
     item.count = auxValue & 0xff
 
     item.nbt = null
-    if(this.readLShort() === 0xffff) {
+    if(this.readLShort() === -1) {
       const nbtVersion = this.readByte()
 
       item.nbt = this.readTag<CompoundTag>(nbtVersion)
@@ -659,6 +659,7 @@ export class BinaryData {
       this.writeSkinImage(animation.image)
       this.writeLInt(animation.type)
       this.writeLFloat(animation.frames)
+      this.writeLInt(animation.expression)
     }
     this.writeSkinImage(skin.cape.image)
     // this.writeString(skin.geometryData)

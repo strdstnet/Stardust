@@ -127,7 +127,7 @@ import { EnderChest } from '../containers/EnderChest'
 import { Inventory } from '../containers/Inventory'
 import { Item } from '../item/Item'
 import { ItemMap } from '../item/ItemMap'
-import { EventDict } from '@hyperstonenet/utils.events'
+import { EventDict } from '@strdstnet/utils.events'
 import { Server } from '../Server'
 import { DroppedItem } from './DroppedItem'
 

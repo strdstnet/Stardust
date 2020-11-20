@@ -1,5 +1,5 @@
 import { Container } from '../containers/Container'
-import { EventEmitter, EventDict } from '@hyperstonenet/utils.events'
+import { EventEmitter, EventDict } from '@strdstnet/utils.events'
 
 interface IEntityEvents {
   _: () => void,
