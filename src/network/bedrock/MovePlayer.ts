@@ -23,6 +23,7 @@ interface IMovePlayer {
   ridingEntityRuntimeId: bigint,
   teleportCause: number,
   teleportItemId: number,
+  tick?: bigint
 }
 
 const def = (val: any) => () => val
@@ -57,6 +58,7 @@ export class MovePlayer extends BatchedPacket<IMovePlayer> {
           }
         },
       },
+      { name: 'tick', parser: DataType.U_VARLONG, resolve: def(0n) },
     ])
 
     if(p) this.props = p as IMovePlayer

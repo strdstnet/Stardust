@@ -49,8 +49,16 @@ export class ResourcePacksStack extends BatchedPacket<IResourcePacksStack> {
       { name: 'mustAccept', parser: DataType.BOOLEAN },
       { parser: parsePacks(true) },
       { parser: parsePacks(false) },
-      { name: 'experimental', parser: DataType.BOOLEAN },
       { name: 'gameVersion', parser: DataType.STRING },
+      { 
+        parser({ type, data }) {
+          if (type === ParserType.ENCODE) {
+            data.writeLInt(0)
+            data.writeBoolean(false)
+          }
+        },
+      },
+      
     ])
 
     if(p) this.props = Object.assign({}, p)

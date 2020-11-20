@@ -171,7 +171,7 @@ export class Client {
 
   public onTick(): void {
     this.processSendQueue()
-    // this.sendAttributes()
+    this.sendAttributes()
 
     for(const [type, animate] of this.animateQueue) {
       this.handleAnimate(animate)
@@ -203,6 +203,7 @@ export class Client {
   }
 
   public sendBatched(packet: BatchedPacket<any>, reliability = Reliability.Unreliable): void {
+    this.logger.debug('Sending', packet.id)
     this.send(new PacketBatch({
       packets: [packet],
       reliability,
@@ -709,8 +710,8 @@ export class Client {
 
     Server.logger.info(`${this.player.name} logged in from ${this.address.ip}:${this.address.port} with MTU ${this.mtuSize}`)
 
-    this.sendBatched(new EntityDefinitionList())
     this.sendBatched(new BiomeDefinitionList())
+    this.sendBatched(new EntityDefinitionList())
 
     this.sendAttributes(true)
     this.sendMetadata()
@@ -729,11 +730,9 @@ export class Client {
 
     await this.sendNearbyChunks()
 
-    // setTimeout(() => {
     this.sendBatched(new PlayStatus({
       status: PlayStatusType.PLAYER_SPAWN,
     }))
-    // }, 5000)
   }
 
   private async sendNearbyChunks(): Promise<void> {
@@ -823,6 +822,7 @@ export class Client {
   }
 
   public sendAttributes(all = false): void {
+    if (!this.player) return
     const entries = all ? this.player.attributeMap.all() : this.player.attributeMap.needSend()
 
     if(entries.length) {
@@ -839,6 +839,7 @@ export class Client {
     this.sendBatched(new EntityMetadata({
       entityRuntimeId: this.player.id,
       metadata,
+      tick: 0n,
     }))
   }
 
@@ -866,6 +867,7 @@ export class Client {
     this.sendBatched(new EntityMetadata({
       entityRuntimeId,
       metadata,
+      tick: 0n,
     }))
   }
 

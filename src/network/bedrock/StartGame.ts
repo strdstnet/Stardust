@@ -58,6 +58,8 @@ interface IStartGameOptional {
   commandsEnabled: boolean,
   texturePacksRequired: boolean,
   gameRules: Array<IBoolGameRule | IIntGameRule | IFloatGameRule>,
+  experiment?: number,
+  IdontKnowhatThisIs?: boolean
   bonusChestEnabled: boolean,
   startWithMapEnabled: boolean,
   defaultPlayerPermission: PlayerPermissions,
@@ -80,6 +82,7 @@ interface IStartGameOptional {
   isMovementServerAuthoritative: boolean,
   currentTick: bigint,
   enchantmentSeed: number,
+  customBlocks: number,
   legacyIdMap: {
     [k: string]: number, // newId: legacyId - { "minecraft:dirt": 3 }
   },
@@ -121,7 +124,7 @@ export class StartGame extends BatchedPacket<IStartGame> {
       },
       { name: 'seed', parser: DataType.VARINT, resolve: def(0) },
       { name: 'biomeType', parser: DataType.L_SHORT, resolve: def(0) },
-      { name: 'biomeName', parser: DataType.STRING, resolve: def('') },
+      { name: 'biomeName', parser: DataType.STRING, resolve: def('plains') },
       { name: 'dimension', parser: DataType.VARINT, resolve: def(Dimension.OVERWOLD) },
       { name: 'generator', parser: DataType.VARINT, resolve: def(GeneratorType.OVERWORLD) },
       { name: 'worldGamemode', parser: DataType.VARINT, resolve: def(Gamemode.SURVIVAL) },
@@ -216,6 +219,8 @@ export class StartGame extends BatchedPacket<IStartGame> {
           { name: 'pvp', type: GameRuleType.BOOL, value: true },
         ]),
       },
+      { name: 'experiment', parser: DataType.L_INT, resolve: def(0) },
+      { name: 'IdontKnowhatThisIs', parser: DataType.BOOLEAN, resolve: def(false) },
       { name: 'bonusChestEnabled', parser: DataType.BOOLEAN, resolve: def(false) },
       { name: 'startWithMapEnabled', parser: DataType.BOOLEAN, resolve: def(false) },
       { name: 'defaultPlayerPermission', parser: DataType.VARINT, resolve: def(PlayerPermissions.MEMBER) },
@@ -228,8 +233,8 @@ export class StartGame extends BatchedPacket<IStartGame> {
       { name: 'worldTemplateOptionLocked', parser: DataType.BOOLEAN, resolve: def(false) },
       { name: 'onlySpawnV1Villagers', parser: DataType.BOOLEAN, resolve: def(false) },
       { name: 'vanillaVersion', parser: DataType.STRING, resolve: def(Protocol.BEDROCK_VERSION) },
-      { name: 'limitedWorldWidth', parser: DataType.L_INT, resolve: def(0) },
-      { name: 'limitedWorldLength', parser: DataType.L_INT, resolve: def(0) },
+      { name: 'limitedWorldWidth', parser: DataType.L_INT, resolve: def(16) },
+      { name: 'limitedWorldLength', parser: DataType.L_INT, resolve: def(16) },
       { name: 'newNether', parser: DataType.BOOLEAN, resolve: def(true) },
       {
         name: 'someExperimentalBullshit',
@@ -242,22 +247,23 @@ export class StartGame extends BatchedPacket<IStartGame> {
         },
       },
       { name: 'levelId', parser: DataType.STRING, resolve: def('') },
-      { name: 'worldName', parser: DataType.STRING, resolve: def('§eHyperstone Network') },
+      { name: 'worldName', parser: DataType.STRING, resolve: def('A Stardust Server') },
       { name: 'premiumWorldTemplateId', parser: DataType.STRING, resolve: def('') },
       { name: 'isTrial', parser: DataType.BOOLEAN, resolve: def(false) },
-      { name: 'isMovementServerAuthoritative', parser: DataType.BOOLEAN, resolve: def(false) },
+      { name: 'isMovementServerAuthoritative', parser: DataType.U_VARINT, resolve: def(0) },
       { name: 'currentTick', parser: DataType.L_LONG, resolve: def(0n) },
       { name: 'enchantmentSeed', parser: DataType.VARINT, resolve: def(0) },
-      {
-        name: 'states',
-        parser({ type, data }) {
-          if (type === ParserType.ENCODE) {
-            data.append(fs.readFileSync(path.join(__dirname, '..', '..', 'data', 'bedrock', 'block_states.nbt')))
-          } else if(type === ParserType.DECODE) {
-            data.pos += 1063028
-          }
-        },
-      },
+      { name: 'customBlocks', parser: DataType.U_VARINT, resolve: def(0) },
+      // {
+      //   name: 'states',
+      //   parser({ type, data }) {
+      //     if (type === ParserType.ENCODE) {
+      //       data.append(fs.readFileSync(path.join(__dirname, '..', '..', 'data', 'bedrock', 'block_states.nbt')))
+      //     } else if(type === ParserType.DECODE) {
+      //       data.pos += 1063028
+      //     }
+      //   },
+      // },
       {
         name: 'legacyIdMap',
         parser({ type, data, props, value }) {

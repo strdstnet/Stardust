@@ -128,7 +128,7 @@ export class Server extends EventEmitter<ServerEvents> implements IServer {
     Attribute.initAttributes()
     GlobalTick.start(Server.TPS)
 
-    this.level = await Level.BedWars()
+    this.level = await Level.TestWorld()
     await this.level.init()
 
     const server = new Server(Object.assign({}, DEFAULT_OPTS, opts))
@@ -334,6 +334,7 @@ export class Server extends EventEmitter<ServerEvents> implements IServer {
     this.broadcast(new EntityMetadata({
       entityRuntimeId: player.id,
       metadata,
+      tick: 0n,
     }), includeSelf ? null : player.clientId)
   }
 

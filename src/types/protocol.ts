@@ -104,7 +104,7 @@ export enum Packets {
 
 export const Protocol = {
   PROTOCOL_VERSION: 10,
-  BEDROCK_VERSION: '1.16.0',
+  BEDROCK_VERSION: '1.16.100',
   SERVER_ID: 925686942n,
   SYSTEM_ADDRESSES: 20,
   DEFAULT_MTU: 1347,

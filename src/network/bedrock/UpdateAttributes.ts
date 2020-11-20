@@ -50,6 +50,7 @@ export class UpdateAttributes extends BatchedPacket<IUpdateAttributes> {
               data.writeLFloat(attr.defaultVal)
               data.writeString(attr.name)
             }
+            data.writeUnsignedVarLong(0n) // current tick?
           }
         },
         resolve: () => [],
