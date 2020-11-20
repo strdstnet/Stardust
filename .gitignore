@@ -113,3 +113,4 @@ nodemon.json
 src/block/test.ts
 plugins/
 worlds/
+.DS_Store
