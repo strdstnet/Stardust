@@ -265,36 +265,28 @@ export class StartGame extends BatchedPacket<IStartGame> {
       //     }
       //   },
       // },
-      // {
-      //   name: 'legacyIdMap',
-      //   parser({ type, data, props, value }) {
-      //     if(type === ParserType.DECODE) {
-      //       props.legacyIdMap = {}
-
-      //       const count = data.readUnsignedVarInt()
-      //       for(let i = 0; i < count; i++) {
-      //         props.legacyIdMap[data.readString()] = data.readSignedLShort()
-      //       }
-      //     } else {
-      //       const ids = Object.entries(value as Record<string, number>)
-
-      //       data.writeUnsignedVarInt(ids.length)
-
-      //       for(const [newId, legacyId] of ids) {
-      //         data.writeString(newId)
-      //         data.writeSignedLShort(legacyId)
-      //       }
-      //     }
-      //   },
-      //   resolve: def({}),
-      // },
       {
-        name: 'gosuckafuckingdickyoudirtylittlefuckingtwat',
+        name: 'legacyIdMap',
         parser({ type, data, props, value }) {
-          if(type === ParserType.ENCODE) {
-            data.append(BedrockData.ITEM_DATA_PALETTE)
+          if(type === ParserType.DECODE) {
+            props.legacyIdMap = {}
+
+            const count = data.readUnsignedVarInt()
+            for(let i = 0; i < count; i++) {
+              props.legacyIdMap[data.readString()] = data.readSignedLShort()
+            }
+          } else {
+            const ids = Object.entries(value as Record<string, number>)
+
+            data.writeUnsignedVarInt(ids.length)
+
+            for(const [newId, legacyId] of ids) {
+              data.writeString(newId)
+              data.writeSignedLShort(legacyId)
+            }
           }
         },
+        resolve: def({}),
       },
       { name: 'multiplayerCorrelationId', parser: DataType.STRING, resolve: def('') },
       { name: 'enableNewInventorySystem', parser: DataType.BOOLEAN, resolve: def(false) }, // TODO: Automatic crafting, etc...
