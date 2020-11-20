@@ -4,6 +4,7 @@ export interface ServerOpts {
   address: string,
   port: number,
   maxPlayers: number,
+  level: string,
   motd: {
     line1: string,
     line2: string,

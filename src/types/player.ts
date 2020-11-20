@@ -1,4 +1,5 @@
 import { Vector3 } from 'math3d'
+import { Client } from '../network/Client'
 
 export interface SkinImage {
   height: number,
@@ -101,6 +102,7 @@ export interface IPlayer {
   XUID: string,
   identityPublicKey: string,
   clientId: bigint,
+  client: Client,
   skinData: SkinData,
   position: IPlayerPosition,
   sendMessage: (message: string, type?: number, parameters?: string[]) => void,

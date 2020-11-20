@@ -1,5 +1,5 @@
 interface SplitQueue {
-  [splitId: number]: BundledPacket<any>,
+  [splitId: number]: Array<BundledPacket<any>>,
 }
 
 export class Client {
@@ -20,8 +20,6 @@ export class Client {
   private sendQueue: BundledPacket<any>[] = []
   private sentPackets: Map<number, PacketBundle> = new Map()
 
-  public sequenceNumber = -1
-
   private lastSplitId = -1
 
   private player!: Player
@@ -36,7 +34,9 @@ export class Client {
 
   private animateQueue: Map<number, Animate> = new Map()
 
-  constructor({ id, address, socket, mtuSize }: IClientArgs) {
+  private loginData!: BinaryData
+
+  constructor({ id, address, socket, mtuSize }: IClientArgs, public sequenceNumber = -1) {
     this.id = id
     this.address = address
     this.socket = socket
@@ -101,29 +101,24 @@ export class Client {
   private handleBundledPacket(packet: BundledPacket<any>) {
     const props = packet.props as IBundledPacket
     if(props.hasSplit && !packet.hasBeenProcessed) {
-      if(props.splitIndex === 0) {
-        // this.logger.debug(`Initial split packet for ${packet.data.buf[0]}`, packet)
-        packet.data.pos = packet.data.length
-        this.splitQueue[props.splitId] = packet
-        // this.splitQueue.set(props.splitId, packet)
-      } else {
-        const queue = this.splitQueue[props.splitId]
-        // this.logger.debug(`Split packet ${props.splitIndex + 1}/${props.splitCount}`)
-        // const bundled = this.splitQueue.get(props.splitId)
+      // this.logger.debug(`Split #${props.splitId} (${props.splitIndex + 1}/${props.splitCount})`)
+      let queue = this.splitQueue[props.splitId]
 
-        if(!queue) {
-          throw new Error(`Invalid Split ID: ${props.splitId} for packet: ${packet.id}`)
-        } else {
-          queue.append(packet.data)
+      if(!queue) queue = this.splitQueue[props.splitId] = []
 
-          if(props.splitIndex === props.splitCount - 1) {
-            queue.data.pos = 0
-            queue.decode()
-            queue.hasBeenProcessed = true
-            this.handleBundledPacket(queue)
-            delete this.splitQueue[props.splitId]
-          }
+      queue[props.splitIndex] = packet
+
+      if(queue.filter(Boolean).length >= props.splitCount) {
+        const pk = queue[0]
+        for(const part of queue) {
+          pk.append(part.data)
         }
+        pk.data.pos = 0
+        pk.hasBeenProcessed = true
+        pk.decode()
+
+        delete this.splitQueue[props.splitId]
+        this.handleBundledPacket(pk)
       }
     } else {
       switch(packet.id) {
@@ -152,6 +147,14 @@ export class Client {
   private sendACK(sequenceNumber: number) {
     Server.i.send({
       packet: new ACK([sequenceNumber]),
+      socket: this.socket,
+      address: this.address,
+    })
+  }
+
+  public sendRaw(packet: Packet<any>): void {
+    Server.i.send({
+      packet,
       socket: this.socket,
       address: this.address,
     })
@@ -203,7 +206,7 @@ export class Client {
   }
 
   public sendBatched(packet: BatchedPacket<any>, reliability = Reliability.Unreliable): void {
-    this.logger.debug('Sending', packet.id)
+    // this.logger.debug('Sending', packet.id)
     this.send(new PacketBatch({
       packets: [packet],
       reliability,
@@ -238,7 +241,7 @@ export class Client {
       const { packets } = packet.props
 
       for(const pk of packets) {
-        this.logger.debug(`Received (${pk.id}) ${pk.constructor.name}`)
+        // this.logger.debug(`Received (${pk.id}) ${pk.constructor.name}`)
         switch(pk.id) {
           case Packets.LOGIN:
             this.handleLogin(pk)
@@ -313,7 +316,8 @@ export class Client {
     // console.log('nic', packet.props)
   }
 
-  private handleLogin(packet: Login) {
+  public handleLogin(packet: Login): void {
+    this.loginData = packet.data
     // TODO: Login verification, already logged in?, ...
 
     this.player = Player.createFrom(packet, this)
@@ -336,6 +340,16 @@ export class Client {
     ])
     // this.sendBatched()
     // this.sendBatched()
+  }
+
+  public ezTransfer(serverType: string): void {
+    this.sendRaw(new EzTransfer({
+      serverType,
+      clientId: this.id,
+      sequenceNumber: this.sequenceNumber,
+      loginData: this.loginData,
+    }))
+    this.destroy()
   }
 
   private async handleResourcePacksResponse(packet: ResourcePacksResponse) {
@@ -562,8 +576,6 @@ export class Client {
 
   private async handlePlayerAction(packet: PlayerAction) {
     const { action, actionX, actionY, actionZ, face } = packet.props
-    this.logger.debug('handlePlayerAction', action)
-    // if(!process.po)return
 
     const block = this.level.getBlockAt(actionX, actionY, actionZ)
     const item = this.player.inventory.itemHolding
@@ -728,6 +740,10 @@ export class Client {
     this.sendBatched(new EntityDefinitionList())
     this.sendBatched(new CreativeContent())
 
+    this.doSpawn()
+  }
+
+  public async doSpawn(): Promise<void> {
     this.sendAdventureSettings()
 
     this.sendAvailableCommands()
@@ -1030,4 +1046,6 @@ import { SetTitle } from './bedrock/SetTitle'
 import { TickSync } from './bedrock/TickSync'
 import { ItemComponent } from './bedrock/ItemComponent'
 import { CreativeContent } from './bedrock/CreativeContent'
+import { Packet } from './Packet'
+import { EzTransfer } from './custom/EzTransfer'
 

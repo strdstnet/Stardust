@@ -25,7 +25,7 @@ import { Chat } from './Chat'
 import { AddPlayer } from './network/bedrock/AddPlayer'
 import { CommandMap } from './command/CommandMap'
 import { ICommand } from './types/commands'
-import { Teleport } from './command/defaults/Teleport'
+import { Teleport as TeleportCommand } from './command/defaults/Teleport'
 import { GlobalTick } from './tick/GlobalTick'
 import { LevelEvent } from './network/bedrock/LevelEvent'
 import { LevelEventType, PlayerAnimation } from './types/player'
@@ -54,11 +54,15 @@ import { DroppedItem } from './entity/DroppedItem'
 import { AddDroppedItem } from './network/bedrock/AddDroppedItem'
 import { PickupDroppedItem } from './network/bedrock/PickupDroppedItem'
 import { PlayerEvent } from './events/PlayerEvent'
+import { Transfer as TransferCommand } from './command/defaults/Transfer'
+import { EzLogin } from './network/custom/EzLogin'
+import { Login } from './network/bedrock/Login'
 
 const DEFAULT_OPTS: ServerOpts = {
   address: '0.0.0.0',
   port: 19132,
   maxPlayers: 20,
+  level: 'hsn',
   motd: {
     line1: 'A Stardust Server',
     line2: '',
@@ -92,7 +96,7 @@ export class Server extends EventEmitter<ServerEvents> implements IServer {
 
   public commands = new CommandMap()
 
-  private constructor(public opts: ServerOpts) {
+  private constructor(public opts: ServerOpts, public level: Level) {
     super()
 
     if(Server.i) {
@@ -113,10 +117,6 @@ export class Server extends EventEmitter<ServerEvents> implements IServer {
     return BigInt(Date.now() - this.startedAt)
   }
 
-  public get level(): Level {
-    return Server.level
-  }
-
   public static async start(opts?: Partial<ServerOpts>): Promise<Server> {
     await ItemMap.registerItems()
     this.logger.as('ItemMap').info(`Registered ${ItemMap.count} items`)
@@ -128,10 +128,10 @@ export class Server extends EventEmitter<ServerEvents> implements IServer {
     Attribute.initAttributes()
     GlobalTick.start(Server.TPS)
 
-    this.level = await Level.TestWorld()
-    await this.level.init()
+    const allOpts = Object.assign({}, DEFAULT_OPTS, opts)
+    const level = await Level.load(allOpts.level)
 
-    const server = new Server(Object.assign({}, DEFAULT_OPTS, opts))
+    const server = new Server(allOpts, level)
 
     await PluginManager.start()
 
@@ -191,6 +191,9 @@ export class Server extends EventEmitter<ServerEvents> implements IServer {
             case Packets.OPEN_CONNECTION_REQUEST_TWO:
               this.handleConnectionRequest2({ data, socket, address })
               break
+            case Packets.EZ_LOGIN:
+              this.handleEzLogin({ data, socket, address })
+              break
             default:
               logger.debug(`unknown packet: ${packetId}`)
           }
@@ -210,7 +213,8 @@ export class Server extends EventEmitter<ServerEvents> implements IServer {
   }
 
   private initCommands() {
-    this.addCommand(new Teleport())
+    this.addCommand(new TeleportCommand())
+    this.addCommand(new TransferCommand())
   }
 
   private get motd() {
@@ -520,6 +524,25 @@ export class Server extends EventEmitter<ServerEvents> implements IServer {
     })
 
     this.send({ packet, socket, address })
+  }
+
+  private handleEzLogin({ data, socket, address }: IPacketHandlerArgs) {
+    const ezLogin = new EzLogin().parse(data)
+    const { mtuSize, clientId, sequenceNumber, loginData } = ezLogin.props
+
+    console.log(ezLogin.props)
+
+    const client = new Client({
+      id: clientId,
+      address,
+      mtuSize,
+      socket,
+    }, sequenceNumber)
+
+    this.addClient(client)
+
+    client.handleLogin(new Login().parse(loginData))
+    client.doSpawn()
   }
 
 }

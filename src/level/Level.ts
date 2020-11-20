@@ -19,7 +19,7 @@ export class Level {
 
   constructor(public name: string, public spawn: Vector3, public generator: Generator) {}
 
-  public async init(): Promise<void> {
+  public async init(): Promise<this> {
     await this.loadChunk(0, 0)
     await this.loadChunk(0, -1)
     await this.loadChunk(0, 1)
@@ -31,6 +31,8 @@ export class Level {
     await this.loadChunk(-1, -1)
 
     GlobalTick.attach(this)
+
+    return this
   }
 
   public onTick(): void {
@@ -52,6 +54,10 @@ export class Level {
 
   public static async BedWars(): Promise<Level> {
     return new Level('BedWars', new Vector3(0, 5, 0), await Anvil.init('BedWars'))
+  }
+
+  public static async load(dir: string, spawn = new Vector3(0, 70, 0)): Promise<Level> {
+    return new Level(dir, spawn, await Anvil.init(dir)).init()
   }
 
   public static Flat(): Level {

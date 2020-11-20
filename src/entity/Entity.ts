@@ -27,7 +27,7 @@ export abstract class Entity<Events extends EventDict = EventDict, Containers ex
 
   private tickExtenders: Array<() => void | Promise<void>> = []
 
-  public level = Server.level
+  public level = Server.i.level
 
   public fallingTo: number | null = null // null if not falling else y coord falling to
   public fallRate = 14 / Server.TPS // 14 blocks per second

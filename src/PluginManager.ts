@@ -25,7 +25,8 @@ export class PluginManager {
   public static async start(): Promise<PluginManager> {
     const manager = new PluginManager()
 
-    const items = fs.readdirSync(PLUGIN_DIR)
+    // const items = fs.readdirSync(PLUGIN_DIR)
+    const items = []
 
     for(const item of items) {
       const PATH = path.join(PLUGIN_DIR, item)

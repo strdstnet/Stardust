@@ -8,13 +8,16 @@ Logger.defaults.showMilliseconds = true
 import { Server } from './Server'
 
 Server.start({
-  port: 19132,
+  port: process.argv[2] ? parseInt(process.argv[2]) : 19132,
+  level: process.argv[3] ? process.argv[3] : 'hsn',
   maxPlayers: 200000,
   motd: {
     line1: 'HyperstoneNetwork',
     line2: 'test',
   },
 })
+
+console.log(process.argv)
 
 // const logger = new Logger('V8::GC')
 // gcWatch.on('beforeGC', () => {

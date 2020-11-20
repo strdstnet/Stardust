@@ -31,4 +31,5 @@ export enum DataType {
   ENTITY_METADATA,
   BYTE_ROTATION,
   BLOCK_POSITION,
+  BYTE_ARRAY,
 }

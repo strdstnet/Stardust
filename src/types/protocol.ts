@@ -17,6 +17,10 @@ export enum Packets {
   DISCONNECTION_NOTIFICATION = 0x15, // 21
   INCOMPATIBLE_PROTOCOL = 0x19, // 25
 
+  /* STARDUST (Raw) */
+  EZ_TRANSFER = 0x45, // 69
+  EZ_LOGIN = 0x46, // 70
+
 
   ACK = 0xc0, // 192
   NAK = 0xa0, // 160
