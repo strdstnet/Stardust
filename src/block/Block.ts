@@ -46,14 +46,13 @@ export class Block {
     this.item.meta = val
   }
 
-  // TODO: Actually implement
-  // https://github.com/pmmp/PocketMine-MP/blob/stable/src/pocketmine/block/Block.php#L105-L105
   public get runtimeId(): number {
-    const state = BlockMap.legacyToRuntime.get((this.id << 4) | this.meta) ||
-      BlockMap.legacyToRuntime.get(this.id << 4) ||
-      BlockMap.legacyToRuntime.get(BlockIds.UPDATE_BLOCK << 4)
+    let state = BlockMap.legacyToRuntime.get((this.id << 4) | this.meta)
 
-    if(!state) throw new Error('o')
+    if(typeof state === 'undefined') state = BlockMap.legacyToRuntime.get(this.id << 4)
+    if(typeof state === 'undefined') state = BlockMap.legacyToRuntime.get(BlockIds.UPDATE_BLOCK << 4)
+
+    if(typeof state === 'undefined') throw new Error('o')
 
     return state
   }

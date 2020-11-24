@@ -23,10 +23,7 @@ import {
   MultiplayerVisibility,
 } from '../../types/network'
 import { ParserType, Packet } from '../Packet'
-import fs from 'fs'
-import path from 'path'
 import { EntityPosition } from '../../entity/EntityPosition'
-import { BedrockData } from '../../data/BedrockData'
 
 interface IStartGameRequired {
   entityUniqueId: bigint,
@@ -255,16 +252,6 @@ export class StartGame extends BatchedPacket<IStartGame> {
       { name: 'currentTick', parser: DataType.L_LONG, resolve: def(0n) },
       { name: 'enchantmentSeed', parser: DataType.VARINT, resolve: def(0) },
       { name: 'customBlocks', parser: DataType.U_VARINT, resolve: def(0) },
-      // {
-      //   name: 'states',
-      //   parser({ type, data }) {
-      //     if (type === ParserType.ENCODE) {
-      //       data.append(fs.readFileSync(path.join(__dirname, '..', '..', 'data', 'bedrock', 'block_states.nbt')))
-      //     } else if(type === ParserType.DECODE) {
-      //       data.pos += 1063028
-      //     }
-      //   },
-      // },
       {
         name: 'legacyIdMap',
         parser({ type, data, props, value }) {

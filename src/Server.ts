@@ -357,14 +357,14 @@ export class Server extends EventEmitter<ServerEvents> implements IServer {
     isBabyMob: boolean,
     disableRelativeVolume: boolean,
   ): void {
-    // this.broadcast(new LevelSound({
-    //   sound,
-    //   position,
-    //   extraData,
-    //   entityType,
-    //   isBabyMob,
-    //   disableRelativeVolume,
-    // }))
+    this.broadcast(new LevelSound({
+      sound,
+      position,
+      extraData,
+      entityType,
+      isBabyMob,
+      disableRelativeVolume,
+    }))
   }
 
   public broadcastEmote(player: Player, emoteId: string, flags: number): void {

@@ -558,15 +558,8 @@ export class Client {
 
     const block = BlockMap.get(itemHolding.name)
     const blockPos = Server.i.level.getRelativeBlockPosition(pos.x, pos.y, pos.z, face)
-    const currentBlock = Server.i.level.getBlockAt(blockPos.x, blockPos.y, blockPos.z)
 
     if(!await Server.i.level.canPlace(block, blockPos)) {
-      setTimeout(() => {
-        this.sendBatched(new BlockUpdate({
-          position: blockPos,
-          blockRuntimeId: currentBlock.runtimeId,
-        }))
-      }, 250)
       return
     }
 
