@@ -629,15 +629,9 @@ export class Client {
   private handleCommandRequest(packet: CommandRequest) {
     const { command } = packet.props
 
-    const [ trigger, ...args ] = command.substr(1, command.length - 1).split(' ')
+    const [ trigger, ...args ] = CommandHandler.parse(command.substr(1, command.length - 1))
 
-    if(Server.i.commands.has(trigger)) {
-      (Server.i.commands.get(trigger) as ICommand).execute({
-        trigger,
-        args,
-        sender: this.player,
-      })
-    }
+    CommandHandler.handle(trigger, this.player, args)
   }
 
   private handleEntityFall(packet: EntityFall) {
@@ -1010,7 +1004,6 @@ import { Interact } from './bedrock/Interact'
 import { ContainerOpen } from './bedrock/ContainerOpen'
 import { PlayerAction } from './bedrock/PlayerAction'
 import { CommandRequest } from './bedrock/CommandRequest'
-import { ICommand } from '../types/commands'
 import { EntityPosition, PosUpdateType } from '../entity/EntityPosition'
 import { Animate } from './bedrock/Animate'
 import { EntityFall } from './bedrock/EntityFall'
@@ -1041,4 +1034,5 @@ import { ItemComponent } from './bedrock/ItemComponent'
 import { CreativeContent } from './bedrock/CreativeContent'
 import { Packet } from './Packet'
 import { EzTransfer } from './custom/EzTransfer'
+import { CommandHandler } from '../command/CommandHandler'
 

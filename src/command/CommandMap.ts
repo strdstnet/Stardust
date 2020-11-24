@@ -1,5 +1,5 @@
-import { ICommand } from '../types/commands'
+import { Command } from './Command'
 
-export class CommandMap extends Map<string, ICommand> {
+export class CommandMap extends Map<string, Command> {
 
 }

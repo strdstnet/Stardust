@@ -1,9 +1,19 @@
+import chalk from 'chalk'
 import { TextType } from './network/bedrock/Text'
 import { IPlayer, DamageCause } from './types/player'
 import { IServer } from './types/server'
 
+/** @deprecated use Chat.ChatFormat instead */
 export const ChatColour = {
   YELLOW: '§e',
+}
+
+export enum ChatFormat {
+  RED = '§c',
+  LIGHT_PURPLE = '§d',
+  YELLOW = '§e',
+
+  RESET = '§r',
 }
 
 export class Chat {
@@ -15,7 +25,7 @@ export class Chat {
   }
 
   public broadcastPlayerJoined(player: IPlayer): void {
-    this.broadcast(`${ChatColour.YELLOW}%multiplayer.player.joined`, TextType.TRANSLATION, [player.username])
+    this.broadcast(`${ChatFormat.YELLOW}%multiplayer.player.joined`, TextType.TRANSLATION, [player.username])
   }
 
   public playerChat(sender: IPlayer, message: string): void {
@@ -29,7 +39,14 @@ export class Chat {
   }
 
   public playerDied(cause: DamageCause = DamageCause.GENERIC, args: string[]): void {
-    this.broadcast(`${ChatColour.YELLOW}%${cause}`, TextType.TRANSLATION, args)
+    this.broadcast(`${ChatFormat.YELLOW}%${cause}`, TextType.TRANSLATION, args)
+  }
+
+  public say(speaker: string, message: string): void {
+    const msg = `[${speaker}] ${message}`
+    this.broadcast(`${ChatFormat.LIGHT_PURPLE}${msg}`, TextType.RAW)
+
+    console.log(chalk.magentaBright(msg))
   }
 
 }

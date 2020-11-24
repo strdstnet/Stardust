@@ -1,27 +1,32 @@
 import { Command } from '../Command'
-import { EzTransfer } from '../../network/custom/EzTransfer'
+import { Player } from '../../Player'
+import { InvalidExecutor } from '../errors'
+import { ICommandExecute, ArgType } from '../../types/commands'
 
 export class Transfer extends Command {
 
   constructor() {
     super({
       name: 'Transfer',
-      triggers: ['t', 'transfer'],
+      trigger: 'transfer',
       description: 'Transfer to a different server',
-      usage: '<ip> <port>',
+      usage: '<type>',
+      args: [
+        { name: 'type', type: ArgType.MESSAGE, optional: false },
+      ],
     })
   }
 
-  public async execute({ trigger, args, sender }: ICommandExecute): Promise<void> {
+  public async execute({ args, executor }: ICommandExecute): Promise<void> {
+    if(!(executor instanceof Player)) throw new InvalidExecutor()
+
     if(args.length !== 1) {
-      return sender.sendMessage(this.getUsage(trigger))
+      return executor.sendMessage(this.usage)
     }
 
     const [ serverType ] = args
 
-    sender.client.ezTransfer(serverType)
+    executor.client.ezTransfer(serverType)
   }
 
 }
-
-import { ICommandExecute } from '../../types/commands'

@@ -3,7 +3,7 @@
   "compilerOptions": {
     "target": "ESNEXT",
     "module": "commonjs",
-    "lib": [],
+    "lib": ["ES2020.String"],
     "outDir": "lib",
     "rootDir": "./src",
     "moduleResolution": "node",

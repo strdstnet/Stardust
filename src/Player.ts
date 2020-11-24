@@ -36,7 +36,7 @@ export class Player extends Human<PlayerEvents> {
   public identityPublicKey!: string
   public skinData!: SkinData
 
-  constructor(player: IPlayerCreate, protected client: Client) {
+  constructor(player: IPlayerCreate, public client: Client) {
     super(player.username, 'minecraft:player')
 
     Object.assign(this, player)

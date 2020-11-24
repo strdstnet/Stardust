@@ -23,9 +23,6 @@ import { Packet } from './network/Packet'
 import { MovePlayer, MovePlayerMode } from './network/bedrock/MovePlayer'
 import { Chat } from './Chat'
 import { AddPlayer } from './network/bedrock/AddPlayer'
-import { CommandMap } from './command/CommandMap'
-import { ICommand } from './types/commands'
-import { Teleport as TeleportCommand } from './command/defaults/Teleport'
 import { GlobalTick } from './tick/GlobalTick'
 import { LevelEvent } from './network/bedrock/LevelEvent'
 import { LevelEventType, PlayerAnimation } from './types/player'
@@ -54,9 +51,10 @@ import { DroppedItem } from './entity/DroppedItem'
 import { AddDroppedItem } from './network/bedrock/AddDroppedItem'
 import { PickupDroppedItem } from './network/bedrock/PickupDroppedItem'
 import { PlayerEvent } from './events/PlayerEvent'
-import { Transfer as TransferCommand } from './command/defaults/Transfer'
 import { EzLogin } from './network/custom/EzLogin'
 import { Login } from './network/bedrock/Login'
+import { Console } from './console/Console'
+import { CommandHandler } from './command/CommandHandler'
 
 const DEFAULT_OPTS: ServerOpts = {
   address: '0.0.0.0',
@@ -93,8 +91,6 @@ export class Server extends EventEmitter<ServerEvents> implements IServer {
   public static level: Level
 
   private chat = new Chat(this)
-
-  public commands = new CommandMap()
 
   private constructor(public opts: ServerOpts, public level: Level) {
     super()
@@ -133,7 +129,9 @@ export class Server extends EventEmitter<ServerEvents> implements IServer {
 
     const server = new Server(allOpts, level)
 
-    await PluginManager.start()
+    await PluginManager.init()
+    await CommandHandler.init()
+    await Console.init()
 
     return server.init()
   }
@@ -147,8 +145,6 @@ export class Server extends EventEmitter<ServerEvents> implements IServer {
       address,
       port,
     } = this.opts
-
-    this.initCommands()
 
     this.sockets.forEach(async([, socket]) => {
       socket.bind(port, address)
@@ -204,19 +200,6 @@ export class Server extends EventEmitter<ServerEvents> implements IServer {
     return this
   }
 
-  public addCommand(command: ICommand): void {
-    for(const trigger of command.triggers) {
-      if(!this.commands.has(trigger)) {
-        this.commands.set(trigger, command)
-      }
-    }
-  }
-
-  private initCommands() {
-    this.addCommand(new TeleportCommand())
-    this.addCommand(new TransferCommand())
-  }
-
   private get motd() {
     const {
       motd: {
@@ -230,6 +213,14 @@ export class Server extends EventEmitter<ServerEvents> implements IServer {
       line1, line2, maxPlayers,
       numPlayers: this.players.size,
     })
+  }
+
+  public get numPlayers(): number {
+    return this.players.size
+  }
+
+  public get maxPlayers(): number {
+    return this.opts.maxPlayers
   }
 
   public static getAddrId(obj: IAddress | Client): string {

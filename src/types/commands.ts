@@ -1,25 +1,6 @@
-import { IPlayer } from './player'
-
-export interface ICreateCommand {
-  name: string,
-  triggers: string[],
-  description?: string,
-  usage?: string,
-}
-
-export interface ICommandExecute {
-  trigger: string,
-  args: string[],
-  sender: IPlayer,
-}
-
-export interface ICommand {
-  name: string,
-  triggers: string[],
-  description: string,
-
-  execute: (args: ICommandExecute) => Promise<void>
-}
+import { Player } from '../Player'
+import { Console } from '../console/Console'
+import { CommandPermissions } from './world'
 
 export enum CommandOriginType {
   PLAYER = 0,
@@ -34,4 +15,42 @@ export enum CommandOriginType {
   VIRTUAL = 9,
   GAME_ARGUMENT = 10,
   ENTITY_SERVER = 11,
+}
+
+export interface ICommandArgument {
+  name: string,
+  type: ArgType,
+  optional: boolean,
+}
+
+export interface ICreateCommand {
+  name: string,
+  trigger: string,
+  description?: string,
+  args?: ICommandArgument[],
+  usage?: string,
+  permission?: CommandPermissions,
+  playerExecutable?: boolean,
+  consoleExecutable?: boolean,
+}
+
+export interface ICommandExecute {
+  args: string[],
+  executor: Player | Console,
+}
+
+export enum ArgType {
+  INT = 0x01,
+  FLOAT = 0x02,
+  VALUE = 0x03,
+  WILDCARD_INT = 0x04,
+  OPERATOR = 0x05,
+  TARGET = 0x06,
+  FILE_PATH = 0x0e,
+  STRING = 0x1d,
+  POSITION = 0x25,
+  MESSAGE = 0x29,
+  RAW_TEXT = 0x2b,
+  JSON = 0x2f,
+  COMMAND = 0x36,
 }

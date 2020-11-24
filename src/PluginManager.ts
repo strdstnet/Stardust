@@ -22,11 +22,11 @@ export class PluginManager {
     }))
   }
 
-  public static async start(): Promise<PluginManager> {
+  public static async init(): Promise<PluginManager> {
     const manager = new PluginManager()
 
     // const items = fs.readdirSync(PLUGIN_DIR)
-    const items = []
+    const items: any[] = []
 
     for(const item of items) {
       const PATH = path.join(PLUGIN_DIR, item)
