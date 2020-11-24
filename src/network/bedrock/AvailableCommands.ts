@@ -4,7 +4,7 @@ import { BatchedPacket } from '../bedrock/BatchedPacket'
 import { CommandHandler } from '../../command/CommandHandler'
 
 // TODO: Implement Commands
-export class AvailableCommands extends BatchedPacket<never> {
+export class AvailableCommands extends BatchedPacket<any> {
 
   constructor() {
     super(Packets.AVAILABLE_COMMANDS, [

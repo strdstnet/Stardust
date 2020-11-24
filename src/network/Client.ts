@@ -489,8 +489,6 @@ export class Client {
   private handleNormalTransaction(transaction: ContainerTransaction): void {
     const { actions, transaction: pos } = transaction.props
 
-    console.log(actions[0].newItem)
-
     Server.i.level.dropItem(new Vector3(this.player.position.x, this.player.position.y + 1.3, this.player.position.z), actions[0].newItem)
   }
 
@@ -684,7 +682,7 @@ export class Client {
   }
 
   private handleEntityAnimation(packet: EntityAnimation) {
-    console.log('entity amimation', packet.props)
+    // console.log('entity amimation', packet.props)
   }
 
   private handleRespawn(packet: Respawn) {
@@ -927,8 +925,6 @@ export class Client {
 
   public setHealth(health: number): void {
     // this.sendBatched(new SetHealth({ health }))
-
-    console.log('Setting health', health)
 
     this.player.attributeMap.setAttribute(Attribute.getAttribute(Attr.HEALTH, health))
   }

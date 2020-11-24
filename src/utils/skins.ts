@@ -10,7 +10,6 @@ export function btoa(base64: string): string {
 }
 
 export function getSkinData(data: IClientData): SkinData {
-  console.log(data)
   return {
     id: data.SkinId,
     armSize: data.ArmSize,

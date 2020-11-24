@@ -17,8 +17,6 @@ Server.start({
   },
 })
 
-console.log(process.argv)
-
 // const logger = new Logger('V8::GC')
 // gcWatch.on('beforeGC', () => {
 //   logger.info('Preparing for garbage collection...', `${process.memoryUsage().heapUsed / 1024 / 1024} MB`)

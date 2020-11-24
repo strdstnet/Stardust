@@ -521,8 +521,6 @@ export class Server extends EventEmitter<ServerEvents> implements IServer {
     const ezLogin = new EzLogin().parse(data)
     const { mtuSize, clientId, sequenceNumber, loginData } = ezLogin.props
 
-    console.log(ezLogin.props)
-
     const client = new Client({
       id: clientId,
       address,
