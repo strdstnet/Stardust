@@ -10,7 +10,6 @@ export class Teleport extends Command {
       name: 'Teleport',
       trigger: 'tp',
       description: 'Teleport to a player or a set of coordinates',
-      usage: '',
       args: [
         { name: 'x', type: ArgType.INT, optional: false },
         { name: 'y', type: ArgType.INT, optional: false },

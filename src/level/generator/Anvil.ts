@@ -63,7 +63,7 @@ export class Anvil extends Generator {
         subChunks[section.val('Y')] = new SubChunk(
           SubChunk.reorderNibbles(section.val('Data') || []),
           SubChunk.reorderBytes(section.val('Blocks') || []),
-          SubChunk.reorderNibbles(section.val('SkyLight') || []),
+          SubChunk.reorderNibbles(section.val('SkyLight') || [], 0xff),
           SubChunk.reorderNibbles(section.val('BlockLight') || []),
         )
       }

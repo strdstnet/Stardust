@@ -1,3 +1,4 @@
+export * from './Help'
 export * from './Teleport'
 export * from './Tell'
 export * from './Transfer'

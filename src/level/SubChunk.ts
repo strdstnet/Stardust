@@ -3,14 +3,14 @@ import { ensureLength } from '../utils/ensureLength'
 export class SubChunk {
 
   constructor(
-    public data: number[],
+    public data: number[], // Block metas
     public blockData: number[], // Block IDs
     public skyLightData: number[],
     public blockLightData: number[],
   ) {
     ensureLength(this.data, 2048)
     ensureLength(this.blockData, 4096)
-    ensureLength(this.skyLightData, 2048, 255)
+    ensureLength(this.skyLightData, 2048, 0xff)
     ensureLength(this.blockLightData, 2048)
   }
 
@@ -41,7 +41,7 @@ export class SubChunk {
     return result
   }
 
-  public static reorderNibbles(nibbles: number[], empty = 0): number[] {
+  public static reorderNibbles(nibbles: number[], empty = 0x00): number[] {
     if(nibbles.every(v => v === nibbles[0])) return nibbles
 
     let i = 0
@@ -52,7 +52,7 @@ export class SubChunk {
         for(let y = 0; y < 8; y++) {
           const j = ((y << 8) | zx)
           const j80 = (j | 0x80)
-          if(nibbles[j] !== empty && nibbles[j80] !== empty) {
+          if(nibbles[j] !== empty || nibbles[j80] !== empty) {
             const i1 = nibbles[j]
             const i2 = nibbles[j80]
             result[i]        = (i2 << 4) | (i1 & 0x0f)

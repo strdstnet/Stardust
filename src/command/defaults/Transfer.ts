@@ -10,7 +10,6 @@ export class Transfer extends Command {
       name: 'Transfer',
       trigger: 'transfer',
       description: 'Transfer to a different server',
-      usage: '<type>',
       args: [
         { name: 'type', type: ArgType.MESSAGE, optional: false },
       ],

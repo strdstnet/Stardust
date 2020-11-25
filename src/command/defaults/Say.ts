@@ -9,7 +9,6 @@ export class Say extends Command {
       name: 'Say',
       trigger: 'say',
       description: 'Say something',
-      usage: '<message>',
       args: [
         { name: 'message', type: ArgType.RAW_TEXT, optional: false },
       ],

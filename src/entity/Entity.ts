@@ -25,8 +25,6 @@ export abstract class Entity<Events extends EventDict = EventDict, Containers ex
 
   protected dragBeforeGravity = false
 
-  private tickExtenders: Array<() => void | Promise<void>> = []
-
   public level = Server.i.level
 
   public fallingTo: number | null = null // null if not falling else y coord falling to
@@ -62,10 +60,6 @@ export abstract class Entity<Events extends EventDict = EventDict, Containers ex
   }
 
   public async onTick(): Promise<void> {
-    for(const ext of this.tickExtenders) {
-      await ext.call(this)
-    }
-
     this.doFallTick()
 
     if(this.position.hasUpdate) {
