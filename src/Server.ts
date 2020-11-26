@@ -9,52 +9,55 @@ import { BedrockData } from './data/BedrockData'
 import { Attribute } from './entity/Attribute'
 import { FamilyStrToInt, IAddress, IPacketHandlerArgs, ISendPacketArgs } from './types/network'
 import { BinaryData } from './utils/BinaryData'
-import { Packets, Protocol } from './types/protocol'
-import { UnconnectedPong } from './network/raknet/UnconnectedPong'
-import { PlayerList, PlayerListType } from './network/bedrock/PlayerList'
-import { BatchedPacket } from './network/bedrock/BatchedPacket'
-import { UnconnectedPing } from './network/raknet/UnconnectedPing'
-import { OpenConnectionRequestOne } from './network/raknet/OpenConnectionRequestOne'
-import { OpenConnectionRequestTwo } from './network/raknet/OpenConnectionRequestTwo'
-import { OpenConnectionReplyTwo } from './network/raknet/OpenConnectionReplyTwo'
-import { OpenConnectionReplyOne } from './network/raknet/OpenConnectionReplyOne'
-import { IncompatibleProtocol } from './network/raknet/IncompatibleProtocol'
-import { Packet } from './network/Packet'
-import { MovePlayer, MovePlayerMode } from './network/bedrock/MovePlayer'
 import { Chat } from './Chat'
-import { AddPlayer } from './network/bedrock/AddPlayer'
 import { GlobalTick } from './tick/GlobalTick'
-import { LevelEvent } from './network/bedrock/LevelEvent'
 import { LevelEventType, PlayerAnimation } from './types/player'
-import { EntityMetadata } from './network/bedrock/EntityMetadata'
 import { Metadata } from './entity/Metadata'
-import { Animate } from './network/bedrock/Animate'
 import { Vector3 } from 'math3d'
-import { LevelSound } from './network/bedrock/LevelSound'
-import { Emote } from './network/bedrock/Emote'
 import { ItemMap } from './item/ItemMap'
 import { BlockMap } from './block/BlockMap'
 import { WorldSound } from './types/world'
 import { Entity } from './entity/Entity'
-import { AddEntity } from './network/bedrock/AddEntity'
-import { MoveEntity } from './network/bedrock/MoveEntity'
-import { BlockUpdate } from './network/bedrock/BlockUpdate'
 import { Block } from './block/Block'
 import { Item } from './item/Item'
-import { EntityEquipment } from './network/bedrock/EntityEquipment'
-import { EntityAnimation } from './network/bedrock/EntityAnimation'
-import { RemoveEntity } from './network/bedrock/RemoveEntity'
-import { SetEntityMotion } from './network/bedrock/SetEntityMotion'
 import { EventEmitter } from '@strdstnet/utils.events'
 import { PluginManager } from './PluginManager'
 import { DroppedItem } from './entity/DroppedItem'
-import { AddDroppedItem } from './network/bedrock/AddDroppedItem'
-import { PickupDroppedItem } from './network/bedrock/PickupDroppedItem'
 import { PlayerEvent } from './events/PlayerEvent'
-import { EzLogin } from './network/custom/EzLogin'
-import { Login } from './network/bedrock/Login'
 import { Console } from './console/Console'
 import { CommandHandler } from './command/CommandHandler'
+import {
+  AddDroppedItem,
+  AddEntity,
+  AddPlayer,
+  Animate,
+  BatchedPacket,
+  BlockUpdate,
+  Emote,
+  EntityAnimation,
+  EntityEquipment,
+  EntityMetadata,
+  EzLogin,
+  IncompatibleProtocol,
+  LevelEvent,
+  LevelSound,
+  Login,
+  MoveEntity,
+  MovePlayer,
+  MovePlayerMode,
+  OpenConnectionReplyTwo,
+  OpenConnectionRequestOne,
+  OpenConnectionRequestTwo,
+  Packets,
+  PickupDroppedItem,
+  PlayerList,
+  PlayerListType,
+  Protocol,
+  RemoveEntity,
+  SetEntityMotion,
+  UnconnectedPing,
+  UnconnectedPong,
+} from '@strdstnet/protocol'
 
 const DEFAULT_OPTS: ServerOpts = {
   address: '0.0.0.0',
@@ -400,12 +403,10 @@ export class Server extends EventEmitter<ServerEvents> implements IServer {
   }
 
   private updatePlayerList() {
-    if(this.clients.size < 2) return
-
     this.clients.forEach(async client => {
       client.sendBatched(new PlayerList({
         type: PlayerListType.ADD,
-        players: Array.from(this.players.values()).filter(p => p.clientId !== client.id),
+        players: Array.from(this.players.values()),
       }))
     })
   }
@@ -490,7 +491,7 @@ export class Server extends EventEmitter<ServerEvents> implements IServer {
     if(protocol !== Protocol.PROTOCOL_VERSION) {
       packet = new IncompatibleProtocol()
     } else {
-      packet = new OpenConnectionReplyOne({ mtuSize })
+      packet = new OpenConnectionRequestOne({ mtuSize })
     }
 
     this.send({ packet, socket, address })

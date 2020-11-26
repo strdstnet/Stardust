@@ -278,9 +278,6 @@ export class Client {
           case Packets.ANIMATE:
             this.animateQueue.set((pk as Animate).props.action, pk)
             break
-          case Packets.ENTITY_FALL:
-            this.handleEntityFall(pk)
-            break
           case Packets.LEVEL_SOUND:
             this.handleLevelSound(pk)
             break
@@ -632,16 +629,17 @@ export class Client {
     CommandHandler.handle(trigger, this.player, args)
   }
 
-  private handleEntityFall(packet: EntityFall) {
-    const { fallDistance, isInVoid } = packet.props
+  // TODO: Handle falling server side.
+  private handleEntityFall() {
+    // const { fallDistance, isInVoid } = packet.props
 
-    const fallDamage = Math.ceil(fallDistance - 3)
+    // const fallDamage = Math.ceil(fallDistance - 3)
 
-    if (fallDamage > 0) {
-      this.player.doDamage(fallDamage, DamageCause.FALL_ACCIDENT)
+    // if (fallDamage > 0) {
+    //   this.player.doDamage(fallDamage, DamageCause.FALL_ACCIDENT)
 
-      Server.i.broadcastEntityAnimation(this.player, EntityAnimationType.HURT, 0) // TODO: Move to player.doDamage
-    }
+    //   Server.i.broadcastEntityAnimation(this.player, EntityAnimationType.HURT, 0) // TODO: Move to player.doDamage
+    // }
   }
 
   private handleLevelSound(packet: LevelSound) {
@@ -933,7 +931,7 @@ export class Client {
     this.sendBatched(new ContainerNotification({
       containerId: container.id,
       items: container.items,
-    }), Reliability.Unreliable)
+    }))
   }
 
   public sendContainerUpdate(container: Container, slot: number): void {
@@ -941,7 +939,7 @@ export class Client {
       containerId: container.id,
       slot,
       item: container.items[slot],
-    }), Reliability.Unreliable)
+    }))
   }
 
 }
@@ -951,84 +949,24 @@ import { Socket } from 'dgram'
 import { Server } from '../Server'
 import { Player } from '../Player'
 import { Vector3 } from 'math3d'
-import { Disconnect } from './bedrock/Disconnect'
 import { BinaryData, BitFlag } from '../utils/BinaryData'
-import { PacketBatch } from './bedrock/PacketBatch'
-import { bundlePackets } from '../utils/parseBundledPackets'
-import { BatchedPacket } from './bedrock/BatchedPacket'
-import { Reliability } from '../utils/Reliability'
-import { PartialPacket } from './custom/PartialPacket'
-import { PacketViolationWarning } from './bedrock/PacketViolationWarning'
-import { Login } from './bedrock/Login'
-import { PlayStatus } from './bedrock/PlayStatus'
-import { ResourcePacksInfo } from './bedrock/ResourcePacksInfo'
-import { ResourcePacksResponse } from './bedrock/ResourcePacksResponse'
-import { ResourcePacksStack } from './bedrock/ResourcePacksStack'
-import { RequestChunkRadius } from './bedrock/RequestChunkRadius'
-import { ChunkRadiusUpdated } from './bedrock/ChunkRadiusUpdated'
-import { Text, TextType } from './bedrock/Text'
-import { StartGame } from './bedrock/StartGame'
-import { EntityDefinitionList } from './bedrock/EntityDefinitionList'
-import { BiomeDefinitionList } from './bedrock/BiomeDefinitionList'
 import { Chunk } from '../level/Chunk'
-import { LevelChunk } from './bedrock/LevelChunk'
-import { UpdateAttributes } from './bedrock/UpdateAttributes'
-import { AvailableCommands } from './bedrock/AvailableCommands'
-import { AdventureSettings } from './bedrock/AdventureSettings'
-import { EntityMetadata } from './bedrock/EntityMetadata'
-import { ContainerNotification } from './bedrock/ContainerNotification'
-import { EntityEquipment } from './bedrock/EntityEquipment'
-import { BundledPacket } from './raknet/BundledPacket'
 import { DummyAddress, IAddress, IBundledPacket, IClientArgs } from '../types/network'
-import { PacketBundle } from './raknet/PacketBundle'
-import { NAK } from './raknet/NAK'
-import { Packets, Protocol } from '../types/protocol'
-import { ConnectionRequest } from './raknet/ConnectionRequest'
-import { NewIncomingConnection } from './raknet/NewIncomingConnection'
-import { ConnectedPing } from './raknet/ConnectedPing'
-import { ACK } from './raknet/ACK'
-import { ConnectedPong } from './raknet/ConnectedPong'
-import { ConnectionRequestAccepted } from './raknet/ConnectionRequestAccepted'
 import { AdventureSettingsFlag, CommandPermissions, PlayerPermissions, PlayStatusType, ResourcePackResponseStatus, RespawnState, WorldSound } from '../types/world'
-import { NetworkChunkPublisher } from './bedrock/NetworkChunkPublisher'
-import { MovePlayer } from './bedrock/MovePlayer'
-import { SetLocalPlayerInitialized } from './bedrock/SetLocalPlayerInitialized'
 import { Chat } from '../Chat'
-import { AddPlayer } from './bedrock/AddPlayer'
 import { InteractAction, LevelEventType, MetadataGeneric, PlayerEventAction, EntityAnimationType, PlayerAnimation, DamageCause } from '../types/player'
-import { Interact } from './bedrock/Interact'
-import { ContainerOpen } from './bedrock/ContainerOpen'
-import { PlayerAction } from './bedrock/PlayerAction'
-import { CommandRequest } from './bedrock/CommandRequest'
 import { EntityPosition, PosUpdateType } from '../entity/EntityPosition'
-import { Animate } from './bedrock/Animate'
-import { EntityFall } from './bedrock/EntityFall'
-import { LevelSound } from './bedrock/LevelSound'
-import { Emote } from './bedrock/Emote'
-import { ContainerId, ContainerTransactionType, ContainerType, ITransaction, UseItemType, UseItemOnEntityType } from '../types/containers'
-import { ContainerClose } from './bedrock/ContainerClose'
+import { ContainerId, ContainerType, ITransaction, UseItemType, UseItemOnEntityType } from '../types/containers'
 import { Container } from '../containers/Container'
-import { ContainerUpdate } from './bedrock/ContainerUpdate'
-import { ContainerTransaction } from './bedrock/ContainerTransaction'
 import { GlobalTick } from '../tick/GlobalTick'
 import { BlockMap } from '../block/BlockMap'
 import { Item } from '../item/Item'
-import { BlockUpdate } from './bedrock/BlockUpdate'
 import { Living } from '../entity/Living'
-import { SetHealth } from './bedrock/SetHealth'
-import { EntityAnimation } from './bedrock/EntityAnimation'
-import { FormRequest } from './bedrock/FormRequest'
-import { Respawn } from './bedrock/Respawn'
-import { NBTFile, NBTFileId } from '../data/NBTFile'
 import { Metadata } from '../entity/Metadata'
 import { Attr, Attribute } from '../entity/Attribute'
 import { PlayerEvent } from '../events/PlayerEvent'
 import { TitleCommand, TitleType } from '../types/interface'
-import { SetTitle } from './bedrock/SetTitle'
-import { TickSync } from './bedrock/TickSync'
-import { ItemComponent } from './bedrock/ItemComponent'
-import { CreativeContent } from './bedrock/CreativeContent'
-import { Packet } from './Packet'
-import { EzTransfer } from './custom/EzTransfer'
 import { CommandHandler } from '../command/CommandHandler'
+import { ACK, AddPlayer, AdventureSettings, Animate, AvailableCommands, BatchedPacket, BiomeDefinitionList, BundledPacket, ChunkRadiusUpdated, CommandRequest, ConnectedPing, ConnectedPong, ConnectionRequest, ConnectionRequestAccepted, ContainerClose, ContainerNotification, ContainerOpen, ContainerTransaction, ContainerTransactionType, ContainerUpdate, CreativeContent, Disconnect, Emote, EntityAnimation, EntityDefinitionList, EntityEquipment, EzTransfer, Interact, ItemComponent, LevelSound, Login, MovePlayer, NAK, NetworkChunkPublisher, NewIncomingConnection, Packet, PacketBatch, PacketBundle, Packets, PacketViolationWarning, PartialPacket, PlayerAction, PlayStatus, Protocol, Reliability, RequestChunkRadius, ResourcePacksInfo, ResourcePacksResponse, ResourcePacksStack, Respawn, SetLocalPlayerInitialized, SetTitle, StartGame, Text, TextType, TickSync, UpdateAttributes } from '@strdstnet/protocol'
+import { bundlePackets } from '../utils/parseBundledPackets'
 
