@@ -1,17 +1,21 @@
-import { DisconnectionNotification } from '../network/bedrock/DisconnectionNotification'
-import { PacketBatch } from '../network/bedrock/PacketBatch'
-import { PartialPacket } from '../network/custom/PartialPacket'
-import { UnknownBundledPacket } from '../network/custom/UnknownBundledPacket'
-import { BPacket, BundledPacket } from '../network/raknet/BundledPacket'
-import { ConnectedPing } from '../network/raknet/ConnectedPing'
-import { ConnectedPong } from '../network/raknet/ConnectedPong'
-import { ConnectionRequest } from '../network/raknet/ConnectionRequest'
-import { ConnectionRequestAccepted } from '../network/raknet/ConnectionRequestAccepted'
-import { NewIncomingConnection } from '../network/raknet/NewIncomingConnection'
-import { PacketBundle } from '../network/raknet/PacketBundle'
-import { Props } from '../types/data'
-import { IBundledPacket } from '../types/network'
-import { Packets, Protocol } from '../types/protocol'
+import {
+  BPacket,
+  BundledPacket,
+  ConnectedPing,
+  ConnectedPong,
+  ConnectionRequest,
+  ConnectionRequestAccepted,
+  DisconnectionNotification,
+  IBundledPacket,
+  NewIncomingConnection,
+  PacketBatch,
+  PacketBundle,
+  Packets,
+  PartialPacket,
+  Props,
+  Protocol,
+  UnknownBundledPacket,
+} from '@strdstnet/protocol'
 import { BinaryData } from './BinaryData'
 
 export function decodeBundledPacket<T extends IBundledPacket = BPacket<any>>(data: BinaryData): [T, number] {

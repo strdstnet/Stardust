@@ -12,7 +12,6 @@ import { BinaryData } from './utils/BinaryData'
 import { Chat } from './Chat'
 import { GlobalTick } from './tick/GlobalTick'
 import { LevelEventType, PlayerAnimation } from './types/player'
-import { Metadata } from './entity/Metadata'
 import { Vector3 } from 'math3d'
 import { ItemMap } from './item/ItemMap'
 import { BlockMap } from './block/BlockMap'
@@ -45,9 +44,11 @@ import {
   MoveEntity,
   MovePlayer,
   MovePlayerMode,
+  OpenConnectionReplyOne,
   OpenConnectionReplyTwo,
   OpenConnectionRequestOne,
   OpenConnectionRequestTwo,
+  Packet,
   Packets,
   PickupDroppedItem,
   PlayerList,
@@ -58,6 +59,7 @@ import {
   UnconnectedPing,
   UnconnectedPong,
 } from '@strdstnet/protocol'
+import { Metadata } from '@strdstnet/utils.binary/lib/Metadata'
 
 const DEFAULT_OPTS: ServerOpts = {
   address: '0.0.0.0',
@@ -491,7 +493,7 @@ export class Server extends EventEmitter<ServerEvents> implements IServer {
     if(protocol !== Protocol.PROTOCOL_VERSION) {
       packet = new IncompatibleProtocol()
     } else {
-      packet = new OpenConnectionRequestOne({ mtuSize })
+      packet = new OpenConnectionReplyOne({ mtuSize })
     }
 
     this.send({ packet, socket, address })

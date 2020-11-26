@@ -89,4 +89,4 @@ export class Attribute {
 
 }
 
-import { FLOAT_MAX_VAL } from '../types/data'
+import { FLOAT_MAX_VAL } from '@strdstnet/protocol'

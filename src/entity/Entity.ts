@@ -240,8 +240,6 @@ export abstract class Entity<Events extends EventDict = EventDict, Containers ex
 
 import { AttributeMap } from './AttributeMap'
 import { Player } from '../Player'
-import { Metadata } from './Metadata'
-import { MetadataFlag, MetadataGeneric, MetadataType } from '../types/player'
 import { GlobalTick } from '../tick/GlobalTick'
 import { EntityPosition } from './EntityPosition'
 import { Server } from '../Server'
@@ -250,4 +248,6 @@ import { BoundingBox } from '../utils/BoundingBox'
 import { mtRand } from '../utils/mtRand'
 import { Attr, Attribute } from './Attribute'
 import { BlockIds } from '../block/types'
+import { Metadata } from '@strdstnet/utils.binary/lib/Metadata'
+import { MetadataFlag, MetadataGeneric, MetadataType } from '@strdstnet/utils.binary'
 
