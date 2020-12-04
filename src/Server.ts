@@ -5,20 +5,15 @@ import { IServer, ServerOpts } from './types/server'
 import { Client } from './network/Client'
 import { Player } from './Player'
 import { Level } from './level/Level'
-import { BedrockData } from './data/BedrockData'
 import { Attribute } from './entity/Attribute'
-import { FamilyStrToInt, IAddress, IPacketHandlerArgs, ISendPacketArgs } from './types/network'
-import { BinaryData } from './utils/BinaryData'
+import { FamilyStrToInt, IPacketHandlerArgs, ISendPacketArgs } from './types/network'
 import { Chat } from './Chat'
 import { GlobalTick } from './tick/GlobalTick'
 import { LevelEventType, PlayerAnimation } from './types/player'
-import { Vector3 } from 'math3d'
 import { ItemMap } from './item/ItemMap'
 import { BlockMap } from './block/BlockMap'
-import { WorldSound } from './types/world'
 import { Entity } from './entity/Entity'
 import { Block } from './block/Block'
-import { Item } from './item/Item'
 import { EventEmitter } from '@strdstnet/utils.events'
 import { PluginManager } from './PluginManager'
 import { DroppedItem } from './entity/DroppedItem'
@@ -58,8 +53,10 @@ import {
   SetEntityMotion,
   UnconnectedPing,
   UnconnectedPong,
+  WorldSound,
 } from '@strdstnet/protocol'
 import { Metadata } from '@strdstnet/utils.binary/lib/Metadata'
+import { BinaryData, IAddress, IItem, Vector3 } from '@strdstnet/utils.binary'
 
 const DEFAULT_OPTS: ServerOpts = {
   address: '0.0.0.0',
@@ -79,6 +76,8 @@ type ServerEvents = {
 
 // TODO: Merge with Stardust.ts
 export class Server extends EventEmitter<ServerEvents> implements IServer {
+
+  public static id = 80725802752n
 
   public static TPS = 20
 
@@ -125,7 +124,6 @@ export class Server extends EventEmitter<ServerEvents> implements IServer {
     await BlockMap.populate()
     this.logger.as('BlockMap').info(`Registered ${BlockMap.count} blocks`)
 
-    BedrockData.loadData()
     Attribute.initAttributes()
     GlobalTick.start(Server.TPS)
 
@@ -373,7 +371,7 @@ export class Server extends EventEmitter<ServerEvents> implements IServer {
 
   public broadcastEntityEquipment(
     player: Player,
-    item: Item,
+    item: IItem,
     inventorySlot: number,
     hotbarSlot: number,
     containerId: number,
@@ -399,7 +397,11 @@ export class Server extends EventEmitter<ServerEvents> implements IServer {
     this.broadcast(new AddEntity({
       entityRuntimeId: entity.id,
       type: entity.gameId,
-      position: entity.position,
+      position: entity.position.coords,
+      motion: entity.position.motion,
+      pitch: entity.position.pitch,
+      yaw: entity.position.yaw,
+      headYaw: entity.position.headYaw,
       metadata: entity.metadata,
     }))
   }
@@ -420,18 +422,33 @@ export class Server extends EventEmitter<ServerEvents> implements IServer {
         username: entity.username,
         entityUniqueId: entity.id,
         entityRuntimeId: entity.id,
-        position: entity.position,
+        position: entity.position.coords,
+        motion: entity.position.motion,
+        pitch: entity.position.pitch,
+        yaw: entity.position.yaw,
+        headYaw: entity.position.headYaw,
         metadata: entity.metadata,
       }), entity.clientId)
     } else if (entity instanceof DroppedItem){
-      this.broadcast(new AddDroppedItem(entity))
-    } else {
-      this.broadcast(new AddEntity({
+      this.broadcast(new AddDroppedItem({
         entityUniqueId: entity.id,
         entityRuntimeId: entity.id,
-        position: entity.position,
+        item: entity.item,
+        position: entity.position.coords,
+        motion: entity.position.motion,
         metadata: entity.metadata,
+        fromFishing: entity.fromFishing,
+      }))
+    } else {
+      this.broadcast(new AddEntity({
+        entityRuntimeId: entity.id,
         type: entity.gameId,
+        position: entity.position.coords,
+        motion: entity.position.motion,
+        pitch: entity.position.pitch,
+        yaw: entity.position.yaw,
+        headYaw: entity.position.headYaw,
+        metadata: entity.metadata,
       }))
     }
   }
@@ -473,6 +490,7 @@ export class Server extends EventEmitter<ServerEvents> implements IServer {
       packet: new UnconnectedPong({
         pingId,
         motd: this.motd,
+        serverId: Server.id,
       }),
       socket,
       address,
@@ -493,7 +511,10 @@ export class Server extends EventEmitter<ServerEvents> implements IServer {
     if(protocol !== Protocol.PROTOCOL_VERSION) {
       packet = new IncompatibleProtocol()
     } else {
-      packet = new OpenConnectionReplyOne({ mtuSize })
+      packet = new OpenConnectionReplyOne({
+        mtuSize,
+        serverId: Server.id,
+      })
     }
 
     this.send({ packet, socket, address })
@@ -515,6 +536,7 @@ export class Server extends EventEmitter<ServerEvents> implements IServer {
     const packet = new OpenConnectionReplyTwo({
       address,
       mtuSize,
+      serverId: Server.id,
     })
 
     this.send({ packet, socket, address })

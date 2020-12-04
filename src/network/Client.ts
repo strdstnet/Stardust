@@ -430,7 +430,11 @@ export class Client {
         username: player.username,
         entityUniqueId: player.id,
         entityRuntimeId: player.id,
-        position: player.position,
+        position: player.position.coords,
+        motion: player.position.motion,
+        pitch: player.position.pitch,
+        yaw: player.position.yaw,
+        headYaw: player.position.headYaw,
         metadata: player.metadata,
       }))
     })
@@ -535,8 +539,9 @@ export class Client {
     }
   }
 
-  private async handleClickBlock(pos: Vector3, itemHolding: Item, face: number): Promise<void> {
-    if(itemHolding.name === 'minecraft:air') return
+  private async handleClickBlock(pos: Vector3, itemHolding: IItem, face: number): Promise<void> {
+    const item = ItemMap.from(itemHolding)
+    if(!item || item.name === 'minecraft:air') return
 
     const clientDidSpam = (
       this.lastRightClickPos &&
@@ -551,7 +556,7 @@ export class Client {
 
     if(clientDidSpam) return
 
-    const block = BlockMap.get(itemHolding.name)
+    const block = BlockMap.get(item.name)
     const blockPos = Server.i.level.getRelativeBlockPosition(pos.x, pos.y, pos.z, face)
 
     if(!await Server.i.level.canPlace(block, blockPos)) {
@@ -704,10 +709,14 @@ export class Client {
   }
 
   private async completeLogin() {
+    const pos = this.player.position.forSpawn()
+
     this.sendBatched(new StartGame({
       entityUniqueId: this.player.id,
       entityRuntimeId: this.player.id,
-      playerPosition: this.player.position.forSpawn(),
+      position: pos.coords,
+      pitch: pos.pitch,
+      yaw: pos.yaw,
       spawnLocation: Server.i.level.spawn,
     }))
 
@@ -808,6 +817,8 @@ export class Client {
       const chunk = await Server.i.level.getChunkAt(x, z)
       // const chunk = new Chunk(x, z, [SubChunk.grassPlatform], [], [], [], [])
 
+      console.log(chunk.tileTags)
+
       this.sendBatched(new LevelChunk({
         chunk,
         cache: false,
@@ -859,7 +870,9 @@ export class Client {
   }
 
   private sendAvailableCommands() {
-    this.sendBatched(new AvailableCommands())
+    this.sendBatched(new AvailableCommands({
+      commands: [],
+    }))
   }
 
   private sendAdventureSettings() {
@@ -948,14 +961,12 @@ import Logger from '@bwatton/logger'
 import { Socket } from 'dgram'
 import { Server } from '../Server'
 import { Player } from '../Player'
-import { BinaryData, BitFlag } from '../utils/BinaryData'
 import { Chunk } from '../level/Chunk'
-import { DummyAddress, IAddress, IBundledPacket, IClientArgs } from '../types/network'
-import { AdventureSettingsFlag, CommandPermissions, PlayerPermissions, PlayStatusType, ResourcePackResponseStatus, RespawnState, WorldSound } from '../types/world'
+import { DummyAddress, IClientArgs } from '../types/network'
 import { Chat } from '../Chat'
-import { InteractAction, LevelEventType, PlayerEventAction, EntityAnimationType, PlayerAnimation, DamageCause } from '../types/player'
+import { LevelEventType, PlayerEventAction } from '../types/player'
 import { EntityPosition, PosUpdateType } from '../entity/EntityPosition'
-import { ContainerId, ContainerType, ITransaction, UseItemType, UseItemOnEntityType } from '../types/containers'
+import { ContainerId, ContainerType} from '../types/containers'
 import { Container } from '../containers/Container'
 import { GlobalTick } from '../tick/GlobalTick'
 import { BlockMap } from '../block/BlockMap'
@@ -963,9 +974,9 @@ import { Item } from '../item/Item'
 import { Living } from '../entity/Living'
 import { Attr, Attribute } from '../entity/Attribute'
 import { PlayerEvent } from '../events/PlayerEvent'
-import { TitleCommand, TitleType } from '../types/interface'
 import { CommandHandler } from '../command/CommandHandler'
-import { ACK, AddPlayer, AdventureSettings, Animate, AvailableCommands, BatchedPacket, BiomeDefinitionList, BundledPacket, ChunkRadiusUpdated, CommandRequest, ConnectedPing, ConnectedPong, ConnectionRequest, ConnectionRequestAccepted, ContainerClose, ContainerNotification, ContainerOpen, ContainerTransaction, ContainerTransactionType, ContainerUpdate, CreativeContent, Disconnect, Emote, EntityAnimation, EntityDefinitionList, EntityEquipment, EzTransfer, Interact, ItemComponent, LevelSound, Login, MovePlayer, NAK, NetworkChunkPublisher, NewIncomingConnection, Packet, PacketBatch, PacketBundle, Packets, PacketViolationWarning, PartialPacket, PlayerAction, PlayStatus, Protocol, Reliability, RequestChunkRadius, ResourcePacksInfo, ResourcePacksResponse, ResourcePacksStack, Respawn, SetLocalPlayerInitialized, SetTitle, StartGame, Text, TextType, TickSync, UpdateAttributes } from '@strdstnet/protocol'
-import { bundlePackets } from '../utils/parseBundledPackets'
-import { MetadataGeneric, Vector3 } from '@strdstnet/utils.binary'
+import { ACK, AddPlayer, AdventureSettings, AdventureSettingsFlag, Animate, AvailableCommands, BatchedPacket, BiomeDefinitionList, BitFlag, BundledPacket, bundlePackets, ChunkRadiusUpdated, CommandPermissions, CommandRequest, ConnectedPing, ConnectedPong, ConnectionRequest, ConnectionRequestAccepted, ContainerClose, ContainerNotification, ContainerOpen, ContainerTransaction, ContainerTransactionType, ContainerUpdate, CreativeContent, Disconnect, Emote, EntityAnimation, EntityDefinitionList, EntityEquipment, EntityMetadata, EzTransfer, IBundledPacket, Interact, InteractAction, ItemComponent, ITransaction, LevelChunk, LevelSound, Login, MovePlayer, NAK, NetworkChunkPublisher, NewIncomingConnection, Packet, PacketBatch, PacketBundle, Packets, PacketViolationWarning, PartialPacket, PlayerAction, PlayerPermissions, PlayStatus, PlayStatusType, Protocol, Reliability, RequestChunkRadius, ResourcePackResponseStatus, ResourcePacksInfo, ResourcePacksResponse, ResourcePacksStack, Respawn, RespawnState, SetLocalPlayerInitialized, SetTitle, StartGame, Text, TextType, TickSync, TitleCommand, TitleType, UpdateAttributes, UseItemOnEntityType, UseItemType, WorldSound } from '@strdstnet/protocol'
+import { BinaryData, IAddress, IItem, MetadataGeneric, Vector3 } from '@strdstnet/utils.binary'
+import { Metadata } from '@strdstnet/utils.binary/lib/Metadata'
+import { ItemMap } from '../item/ItemMap'
 

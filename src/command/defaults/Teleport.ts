@@ -1,5 +1,6 @@
+import { ArgType } from '@strdstnet/protocol'
 import { Player } from '../../Player'
-import { ICommandExecute, ArgType } from '../../types/commands'
+import { ICommandExecute } from '../../types/commands'
 import { Command } from '../Command'
 import { InvalidExecutor } from '../errors'
 

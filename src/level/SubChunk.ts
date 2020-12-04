@@ -1,10 +1,10 @@
 import { ensureLength } from '../utils/ensureLength'
 
-export class SubChunk {
+export class SubChunk implements ISubChunk {
 
   constructor(
-    public data: number[], // Block metas
-    public blockData: number[], // Block IDs
+    public blockIds: number[],
+    public metadata: number[],
     public skyLightData: number[],
     public blockLightData: number[],
   ) {
@@ -14,12 +14,26 @@ export class SubChunk {
     ensureLength(this.blockLightData, 2048)
   }
 
+  /** @deprecated Use SubChunk.metadata instead */
+  public get data(): number[] {
+    return this.metadata
+  }
+
+  /** @deprecated Use SubChunk.blockIds instead */
+  public get blockData(): number[] {
+    return this.blockIds
+  }
+
   public static get empty(): SubChunk {
     return new SubChunk([], [], [], [])
   }
 
   public static get grassPlatform(): SubChunk {
-    return new SubChunk([], [2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2], [], [])
+    return new SubChunk([2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2], [], [], [])
+  }
+
+  public static from({ blockIds, metadata, skyLightData, blockLightData }: ISubChunk): SubChunk {
+    return new SubChunk(blockIds, metadata, skyLightData, blockLightData)
   }
 
   public static reorderBytes(bytes: number[]): number[] {
@@ -92,3 +106,5 @@ export class SubChunk {
 }
 
 import { Block } from '../block/Block'
+import { ISubChunk } from '@strdstnet/utils.binary'
+

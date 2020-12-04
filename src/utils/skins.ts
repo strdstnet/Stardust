@@ -1,12 +1,8 @@
+import { IClientData } from '@strdstnet/protocol'
 import { PersonaPieceType, PersonaTintablePieceType, SkinData } from '../types/player'
-import { IClientData } from '../types/protocol'
 
 function fromB64(base64: string): Buffer {
   return Buffer.from(base64, 'base64')
-}
-
-export function btoa(base64: string): string {
-  return fromB64(base64).toString()
 }
 
 export function getSkinData(data: IClientData): SkinData {

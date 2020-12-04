@@ -1,3 +1,4 @@
+import { IItem } from '@strdstnet/utils.binary'
 import { Item } from './Item'
 import ItemDefinition from './items.json'
 
@@ -24,6 +25,18 @@ export class ItemMap {
   public static clear(): void {
     this.items.clear()
     this.idToName.clear()
+  }
+
+  public static from(iItem: IItem): Item | null {
+    const item = ItemMap.getById(iItem.id)
+
+    if(!item) return null
+
+    item.meta = iItem.meta
+    item.count = iItem.count
+    item.nbt = iItem.nbt
+
+    return item
   }
 
   public static get(name: string, clone = true): Item | null {

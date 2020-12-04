@@ -19,8 +19,8 @@ export class Flat extends Generator {
       }
 
       subChunks.push(new SubChunk(
-        [],
         blocks,
+        [],
         [],
         [],
       ))

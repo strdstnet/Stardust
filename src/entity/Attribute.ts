@@ -19,7 +19,7 @@ export enum Attr {
   LAVA_MOVEMENT = 16,
 }
 
-export class Attribute {
+export class Attribute implements IAttribute {
 
   public static attributes: Map<Attr, Attribute> = new Map()
 
@@ -87,6 +87,10 @@ export class Attribute {
     this.desynchronized = !synced
   }
 
+  public get currentVal(): number {
+    return this.value
+  }
+
 }
 
-import { FLOAT_MAX_VAL } from '@strdstnet/protocol'
+import { FLOAT_MAX_VAL, IAttribute } from '@strdstnet/protocol'

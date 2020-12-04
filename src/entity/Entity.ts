@@ -76,7 +76,7 @@ export abstract class Entity<Events extends EventDict = EventDict, Containers ex
       this.position.update(this.position.x, this.position.y - fallRate, this.position.z)
 
       if(this.position.y <= this.fallingTo + 1) this.fallingTo = null
-    } else if(blockid === BlockIds.AIR) {
+    } else if(blockid === ItemIDs.AIR) {
       this.fallingTo = this.position.y - 1
       this.position.update(this.position.x, this.position.y - this.fallRate, this.position.z)
     }
@@ -243,11 +243,9 @@ import { Player } from '../Player'
 import { GlobalTick } from '../tick/GlobalTick'
 import { EntityPosition } from './EntityPosition'
 import { Server } from '../Server'
-import { Vector3 } from 'math3d'
 import { BoundingBox } from '../utils/BoundingBox'
 import { mtRand } from '../utils/mtRand'
 import { Attr, Attribute } from './Attribute'
-import { BlockIds } from '../block/types'
 import { Metadata } from '@strdstnet/utils.binary/lib/Metadata'
-import { MetadataFlag, MetadataGeneric, MetadataType } from '@strdstnet/utils.binary'
+import { ItemIDs, ItemIsDurable, MetadataFlag, MetadataGeneric, MetadataType, Vector3 } from '@strdstnet/utils.binary'
 

@@ -1,14 +1,18 @@
 import { EventEmitter } from 'events'
+import { CompoundTag } from '@strdst/utils.nbt'
+import { IItem, ItemIDs, ItemIsDurable } from '@strdstnet/utils.binary'
 
 export interface IUseOnEntity {
   damage: number,
 }
 
-export class Item extends EventEmitter {
+export class Item extends EventEmitter implements IItem {
+
+  [ItemIsDurable] = false
 
   public count = 1
 
-  public nbt: CompoundTag | null = null
+  public nbt?: CompoundTag = undefined
 
   public baseDamage = 1
 
@@ -19,7 +23,7 @@ export class Item extends EventEmitter {
   public get runtimeId(): number {
     const state = BlockMap.legacyToRuntime.get((this.id << 4) | this.meta) ||
       BlockMap.legacyToRuntime.get(this.id << 4) ||
-      BlockMap.legacyToRuntime.get(BlockIds.UPDATE_BLOCK << 4)
+      BlockMap.legacyToRuntime.get(ItemIDs.UPDATE_BLOCK << 4)
 
     if(!state) throw new Error('o')
 
@@ -28,6 +32,10 @@ export class Item extends EventEmitter {
 
   public get canStack(): boolean {
     return true
+  }
+
+  public get damage(): number {
+    return this.meta
   }
 
   public clone(): Item {
@@ -57,9 +65,7 @@ export class Item extends EventEmitter {
 
 }
 
-import { CompoundTag } from '../nbt/CompoundTag'
 import { BlockMap } from '../block/BlockMap'
-import { BlockIds } from '../block/types'
 import { Block } from '../block/Block'
 import { Tool } from './Tool'
 

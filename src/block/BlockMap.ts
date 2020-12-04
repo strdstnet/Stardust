@@ -1,24 +1,3 @@
-type BlockStateNBT = CompoundTag<{
-  id: ShortTag,
-  block: CompoundTag<{
-    name: StringTag,
-    version: IntTag,
-    states: CompoundTag,
-  }>,
-}>
-
-type R12StateNBT = CompoundTag<{
-  name: StringTag,
-  version: IntTag,
-  states: CompoundTag,
-}>
-
-interface IR12State {
-  name: string,
-  meta: number,
-  state: R12StateNBT,
-}
-
 export class BlockMap {
 
   private static blocks: Map<string, Block> = new Map()
@@ -105,9 +84,5 @@ export class BlockMap {
 }
 
 import { Block } from './Block'
-import { CompoundTag } from '../nbt/CompoundTag'
-import { ShortTag } from '../nbt/ShortTag'
-import { StringTag } from '../nbt/StringTag'
-import { IntTag } from '../nbt/IntTag'
 import BlockDefinition from '../data/blocks.json'
 import { BlockToolType } from '../item/Tool'
