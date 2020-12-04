@@ -1,14 +1,7 @@
-import { PacketBatch } from '../network/bedrock/PacketBatch'
-import { PlayStatus } from '../network/bedrock/PlayStatus'
-import { StartGame } from '../network/bedrock/StartGame'
-import { PacketBundle } from '../network/raknet/PacketBundle'
-import { BundledPacket } from '../network/raknet/BundledPacket'
 import { PlayStatusType } from '../types/world'
-import { Protocol } from '../types/protocol'
-import { bundlePackets } from '../utils/parseBundledPackets'
-import { BinaryData } from '../utils/BinaryData'
-import { IBundledPacket } from '../types/network'
 import { EntityPosition } from '../entity/EntityPosition'
+import { BundledPacket, bundlePackets, IBundledPacket, PacketBatch, PacketBundle, PlayStatus, StartGame } from '@strdstnet/protocol'
+import { BinaryData } from '@strdstnet/utils.binary'
 
 describe('Splitting', () => {
   it('splits shit correctly', () => {
@@ -20,25 +13,29 @@ describe('Splitting', () => {
       ],
     })
 
-    const mtuSize = Protocol.DEFAULT_MTU
+    const mtuSize = 1350
     const [bundles] = bundlePackets([batch], 0, -1, mtuSize)
 
     expect(bundles.length).toBe(1)
   })
   it('splits correctly', () => {
+    const pos = new EntityPosition(0, 0, 0, 0, 0)
+
     const batch = new PacketBatch({
       packets: [
         new StartGame({
           entityUniqueId: 1n,
           entityRuntimeId: 1n,
-          playerPosition: new EntityPosition(0, 0, 0, 0, 0),
+          position: pos.coords,
+          pitch: pos.pitch,
+          yaw: pos.yaw,
           enableNewInventorySystem: true,
           playerGamemode: 2,
         }),
       ],
     })
 
-    const mtuSize = Protocol.DEFAULT_MTU
+    const mtuSize = 1350
     const [ bundles ] = bundlePackets([batch], 0, -1, mtuSize)
 
     expect(bundles.length).toBeGreaterThan(1)

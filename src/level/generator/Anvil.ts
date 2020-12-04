@@ -3,13 +3,7 @@ import { Anvil as McAnvil } from '@strdstnet/utils.anvil'
 import path from 'path'
 import { Chunk } from '../Chunk'
 import { SubChunk } from '../SubChunk'
-import { CompoundTag } from '../../nbt/CompoundTag'
-import { ByteTag } from '../../nbt/ByteTag'
-import { IntTag } from '../../nbt/IntTag'
-import { IntArrayTag } from '../../nbt/IntArrayTag'
-import { LongTag } from '../../nbt/LongTag'
-import { ByteArrayTag } from '../../nbt/ByteArrayTag'
-import { ListTag } from '../../nbt/ListTag'
+import { CompoundTag, ByteTag, IntTag, IntArrayTag, LongTag, ByteArrayTag, ListTag } from '@strdst/utils.nbt'
 
 const WORLDS_DIR = path.join(__dirname, '..', '..', '..', 'worlds')
 
@@ -61,8 +55,8 @@ export class Anvil extends Generator {
         subChunks.push(SubChunk.empty)
       } else {
         subChunks[section.val('Y')] = new SubChunk(
-          SubChunk.reorderNibbles(section.val('Data') || []),
           SubChunk.reorderBytes(section.val('Blocks') || []),
+          SubChunk.reorderNibbles(section.val('Data') || []),
           SubChunk.reorderNibbles(section.val('SkyLight') || [], 0xff),
           SubChunk.reorderNibbles(section.val('BlockLight') || []),
         )
@@ -73,10 +67,10 @@ export class Anvil extends Generator {
       level.val('xPos'),
       level.val('zPos'),
       subChunks,
-      level.val('Entities'),
-      level.val('TileEntities'),
-      level.val('Biomes'),
-      level.val('HeightMap'),
+      level.val('Entities') || [],
+      level.val('TileEntities') || [],
+      level.val('Biomes') || [],
+      level.val('HeightMap') || [],
     )
   }
 

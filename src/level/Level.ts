@@ -1,5 +1,5 @@
 export type ChunkDelta = Map<string, Block> // Map<`x:y:z`, Block>
-export type ChunkDeltaList = Map<string, ChunkDelta>
+type ChunkDeltaList = Map<string, ChunkDelta>
 
 export class Level {
 
@@ -167,7 +167,10 @@ export class Level {
     return canPlace
   }
 
-  public dropItem(location: Vector3, item: Item): void {
+  public dropItem(location: Vector3, iItem: IItem): void {
+    const item = ItemMap.from(iItem)
+    if(!item) return
+
     const motion = new Vector3(Math.random() * 0.2 - 0.1, 0.2, Math.random() * 0.2 - 0.1)
     const droppedItem = new DroppedItem(item)
 
@@ -274,11 +277,12 @@ import { Anvil } from './generator/Anvil'
 import { Flat } from './generator/Flat'
 import { Block, BlockFace } from '../block/Block'
 import { BlockMap } from '../block/BlockMap'
-import { Vector3 } from 'math3d'
+import { IItem, Vector3 } from '@strdstnet/utils.binary'
 import { GlobalTick } from '../tick/GlobalTick'
 import { Server } from '../Server'
 import { Entity } from '../entity/Entity'
 import { BoundingBox } from '../utils/BoundingBox'
 import { Item } from '../item/Item'
 import { DroppedItem } from '../entity/DroppedItem'
+import { ItemMap } from '../item/ItemMap'
 

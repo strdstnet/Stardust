@@ -1,7 +1,7 @@
 
 
-import { ArgType, ICommandArgument, ICommandExecute, ICreateCommand } from '../types/commands'
-import { CommandPermissions } from '../types/world'
+import { ArgType, CommandPermissions, ICommandArgument } from '@strdstnet/protocol'
+import { ICommandExecute, ICreateCommand } from '../types/commands'
 
 export abstract class Command {
 

@@ -1148,10 +1148,26 @@
     "@strdst/utils.nbt" "^1.0.2"
     uuid "^8.3.0"
 
+"@strdst/utils.binary@^1.0.5":
+  version "1.0.5"
+  resolved "https://npm.pkg.github.com/download/@strdst/utils.binary/1.0.5/4fb8e9a8999cf8f76cce8df62edb8f162c1fde5952311d36827b9cc52b99d468#271e30b1984f477798d594ddec475e9c9f4ddb3d"
+  integrity sha512-VpnQL4Xz+m8Yg4KkI3KNeO7YTqVs8FeruTNa5CyO5DBledRmi51nzJH/EwXrnqNnM4S8m3/lIkeHbcHYCqqM3w==
+  dependencies:
+    "@strdst/utils.nbt" "^1.0.2"
+    uuid "^8.3.0"
+
 "@strdst/utils.nbt@^1.0.2":
   version "1.0.2"
   resolved "https://npm.pkg.github.com/download/@strdst/utils.nbt/1.0.2/2ac0ab43add66538c356ebc40e536e300a88bdcd65f2566e7b7110e81c49091d#df949dc867568e290bc02dd9f2d2b591426d35a6"
   integrity sha512-vfGQuAlAfWYneIjHPDyQ4Z4+VUh85RaygVAg6PoZA3yiY51eGyMOMf+VHoSEmAcIFjr8rJZCb5Tenfcz0EfFBw==
+
+"@strdstnet/protocol@^1.100.2":
+  version "1.100.2"
+  resolved "https://npm.pkg.github.com/download/@strdstnet/protocol/1.100.2/df7bd4265902af27d793edccd8bacbd7d92baf391a25d7f65e16eb7c84e368c0#0d290a95367d7a25386f093807f6f3369aa5d46a"
+  integrity sha512-m90PPBIKhj+EDdXrRTPHuQ/cUPdI8qgOc9PiYB3opv1TALTUEZt+njgOV2w7DwyStDEA7oyk8VJr4+Z3totIZA==
+  dependencies:
+    "@strdst/utils.nbt" "^1.0.2"
+    "@strdstnet/utils.binary" "^1.0.9"
 
 "@strdstnet/utils.anvil@^1.0.4":
   version "1.0.9"
@@ -1161,6 +1177,15 @@
     "@strdst/utils.binary" "^1.0.3"
     "@strdst/utils.nbt" "^1.0.2"
     fs-extra "^9.0.1"
+
+"@strdstnet/utils.binary@^1.0.9":
+  version "1.0.9"
+  resolved "https://npm.pkg.github.com/download/@strdstnet/utils.binary/1.0.9/befc417d8a0a640a12a0c7f8ca15c7ed1e8cb3725dcf9111fcf0ddf4d16dc5aa#a1ba9254b88e3fdfba8f4fe1140695a73abe0a69"
+  integrity sha512-FmRRnLqqlyKA42Xiq0/JaYguKFBmOLG38fGDncPBB7dSjTaAwg6RDqUhzb+ATSEnSLfzJckzqXpQbGBG70WDhg==
+  dependencies:
+    "@strdst/utils.binary" "^1.0.5"
+    "@strdst/utils.nbt" "^1.0.2"
+    uuid "^8.3.0"
 
 "@strdstnet/utils.events@^1.0.3":
   version "1.0.4"
@@ -1276,11 +1301,6 @@
   version "7.0.5"
   resolved "https://registry.yarnpkg.com/@types/json-schema/-/json-schema-7.0.5.tgz#dcce4430e64b443ba8945f0290fb564ad5bac6dd"
   integrity sha512-7+2BITlgjgDhH0vvwZU/HZJVyk+2XUlvxXe8dFMedNX/aMkaOq++rMAFXc0tM7ij15QaWlbdQASBR9dihi+bDQ==
-
-"@types/math3d@^0.2.3":
-  version "0.2.3"
-  resolved "https://registry.yarnpkg.com/@types/math3d/-/math3d-0.2.3.tgz#e7b458bf2b2cacdbe2e9174c2124121019ab63b7"
-  integrity sha512-TZRJnP59jBRMghnSZ2NKKG/6BCGzZsiRsSi96mnb3fY6xTVHACyB3HIpClDxaOCQcFqPY/OenG7vhyUfh59Rlw==
 
 "@types/node@*", "@types/node@^14.14.10":
   version "14.14.10"
@@ -3960,11 +3980,6 @@ map-visit@^1.0.0:
   integrity sha1-7Nyo8TFE5mDxtb1B8S80edmN+48=
   dependencies:
     object-visit "^1.0.0"
-
-math3d@^0.2.2:
-  version "0.2.2"
-  resolved "https://registry.yarnpkg.com/math3d/-/math3d-0.2.2.tgz#0659e0d3bf64976d139599d3b1dff03aad9df87b"
-  integrity sha1-Blng079kl20TlZnTsd/wOq2d+Hs=
 
 merge-stream@^2.0.0:
   version "2.0.0"

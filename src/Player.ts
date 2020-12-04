@@ -1,15 +1,11 @@
 import { Human } from './entity/Human'
-import { UUID } from './utils/UUID'
 import { getSkinData } from './utils/skins'
-import { Login } from './network/bedrock/Login'
-import { TextType } from './network/bedrock/Text'
 import { ContainerId } from './types/containers'
-import { EntityAnimationType, MetadataFlag, MetadataType, DamageCause, SkinData } from './types/player'
+import { EntityAnimationType, DamageCause, SkinData } from './types/player'
 import { Server } from './Server'
 import { Chat } from './Chat'
 import { PosUpdateType } from './entity/EntityPosition'
-import { Metadata } from './entity/Metadata'
-import { Event } from '@strdstnet/utils.events'
+import { MetadataFlag, MetadataType, UUID } from '@strdstnet/utils.binary'
 
 interface IPlayerCreate {
   username: string,
@@ -162,5 +158,6 @@ export class Player extends Human<PlayerEvents> {
 }
 
 import { Client } from './network/Client'
-import { TitleType } from './types/interface'
+import { Login, TextType, TitleType } from '@strdstnet/protocol'
+import { Metadata } from '@strdstnet/utils.binary/lib/Metadata'
 

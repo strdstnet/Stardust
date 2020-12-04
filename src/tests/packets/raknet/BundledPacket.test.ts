@@ -1,10 +1,8 @@
-import { ConnectedPing } from '../../../network/raknet/ConnectedPing'
-import { bundlePackets } from '../../../utils/parseBundledPackets'
-import { Protocol } from '../../../types/protocol'
-
 // describe('BundledPacket', () => {
 //   it('encodes & decodes single packet correctly', () => {
 //     const time = 100n
+
+import { bundlePackets, ConnectedPing } from '@strdstnet/protocol'
 
 //     const encoded = bundlePackets([new ConnectedPing({
 //       time,
@@ -47,7 +45,7 @@ describe('BundledPacket', () => {
         time,
       }),
     ]
-    const [bundles] = bundlePackets(bundledPackets, 0, -1, Protocol.DEFAULT_MTU)
+    const [bundles] = bundlePackets(bundledPackets, 0, -1, 1350)
 
     // console.log(bundles.length)
     // console.log(bundles)

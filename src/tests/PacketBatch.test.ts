@@ -1,8 +1,6 @@
-import { Packets } from '../types/protocol'
 import { Dimension } from '../types/world'
-import { PacketBatch } from '../network/bedrock/PacketBatch'
-import { ChangeDimension } from '../network/bedrock/ChangeDimension'
-import { Vector3 } from 'math3d'
+import { Vector3 } from '@strdstnet/utils.binary'
+import { ChangeDimension, PacketBatch, Packets } from '@strdstnet/protocol'
 
 describe('PacketBatch', () => {
   it('encodes & decodes single packet correctly', () => {

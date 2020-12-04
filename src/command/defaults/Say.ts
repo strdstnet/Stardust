@@ -1,6 +1,7 @@
 import { Command } from '../Command'
 import { Chat } from '../../Chat'
-import { ICommandExecute, ArgType } from '../../types/commands'
+import { ICommandExecute } from '../../types/commands'
+import { ArgType } from '@strdstnet/protocol'
 
 export class Say extends Command {
 

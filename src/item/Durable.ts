@@ -1,12 +1,14 @@
-import { CompoundTag } from '../nbt/CompoundTag'
-import { IntTag } from '../nbt/IntTag'
+import { ItemIsDurable } from '@strdstnet/utils.binary'
+import { CompoundTag, IntTag } from '@strdst/utils.nbt'
 import { Item } from './Item'
 
 export abstract class Durable extends Item {
 
-  public nbt: CompoundTag<{
+  [ItemIsDurable] = true
+
+  public nbt?: CompoundTag<{
     Damage: IntTag,
-  }> | null = null
+  }> = undefined
 
   constructor(
     name: string,
@@ -20,10 +22,6 @@ export abstract class Durable extends Item {
   public get maxDurability(): number {
     // TODO: Check enchantments etc
     return this.baseDurability
-  }
-
-  public get damage(): number {
-    return this.meta
   }
 
   public set damage(val: number) {

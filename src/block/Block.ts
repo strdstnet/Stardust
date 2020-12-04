@@ -50,7 +50,7 @@ export class Block {
     let state = BlockMap.legacyToRuntime.get((this.id << 4) | this.meta)
 
     if(typeof state === 'undefined') state = BlockMap.legacyToRuntime.get(this.id << 4)
-    if(typeof state === 'undefined') state = BlockMap.legacyToRuntime.get(BlockIds.UPDATE_BLOCK << 4)
+    if(typeof state === 'undefined') state = BlockMap.legacyToRuntime.get(ItemIDs.UPDATE_BLOCK << 4)
 
     if(typeof state === 'undefined') throw new Error('o')
 
@@ -106,7 +106,7 @@ export class Block {
 import { Item } from '../item/Item'
 import { ItemMap } from '../item/ItemMap'
 import { BlockMap } from './BlockMap'
-import { BlockIds } from './types'
 import { Server } from '../Server'
 import { BlockToolType, Tool } from '../item/Tool'
+import { ItemIDs } from '@strdstnet/utils.binary'
 

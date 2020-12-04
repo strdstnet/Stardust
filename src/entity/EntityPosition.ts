@@ -1,4 +1,4 @@
-import { Vector3 } from 'math3d'
+import { Vector3 } from '@strdstnet/utils.binary'
 
 export enum PosUpdateType {
   NONE,

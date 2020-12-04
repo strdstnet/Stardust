@@ -1,7 +1,8 @@
 import { SubChunk } from './SubChunk'
 import { ensureLength } from '../utils/ensureLength'
+import { IChunk } from '@strdstnet/utils.binary'
 
-export class Chunk {
+export class Chunk implements IChunk {
 
   public static readonly MAX_SUB_CHUNKS = 16
   public static readonly BIOME_DATA_SIZE = 256
@@ -40,6 +41,10 @@ export class Chunk {
     }
 
     return -1
+  }
+
+  public static from({ x, z, subChunks, tileTags, biomeData }: IChunk): Chunk {
+    return new Chunk(x, z, subChunks.map(sc => SubChunk.from(sc)), [], tileTags, biomeData, [])
   }
 
   public static getChunkCoords(pos: EntityPosition): [number, number]
@@ -91,6 +96,6 @@ export class Chunk {
 import { Block } from '../block/Block'
 import { BlockMap } from '../block/BlockMap'
 import { EntityPosition } from '../entity/EntityPosition'
-import { CompoundTag } from '../nbt/CompoundTag'
 import { ChunkDelta } from './Level'
+import { CompoundTag } from '@strdst/utils.nbt'
 

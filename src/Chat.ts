@@ -1,5 +1,5 @@
+import { TextType } from '@strdstnet/protocol'
 import chalk from 'chalk'
-import { TextType } from './network/bedrock/Text'
 import { IPlayer, DamageCause } from './types/player'
 import { IServer } from './types/server'
 

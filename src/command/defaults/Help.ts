@@ -1,6 +1,5 @@
 import { Command } from '../Command'
-import { Chat } from '../../Chat'
-import { ICommandExecute, ArgType } from '../../types/commands'
+import { ICommandExecute } from '../../types/commands'
 
 export class Help extends Command {
 
@@ -12,7 +11,7 @@ export class Help extends Command {
     })
   }
 
-  public async execute({ args, executor }: ICommandExecute): Promise<void> {
+  public async execute({ executor }: ICommandExecute): Promise<void> {
     executor.sendMessage('Help')
   }
 

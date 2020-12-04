@@ -1,4 +1,3 @@
-import './types/protocol'
 import './types/server'
 
 import Logger from '@bwatton/logger'

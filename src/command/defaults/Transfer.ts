@@ -1,7 +1,8 @@
 import { Command } from '../Command'
 import { Player } from '../../Player'
 import { InvalidExecutor } from '../errors'
-import { ICommandExecute, ArgType } from '../../types/commands'
+import { ICommandExecute } from '../../types/commands'
+import { ArgType } from '@strdstnet/protocol'
 
 export class Transfer extends Command {
 

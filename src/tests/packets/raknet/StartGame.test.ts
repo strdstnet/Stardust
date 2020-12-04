@@ -1,6 +1,6 @@
-import { Vector3 } from 'math3d'
+import { StartGame } from '@strdstnet/protocol'
+import { Vector3 } from '@strdstnet/utils.binary'
 import { EntityPosition } from '../../../entity/EntityPosition'
-import { StartGame } from '../../../network/bedrock/StartGame'
 import { GameRuleType } from '../../../types/world'
 
 describe('StartGame', () => {
