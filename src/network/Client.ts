@@ -817,8 +817,6 @@ export class Client {
       const chunk = await Server.i.level.getChunkAt(x, z)
       // const chunk = new Chunk(x, z, [SubChunk.grassPlatform], [], [], [], [])
 
-      console.log(chunk.tileTags)
-
       this.sendBatched(new LevelChunk({
         chunk,
         cache: false,

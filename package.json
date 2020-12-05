@@ -15,9 +15,9 @@
   },
   "dependencies": {
     "@bwatton/logger": "^1.0.4",
-    "@strdstnet/protocol": "^1.100.2",
+    "@strdstnet/protocol": "^1.100.4",
     "@strdstnet/utils.anvil": "^1.0.4",
-    "@strdstnet/utils.binary": "^1.0.9",
+    "@strdstnet/utils.binary": "^1.1.1",
     "@strdstnet/utils.events": "^1.0.3",
     "chalk": "^3.0.0",
     "fs-extra": "^9.0.1",

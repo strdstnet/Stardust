@@ -33,6 +33,10 @@ export class Chunk implements IChunk {
     }
   }
 
+  public get tiles(): [] {
+    return []
+  }
+
   public highestNonEmptySubChunk(): number {
     for(let y = this.subChunks.length - 1; y >= 0; y--) {
       if(this.subChunks[y].empty) continue
@@ -43,8 +47,8 @@ export class Chunk implements IChunk {
     return -1
   }
 
-  public static from({ x, z, subChunks, tileTags, biomeData }: IChunk): Chunk {
-    return new Chunk(x, z, subChunks.map(sc => SubChunk.from(sc)), [], tileTags, biomeData, [])
+  public static from({ x, z, subChunks, tiles, biomeData }: IChunk): Chunk {
+    return new Chunk(x, z, subChunks.map(sc => SubChunk.from(sc)), [], tiles.map(t => t.tag), biomeData, [])
   }
 
   public static getChunkCoords(pos: EntityPosition): [number, number]

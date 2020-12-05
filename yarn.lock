@@ -1161,13 +1161,13 @@
   resolved "https://npm.pkg.github.com/download/@strdst/utils.nbt/1.0.2/2ac0ab43add66538c356ebc40e536e300a88bdcd65f2566e7b7110e81c49091d#df949dc867568e290bc02dd9f2d2b591426d35a6"
   integrity sha512-vfGQuAlAfWYneIjHPDyQ4Z4+VUh85RaygVAg6PoZA3yiY51eGyMOMf+VHoSEmAcIFjr8rJZCb5Tenfcz0EfFBw==
 
-"@strdstnet/protocol@^1.100.2":
-  version "1.100.2"
-  resolved "https://npm.pkg.github.com/download/@strdstnet/protocol/1.100.2/df7bd4265902af27d793edccd8bacbd7d92baf391a25d7f65e16eb7c84e368c0#0d290a95367d7a25386f093807f6f3369aa5d46a"
-  integrity sha512-m90PPBIKhj+EDdXrRTPHuQ/cUPdI8qgOc9PiYB3opv1TALTUEZt+njgOV2w7DwyStDEA7oyk8VJr4+Z3totIZA==
+"@strdstnet/protocol@^1.100.4":
+  version "1.100.4"
+  resolved "https://npm.pkg.github.com/download/@strdstnet/protocol/1.100.4/626a39318c9f1d25bdd59a1bc73454ea5c6756e18b89df25bfa8baa8b081bc8e#d34abc2707bba1288c8774e663e9750c36b47371"
+  integrity sha512-6GOt+g6/0SDHS4I+PZTBjbW/v/0KvrNNk6FoYv8vsWjM+FDc0oLttDT27t1IUdtzYeT3qKgEXJJUWjsOkvEyeA==
   dependencies:
     "@strdst/utils.nbt" "^1.0.2"
-    "@strdstnet/utils.binary" "^1.0.9"
+    "@strdstnet/utils.binary" "^1.1.1"
 
 "@strdstnet/utils.anvil@^1.0.4":
   version "1.0.9"
@@ -1178,10 +1178,10 @@
     "@strdst/utils.nbt" "^1.0.2"
     fs-extra "^9.0.1"
 
-"@strdstnet/utils.binary@^1.0.9":
-  version "1.0.9"
-  resolved "https://npm.pkg.github.com/download/@strdstnet/utils.binary/1.0.9/befc417d8a0a640a12a0c7f8ca15c7ed1e8cb3725dcf9111fcf0ddf4d16dc5aa#a1ba9254b88e3fdfba8f4fe1140695a73abe0a69"
-  integrity sha512-FmRRnLqqlyKA42Xiq0/JaYguKFBmOLG38fGDncPBB7dSjTaAwg6RDqUhzb+ATSEnSLfzJckzqXpQbGBG70WDhg==
+"@strdstnet/utils.binary@^1.1.1":
+  version "1.1.1"
+  resolved "https://npm.pkg.github.com/download/@strdstnet/utils.binary/1.1.1/972bb9b8efd6f0056910d245826bd24312d6f6664895b4ddfa1af3561af71523#69ec028e6592d85ca83871fcb544a5b1b9c32f11"
+  integrity sha512-rVK3648HxGNowh5maOzT5rMrxBkfo8VLgHImuXiLcvcqmClaJKRWMn2D/bkxaQbowptd0JJv3g6M0T9SP5betA==
   dependencies:
     "@strdst/utils.binary" "^1.0.5"
     "@strdst/utils.nbt" "^1.0.2"
