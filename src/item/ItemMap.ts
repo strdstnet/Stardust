@@ -1,14 +1,16 @@
-import { IItem } from '@strdstnet/utils.binary'
+import { IItemTableItem } from '@strdstnet/protocol'
+import { IItem, Namespaced } from '@strdstnet/utils.binary'
 import { Item } from './Item'
 import ItemDefinition from './items.json'
 
 export class ItemMap {
 
   private static items: Map<string, Item> = new Map()
-  private static idToName: Map<number, string> = new Map()
+
+  public static itemTable: IItemTableItem[] = []
 
   public static get AIR(): Item {
-    return this.items.get('minecraft:air') as Item
+    return this.items.get(Namespaced.AIR) as Item
   }
 
   public static get count(): number {
@@ -16,19 +18,23 @@ export class ItemMap {
   }
 
   public static add(item: Item): Item {
-    this.items.set(item.name, item)
-    this.idToName.set(item.id, item.name)
+    this.items.set(item.nid, item)
+    this.itemTable.push({
+      nid: item.nid,
+      rid: item.rid,
+      component: false,
+    })
 
     return item
   }
 
-  public static clear(): void {
+  private static clear(): void {
     this.items.clear()
-    this.idToName.clear()
+    this.itemTable = []
   }
 
   public static from(iItem: IItem): Item | null {
-    const item = ItemMap.getById(iItem.id)
+    const item = ItemMap.get(iItem.nid)
 
     if(!item) return null
 
@@ -39,26 +45,14 @@ export class ItemMap {
     return item
   }
 
-  public static get(name: string, clone = true): Item | null {
-    const item = this.items.get(name)
+  public static get(nid: string, clone = true): Item | null {
+    const item = this.items.get(nid)
 
     return item ? (clone ? item.clone() : item) : null
   }
 
-  public static getById(id: number, clone = true): Item | null {
-    const name = this.idToName.get(id)
-
-    if(!name) return null
-
-    return this.get(name, clone)
-  }
-
-  public static getName(id: number): string | null {
-    return this.idToName.get(id) || null
-  }
-
-  private static registerItem(name: string, id: number): Item {
-    const item = new Item(name, id)
+  private static registerItem(name: string): Item {
+    const item = new Item(name)
     this.add(item)
 
     return item
@@ -67,8 +61,8 @@ export class ItemMap {
   public static async registerItems(): Promise<void> {
     this.clear()
 
-    for await(const { name, id } of ItemDefinition.standard) {
-      this.registerItem(name, id)
+    for await(const { name } of ItemDefinition.standard) {
+      this.registerItem(name)
     }
 
     for await(const { defaults, items } of ItemDefinition.tools) {
@@ -85,7 +79,6 @@ export class ItemMap {
           props.miningEff,
           props.attackPts,
           props.durability,
-          item.id,
         ))
       }
     }

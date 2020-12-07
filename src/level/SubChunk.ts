@@ -8,8 +8,8 @@ export class SubChunk implements ISubChunk {
     public skyLightData: number[],
     public blockLightData: number[],
   ) {
-    ensureLength(this.data, 2048)
-    ensureLength(this.blockData, 4096)
+    ensureLength(this.metadata, 2048)
+    ensureLength(this.blockIds, 4096)
     ensureLength(this.skyLightData, 2048, 0xff)
     ensureLength(this.blockLightData, 2048)
   }
@@ -82,7 +82,7 @@ export class SubChunk implements ISubChunk {
   }
 
   public get empty(): boolean {
-    return this.blockData.every(v => v === 0) &&
+    return this.blockIds.every(v => v === 0) &&
       this.skyLightData.every(v => v === 255) &&
       this.blockLightData.every(v => v === 0)
   }
@@ -93,18 +93,18 @@ export class SubChunk implements ISubChunk {
   public getBlockAt(x: number, y: number, z: number): [number, number] {
     const index = (x << 8) | (z << 4) | y
 
-    return [this.blockData[index], (this.data[index >> 1] >> ((y & 1) << 2)) & 0xf]
+    return [this.blockIds[index], (this.metadata[index >> 1] >> ((y & 1) << 2)) & 0xf]
   }
 
   public setBlock(x: number, y: number, z: number, block: Block): void {
     const index = (x << 8) | (z << 4) | y
 
-    this.blockData[index] = block.id
-    this.data[index >> 1] = block.meta
+    this.blockIds[index] = BlockMap.getId(block.nid)
+    this.metadata[index >> 1] = block.meta
   }
 
 }
 
 import { Block } from '../block/Block'
 import { ISubChunk } from '@strdstnet/utils.binary'
-
+import { BlockMap } from '../block/BlockMap'

@@ -1,4 +1,4 @@
-import { ItemIDs } from '@strdstnet/utils.binary'
+import { Namespaced } from '@strdstnet/utils.binary'
 import { Event, EventEmitter } from '@strdstnet/utils.events'
 
 type ContainerEvents = {
@@ -42,13 +42,13 @@ export abstract class Container extends EventEmitter<ContainerEvents> {
   public add(item: Item | null): number {
     if(!item) return -1 // We allow null here just for convenience
 
-    const index = this.items.findIndex(i => i.id === ItemIDs.AIR || (i.id === item.id && i.meta === item.meta && i.canStack && item.canStack && i.count < i.maxCount))
+    const index = this.items.findIndex(i => i.nid === Namespaced.AIR || (i.rid === item.rid && i.meta === item.meta && i.canStack && item.canStack && i.count < i.maxCount))
 
     if(index < 0) throw new Error('No inventory space free')
 
     const existing = this.get(index)
 
-    if(existing && existing.id !== ItemIDs.AIR) {
+    if(existing && existing.nid !== Namespaced.AIR) {
       existing.count++
 
       this.emitSlotChanged(index, existing)

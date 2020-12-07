@@ -18,7 +18,7 @@ export class BlockMap {
   public static add(name: string, id: number, meta = 0, hardness = 0, item?: string, edu = false, toolType = BlockToolType.NONE): Block {
     if(this.idToName.has(id)) return this.blocks.get(name) as Block
 
-    const block = new Block(name, meta, id, hardness, item || name, edu, toolType)
+    const block = new Block(name, meta, hardness, item || name, edu, toolType)
 
     this.blocks.set(name, block)
     this.nameToId.set(name, id)

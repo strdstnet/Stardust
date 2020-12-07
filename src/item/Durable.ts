@@ -13,10 +13,9 @@ export abstract class Durable extends Item {
   constructor(
     name: string,
     protected baseDurability: number,
-    id: number,
     damage?: number,
   ) {
-    super(name, id, damage, 1)
+    super(name, damage, 1)
   }
 
   public get maxDurability(): number {

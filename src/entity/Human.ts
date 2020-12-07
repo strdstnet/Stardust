@@ -74,8 +74,6 @@ export class Human<Events extends EventDict = EventDict, Containers extends Cont
       }
     }
     this.exhaustion = exhaustion
-
-    console.log(`EXAUSTION: ${this.exhaustion}`)
   }
 
   public get inventory(): Inventory {

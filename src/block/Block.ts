@@ -9,32 +9,34 @@ export enum BlockFace {
 
 export class Block {
 
-  public id: number
   protected _item: Item
 
   private metaVal: number
 
   constructor(
-    public name: string,
+    public nid: string,
     meta = 0,
-    id?: number,
     public hardness = 0,
-    protected itemName: string = name,
+    protected itemNID: string = nid,
     public fromEdu = false,
     public toolType = BlockToolType.NONE,
   ) {
-    this.id = typeof id === 'undefined' ? BlockMap.getId(name) : id
     this.metaVal = meta
 
-    let item = ItemMap.get(itemName)
+    let item = ItemMap.get(itemNID)
 
     if(!item) {
-      Server.logger.as('Block').error(`Couldn't find valid item: ${itemName}`)
-      item = new Item(this.itemName, this.id)
+      Server.logger.as('Block').error(`Couldn't find valid item: ${itemNID}`)
+      item = new Item(this.itemNID, this.meta)
     }
 
     this._item = item
-    this._item.meta = this.metaVal
+    this._item.meta = this.meta
+  }
+
+  /** @deprecated Use Block.nid instead (namespaced ID) */
+  public get name(): string {
+    return this.nid
   }
 
   public get meta(): number {
@@ -46,15 +48,17 @@ export class Block {
     this.item.meta = val
   }
 
+  public get rid(): number {
+    const rid = BlockRuntimes.getRID(this.nid, this.meta)
+
+    if(typeof rid === 'undefined') throw new Error(`Could not find a suitable RID for NID ${this.nid}`)
+
+    return rid
+  }
+
+  /** @deprecated Use Block.rid instead */
   public get runtimeId(): number {
-    let state = BlockMap.legacyToRuntime.get((this.id << 4) | this.meta)
-
-    if(typeof state === 'undefined') state = BlockMap.legacyToRuntime.get(this.id << 4)
-    if(typeof state === 'undefined') state = BlockMap.legacyToRuntime.get(ItemIDs.UPDATE_BLOCK << 4)
-
-    if(typeof state === 'undefined') throw new Error('o')
-
-    return state
+    return this.rid
   }
 
   public get breakTime(): number {
@@ -78,8 +82,8 @@ export class Block {
 
   public clone(): Block {
     const copy = new (this.constructor as { new (...args: any[]): Block })(
-      this.name, this.metaVal, this.id,
-      this.hardness, this.itemName, this.fromEdu,
+      this.nid, this.metaVal,
+      this.hardness, this.itemNID, this.fromEdu,
     )
     Object.assign(copy, this)
     return copy
@@ -108,5 +112,4 @@ import { ItemMap } from '../item/ItemMap'
 import { BlockMap } from './BlockMap'
 import { Server } from '../Server'
 import { BlockToolType, Tool } from '../item/Tool'
-import { ItemIDs } from '@strdstnet/utils.binary'
-
+import { BlockRuntimes } from '@strdstnet/utils.binary'

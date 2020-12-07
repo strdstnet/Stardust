@@ -70,13 +70,13 @@ export abstract class Entity<Events extends EventDict = EventDict, Containers ex
   }
 
   protected doFallTick(): void {
-    const blockid = this.level.getBlockAt(Math.floor(this.position.x), Math.floor(this.position.y) - 1, Math.floor(this.position.z)).id
+    const block = this.level.getBlockAt(Math.floor(this.position.x), Math.floor(this.position.y) - 1, Math.floor(this.position.z))
     if(this.fallingTo) {
       const fallRate = Math.min(this.fallRate, this.position.y - this.fallingTo)
       this.position.update(this.position.x, this.position.y - fallRate, this.position.z)
 
       if(this.position.y <= this.fallingTo + 1) this.fallingTo = null
-    } else if(blockid === ItemIDs.AIR) {
+    } else if(block.nid === Namespaced.AIR) {
       this.fallingTo = this.position.y - 1
       this.position.update(this.position.x, this.position.y - this.fallRate, this.position.z)
     }
@@ -247,5 +247,5 @@ import { BoundingBox } from '../utils/BoundingBox'
 import { mtRand } from '../utils/mtRand'
 import { Attr, Attribute } from './Attribute'
 import { Metadata } from '@strdstnet/utils.binary/lib/Metadata'
-import { ItemIDs, ItemIsDurable, MetadataFlag, MetadataGeneric, MetadataType, Vector3 } from '@strdstnet/utils.binary'
+import { ItemIDs, ItemIsDurable, MetadataFlag, MetadataGeneric, MetadataType, Namespaced, Vector3 } from '@strdstnet/utils.binary'
 

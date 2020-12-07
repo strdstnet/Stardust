@@ -21,10 +21,9 @@ export class Tool extends Durable {
     protected baseMiningEfficiency: number,
     protected baseAttackPoints: number,
     baseDurability: number,
-    id: number,
     damage?: number,
   ) {
-    super(name, baseDurability, id, damage)
+    super(name, baseDurability, damage)
   }
 
   public get attackPoints(): number {
@@ -54,7 +53,7 @@ export class Tool extends Durable {
 
   public clone(): Tool {
     return new Tool(
-      this.name,
+      this.nid,
       this.blockType,
       this.damageOnEntity,
       this.damageOnBlock,
@@ -63,7 +62,6 @@ export class Tool extends Durable {
       this.baseMiningEfficiency,
       this.baseAttackPoints,
       this.baseDurability,
-      this.id,
       this.meta,
     )
   }

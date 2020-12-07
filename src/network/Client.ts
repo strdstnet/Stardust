@@ -76,11 +76,8 @@ export class Client {
     if(flags & BitFlag.ACK) {
       // const { props: { sequences } } = new ACK().parse(data)
 
-      // console.log('GOT ACK:', sequences)
     } else if(flags & BitFlag.NAK) {
       const { props: { sequences } } = new NAK().parse(data)
-      // console.log('GOT NAK, resending:', sequences)
-
       for(const sequence of sequences) {
         const bundle = this.sentPackets.get(sequence)
 
@@ -309,9 +306,7 @@ export class Client {
     }
   }
 
-  private handleNewIncomingConnection(packet: NewIncomingConnection) {
-    // console.log('nic', packet.props)
-  }
+  private handleNewIncomingConnection(packet: NewIncomingConnection) {}
 
   public handleLogin(packet: Login): void {
     this.loginData = packet.data
@@ -359,7 +354,10 @@ export class Client {
           mustAccept: false,
           behaviourPacks: [],
           resourcePacks: [],
-          experimental: false,
+          experiments: {
+            experiments: [],
+            previouslyEnabled: false,
+          },
           gameVersion: Protocol.BEDROCK_VERSION,
         }))
         break
@@ -504,7 +502,7 @@ export class Client {
       case UseItemType.BREAK_BLOCK:
         item.useOnBlock()
 
-        Server.i.broadcastLevelEvent(LevelEventType.PARTICLE_DESTROY, pos.x + 0.5, pos.y + 0.5, pos.z + 0.5, block.runtimeId)
+        Server.i.broadcastLevelEvent(LevelEventType.PARTICLE_DESTROY, pos.x + 0.5, pos.y + 0.5, pos.z + 0.5, block.rid)
         Server.i.level.setBlock(pos.x, pos.y, pos.z, BlockMap.AIR)
         Server.i.level.dropItem(new Vector3(pos.x + 0.5, pos.y + 0.5, pos.z + 0.5), block.item)
         break
@@ -541,7 +539,7 @@ export class Client {
 
   private async handleClickBlock(pos: Vector3, itemHolding: IItem, face: number): Promise<void> {
     const item = ItemMap.from(itemHolding)
-    if(!item || item.name === 'minecraft:air') return
+    if(!item || item.nid === Namespaced.AIR) return
 
     const clientDidSpam = (
       this.lastRightClickPos &&
@@ -556,14 +554,14 @@ export class Client {
 
     if(clientDidSpam) return
 
-    const block = BlockMap.get(item.name)
+    const block = BlockMap.get(item.nid)
     const blockPos = Server.i.level.getRelativeBlockPosition(pos.x, pos.y, pos.z, face)
 
     if(!await Server.i.level.canPlace(block, blockPos)) {
       return
     }
 
-    Server.i.broadcastLevelSound(WorldSound.PLACE, blockPos, block.runtimeId, ':', false, false)
+    Server.i.broadcastLevelSound(WorldSound.PLACE, blockPos, block.rid, ':', false, false)
     Server.i.level.setBlock(blockPos.x, blockPos.y, blockPos.z, block)
   }
 
@@ -579,7 +577,7 @@ export class Client {
         Server.i.broadcastLevelEvent(LevelEventType.BLOCK_START_BREAK, actionX, actionY, actionZ, 65535 / breakTime)
         break
       case PlayerEventAction.CONTINUE_BREAK:
-        Server.i.broadcastLevelEvent(LevelEventType.PARTICLE_PUNCH_BLOCK, actionX, actionY, actionZ, block.runtimeId | (face << 24))
+        Server.i.broadcastLevelEvent(LevelEventType.PARTICLE_PUNCH_BLOCK, actionX, actionY, actionZ, block.rid | (face << 24))
         break
       case PlayerEventAction.ABORT_BREAK:
       case PlayerEventAction.STOP_BREAK:
@@ -673,9 +671,6 @@ export class Client {
 
     this.player.inventory.itemInHand = hotbarSlot
 
-    // console.log('sending metadata')
-    // console.log(this.player, item, inventorySlot, hotbarSlot, containerId)
-
     Server.i.broadcastEntityEquipment(this.player, item, inventorySlot, hotbarSlot, containerId)
 
     // this.sendBatched(new FormRequest({
@@ -684,9 +679,7 @@ export class Client {
     // }))
   }
 
-  private handleEntityAnimation(packet: EntityAnimation) {
-    // console.log('entity amimation', packet.props)
-  }
+  private handleEntityAnimation(packet: EntityAnimation) {}
 
   private handleRespawn(packet: Respawn) {
     const { state, entityRuntimeId } = packet.props
@@ -718,6 +711,7 @@ export class Client {
       pitch: pos.pitch,
       yaw: pos.yaw,
       spawnLocation: Server.i.level.spawn,
+      itemTable: ItemMap.itemTable,
     }))
 
     this.sendBatched(new ItemComponent())
@@ -811,8 +805,6 @@ export class Client {
       }
     }
 
-    // console.log(neededChunks)
-
     for(const [x, z] of neededChunks) {
       const chunk = await Server.i.level.getChunkAt(x, z)
       // const chunk = new Chunk(x, z, [SubChunk.grassPlatform], [], [], [], [])
@@ -836,7 +828,6 @@ export class Client {
     }
 
     if(this.recentlySentChunks.length > (this.nearbyChunkCount * 2)) {
-      // console.log(this.recentlySentChunks)
       this.recentlySentChunks.splice(0, this.nearbyChunkCount)
     }
   }
@@ -974,7 +965,7 @@ import { Attr, Attribute } from '../entity/Attribute'
 import { PlayerEvent } from '../events/PlayerEvent'
 import { CommandHandler } from '../command/CommandHandler'
 import { ACK, AddPlayer, AdventureSettings, AdventureSettingsFlag, Animate, AvailableCommands, BatchedPacket, BiomeDefinitionList, BitFlag, BundledPacket, bundlePackets, ChunkRadiusUpdated, CommandPermissions, CommandRequest, ConnectedPing, ConnectedPong, ConnectionRequest, ConnectionRequestAccepted, ContainerClose, ContainerNotification, ContainerOpen, ContainerTransaction, ContainerTransactionType, ContainerUpdate, CreativeContent, Disconnect, Emote, EntityAnimation, EntityDefinitionList, EntityEquipment, EntityMetadata, EzTransfer, IBundledPacket, Interact, InteractAction, ItemComponent, ITransaction, LevelChunk, LevelSound, Login, MovePlayer, NAK, NetworkChunkPublisher, NewIncomingConnection, Packet, PacketBatch, PacketBundle, Packets, PacketViolationWarning, PartialPacket, PlayerAction, PlayerPermissions, PlayStatus, PlayStatusType, Protocol, Reliability, RequestChunkRadius, ResourcePackResponseStatus, ResourcePacksInfo, ResourcePacksResponse, ResourcePacksStack, Respawn, RespawnState, SetLocalPlayerInitialized, SetTitle, StartGame, Text, TextType, TickSync, TitleCommand, TitleType, UpdateAttributes, UseItemOnEntityType, UseItemType, WorldSound } from '@strdstnet/protocol'
-import { BinaryData, IAddress, IItem, MetadataGeneric, Vector3 } from '@strdstnet/utils.binary'
+import { BinaryData, IAddress, IItem, MetadataGeneric, Namespaced, Vector3 } from '@strdstnet/utils.binary'
 import { Metadata } from '@strdstnet/utils.binary/lib/Metadata'
 import { ItemMap } from '../item/ItemMap'
 

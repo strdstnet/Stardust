@@ -68,14 +68,6 @@ export class Level {
     const chunk = await this.generator.chunk(x, z)
     this.chunkCache.set(Level.getChunkId(x, z), chunk)
 
-    // if(x === 0 && z === 0) {
-    console.log(chunk.tileTags)
-    for(const tile of chunk.tileTags) {
-      console.log(tile.val('id'))
-      console.log(tile.toJSON())
-    }
-    // }
-
     return chunk
   }
 

@@ -118,11 +118,11 @@ export class Server extends EventEmitter<ServerEvents> implements IServer {
   }
 
   public static async start(opts?: Partial<ServerOpts>): Promise<Server> {
-    await ItemMap.registerItems()
-    this.logger.as('ItemMap').info(`Registered ${ItemMap.count} items`)
-
     await BlockMap.populate()
     this.logger.as('BlockMap').info(`Registered ${BlockMap.count} blocks`)
+
+    await ItemMap.registerItems()
+    this.logger.as('ItemMap').info(`Registered ${ItemMap.count} items`)
 
     Attribute.initAttributes()
     GlobalTick.start(Server.TPS)
@@ -306,7 +306,7 @@ export class Server extends EventEmitter<ServerEvents> implements IServer {
   public updateBlock(position: Vector3, block: Block): void {
     this.broadcast(new BlockUpdate({
       position,
-      blockRuntimeId: block.runtimeId,
+      blockRuntimeId: block.rid,
     }))
   }
 

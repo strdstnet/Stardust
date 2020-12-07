@@ -1,6 +1,6 @@
 import { EventEmitter } from 'events'
 import { CompoundTag } from '@strdst/utils.nbt'
-import { IItem, ItemIDs, ItemIsDurable } from '@strdstnet/utils.binary'
+import { IItem, ItemIsDurable, ItemRuntimes } from '@strdstnet/utils.binary'
 
 export interface IUseOnEntity {
   damage: number,
@@ -16,18 +16,26 @@ export class Item extends EventEmitter implements IItem {
 
   public baseDamage = 1
 
-  constructor(public name: string, public id: number, public meta = 0, public maxCount = 64) {
+  constructor(public nid: string, public meta = 0, public maxCount = 64) {
     super()
   }
 
+  /** @deprecated Use Item.nid instead (namespaced ID) */
+  public get name(): string {
+    return this.nid
+  }
+
+  public get rid(): number {
+    const rid = ItemRuntimes.getRID(this.nid)
+
+    if(typeof rid === 'undefined') throw new Error(`Could not find any suitable RID for NID ${this.nid} with meta ${this.meta}`)
+
+    return rid
+  }
+
+  /** @deprecated Use Item.rid instead */
   public get runtimeId(): number {
-    const state = BlockMap.legacyToRuntime.get((this.id << 4) | this.meta) ||
-      BlockMap.legacyToRuntime.get(this.id << 4) ||
-      BlockMap.legacyToRuntime.get(ItemIDs.UPDATE_BLOCK << 4)
-
-    if(!state) throw new Error('o')
-
-    return state
+    return this.rid
   }
 
   public get canStack(): boolean {
@@ -39,7 +47,7 @@ export class Item extends EventEmitter implements IItem {
   }
 
   public clone(): Item {
-    return new Item(this.name, this.id, this.meta, this.maxCount)
+    return new Item(this.nid, this.meta, this.maxCount)
   }
 
   public useOnBlock(): void {}
@@ -65,7 +73,5 @@ export class Item extends EventEmitter implements IItem {
 
 }
 
-import { BlockMap } from '../block/BlockMap'
 import { Block } from '../block/Block'
 import { Tool } from './Tool'
-
