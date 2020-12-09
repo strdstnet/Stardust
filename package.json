@@ -11,11 +11,11 @@
     "test": "jest",
     "clear-test-cache": "jest --clearCache",
     "gb": "barrelsby --delete -d src -l below -q -S -e @types/",
-    "build": "rm -rf lib && tsc && cp -r src/data/bedrock lib/data/"
+    "build": "rm -rf lib && tsc"
   },
   "dependencies": {
     "@bwatton/logger": "^1.0.4",
-    "@strdstnet/protocol": "^1.100.5",
+    "@strdstnet/protocol": "^1.100.6",
     "@strdstnet/utils.anvil": "^1.0.4",
     "@strdstnet/utils.binary": "^1.1.2",
     "@strdstnet/utils.events": "^1.0.3",
