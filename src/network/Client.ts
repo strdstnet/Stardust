@@ -18,6 +18,7 @@ export class Client {
   private splitQueue: SplitQueue = {}
 
   private sendQueue: BundledPacket<any>[] = []
+
   private sentPackets: Map<number, PacketBundle> = new Map()
 
   private lastSplitId = -1
@@ -74,8 +75,9 @@ export class Client {
     const flags = data.readByte(false)
 
     if(flags & BitFlag.ACK) {
-      // const { props: { sequences } } = new ACK().parse(data)
+      const { props: { sequences } } = new ACK().parse(data)
 
+      sequences.forEach(seq => this.sentPackets.delete(seq))
     } else if(flags & BitFlag.NAK) {
       const { props: { sequences } } = new NAK().parse(data)
       for(const sequence of sequences) {
