@@ -1,5 +1,6 @@
 export * from './Help'
 export * from './Teleport'
+export * from './SetGamemode'
 export * from './Tell'
 export * from './Transfer'
 export * from './Say'

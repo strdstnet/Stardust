@@ -105,6 +105,10 @@ export class Player extends Human<PlayerEvents> {
     this.position.update(x, y, z, PosUpdateType.OTHER)
   }
 
+  public setGamemode(gameMode: Gamemode): void {
+    this.client.updateGamemode(gameMode)
+  }
+
   public updateLocation(): void {
     Server.i.updatePlayerLocation(this, this.position.updateType !== PosUpdateType.PLAYER_MOVEMENT)
   }
@@ -158,6 +162,6 @@ export class Player extends Human<PlayerEvents> {
 }
 
 import { Client } from './network/Client'
-import { Login, TextType, TitleType } from '@strdstnet/protocol'
+import { Login, TextType, TitleType, Gamemode } from '@strdstnet/protocol'
 import { Metadata } from '@strdstnet/utils.binary/lib/Metadata'
 
