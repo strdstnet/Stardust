@@ -90,7 +90,7 @@ export class Level {
 
   private getBlockFromDelta(x: number, y: number, z: number): Block | null {
     const delta = this.getChunkDelta(x >> 4, z >> 4)
-    const block = delta ? delta.get(`${x}:${y}:${z}`) : null
+    const block = delta ? delta.get(`${x & 0x0f}:${y}:${z & 0x0f}`) : null
 
     return block || null
   }
