@@ -27,7 +27,7 @@ export abstract class Entity<Events extends EventDict = EventDict, Containers ex
 
   public level = Server.i.level
 
-  public fallingTo: number | null = null // null if not falling else y coord falling to
+  public fallingTo = -1 // null if not falling else y coord falling to
   public fallRate = 14 / Server.TPS // 14 blocks per second
 
   constructor(
@@ -71,11 +71,11 @@ export abstract class Entity<Events extends EventDict = EventDict, Containers ex
 
   protected doFallTick(): void {
     const block = this.level.getBlockAt(Math.floor(this.position.x), Math.floor(this.position.y) - 1, Math.floor(this.position.z))
-    if(this.fallingTo) {
+    if(this.falling) {
       const fallRate = Math.min(this.fallRate, this.position.y - this.fallingTo)
       this.position.update(this.position.x, this.position.y - fallRate, this.position.z)
 
-      if(this.position.y <= this.fallingTo + 1) this.fallingTo = null
+      if(this.position.y <= this.fallingTo + 1) this.fallingTo = -1
     } else if(block.nid === Namespaced.AIR) {
       this.fallingTo = this.position.y - 1
       this.position.update(this.position.x, this.position.y - this.fallRate, this.position.z)
@@ -101,6 +101,10 @@ export abstract class Entity<Events extends EventDict = EventDict, Containers ex
 
   public get type(): string {
     return this.constructor.name
+  }
+
+  public get falling(): boolean {
+    return this.fallingTo >= 0
   }
 
   public get basePosition(): EntityPosition {

@@ -80,6 +80,7 @@ export class Server extends EventEmitter<ServerEvents> implements IServer {
   public static id = 80725802752n
 
   public static TPS = 20
+  public static TICK_MS = 1000 / Server.TPS
 
   public static i: Server
 

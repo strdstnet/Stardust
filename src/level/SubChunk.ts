@@ -14,16 +14,6 @@ export class SubChunk implements ISubChunk {
     ensureLength(this.blockLightData, 2048)
   }
 
-  /** @deprecated Use SubChunk.metadata instead */
-  public get data(): number[] {
-    return this.metadata
-  }
-
-  /** @deprecated Use SubChunk.blockIds instead */
-  public get blockData(): number[] {
-    return this.blockIds
-  }
-
   public static get empty(): SubChunk {
     return new SubChunk([], [], [], [])
   }

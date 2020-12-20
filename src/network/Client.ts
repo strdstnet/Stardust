@@ -862,7 +862,7 @@ export class Client {
 
   private sendAvailableCommands() {
     this.sendBatched(new AvailableCommands({
-      commands: [],
+      commands: Array.from(CommandHandler.commands.values()),
     }))
   }
 
