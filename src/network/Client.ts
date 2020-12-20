@@ -436,6 +436,7 @@ export class Client {
         yaw: player.position.yaw,
         headYaw: player.position.headYaw,
         metadata: player.metadata,
+        permissions: player.permissionLevel,
       }))
     })
     Chat.i.broadcastPlayerJoined(this.player)
@@ -714,10 +715,10 @@ export class Client {
       yaw: pos.yaw,
       spawnLocation: Server.i.level.spawn,
       itemTable: ItemMap.itemTable,
+      defaultPlayerPermission: this.player.permissionLevel,
     }))
 
     this.sendBatched(new ItemComponent())
-    // if(!process.po) return
 
     // // TODO: Name tag visible, can climb, immobile
     // // https://github.com/pmmp/PocketMine-MP/blob/e47a711494c20ac86fea567b44998f2e24f3dbc7/src/pocketmine/Player.php#L2255
@@ -743,6 +744,10 @@ export class Client {
     this.sendMetadata()
 
     Server.i.addPlayer(this.player)
+    this.sendBatched(new PlayerList({
+      type: PlayerListType.ADD,
+      players: Array.from(Server.i.players.values()),
+    }))
 
     this.player.notifySelf()
     this.player.notifyContainers()
@@ -877,7 +882,7 @@ export class Client {
         [AdventureSettingsFlag.FLYING, this.player.flying],
       ],
       commandPermission: CommandPermissions.NORMAL,
-      playerPermission: PlayerPermissions.MEMBER,
+      playerPermission: this.player.permissionLevel,
       entityUniqueId: this.player.id,
     }))
   }
@@ -970,7 +975,7 @@ import { Living } from '../entity/Living'
 import { Attr, Attribute } from '../entity/Attribute'
 import { PlayerEvent } from '../events/PlayerEvent'
 import { CommandHandler } from '../command/CommandHandler'
-import { ACK, AddPlayer, AdventureSettings, AdventureSettingsFlag, Animate, AvailableCommands, BatchedPacket, BiomeDefinitionList, BitFlag, BundledPacket, bundlePackets, ChunkRadiusUpdated, CommandPermissions, CommandRequest, ConnectedPing, ConnectedPong, ConnectionRequest, ConnectionRequestAccepted, ContainerClose, ContainerNotification, ContainerOpen, ContainerTransaction, ContainerTransactionType, ContainerUpdate, CreativeContent, Disconnect, Emote, EntityAnimation, EntityDefinitionList, EntityEquipment, EntityMetadata, EzTransfer, Gamemode, IBundledPacket, Interact, InteractAction, ItemComponent, ITransaction, LevelChunk, LevelSound, Login, MovePlayer, NAK, NetworkChunkPublisher, NewIncomingConnection, Packet, PacketBatch, PacketBundle, Packets, PacketViolationWarning, PartialPacket, PlayerAction, PlayerPermissions, PlayStatus, PlayStatusType, Protocol, Reliability, RequestChunkRadius, ResourcePackResponseStatus, ResourcePacksInfo, ResourcePacksResponse, ResourcePacksStack, Respawn, RespawnState, SetGamemode, SetLocalPlayerInitialized, SetTitle, StartGame, Text, TextType, TickSync, TitleCommand, TitleType, UpdateAttributes, UseItemOnEntityType, UseItemType, WorldSound } from '@strdstnet/protocol'
+import { ACK, AddPlayer, AdventureSettings, AdventureSettingsFlag, Animate, AvailableCommands, BatchedPacket, BiomeDefinitionList, BitFlag, BundledPacket, bundlePackets, ChunkRadiusUpdated, CommandPermissions, CommandRequest, ConnectedPing, ConnectedPong, ConnectionRequest, ConnectionRequestAccepted, ContainerClose, ContainerNotification, ContainerOpen, ContainerTransaction, ContainerTransactionType, ContainerUpdate, CreativeContent, Disconnect, Emote, EntityAnimation, EntityDefinitionList, EntityEquipment, EntityMetadata, EzTransfer, Gamemode, IBundledPacket, Interact, InteractAction, ItemComponent, ITransaction, LevelChunk, LevelSound, Login, MovePlayer, NAK, NetworkChunkPublisher, NewIncomingConnection, Packet, PacketBatch, PacketBundle, Packets, PacketViolationWarning, PartialPacket, PlayerAction, PlayerList, PlayerListType, PlayStatus, PlayStatusType, Protocol, Reliability, RequestChunkRadius, ResourcePackResponseStatus, ResourcePacksInfo, ResourcePacksResponse, ResourcePacksStack, Respawn, RespawnState, SetGamemode, SetLocalPlayerInitialized, SetTitle, StartGame, Text, TextType, TickSync, TitleCommand, TitleType, UpdateAttributes, UseItemOnEntityType, UseItemType, WorldSound } from '@strdstnet/protocol'
 import { BinaryData, IAddress, IItem, MetadataGeneric, Namespaced, Vector3 } from '@strdstnet/utils.binary'
 import { Metadata } from '@strdstnet/utils.binary/lib/Metadata'
 import { ItemMap } from '../item/ItemMap'

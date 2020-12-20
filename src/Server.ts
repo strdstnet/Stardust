@@ -253,7 +253,10 @@ export class Server extends EventEmitter<ServerEvents> implements IServer {
     this.players.set(player.id, player)
     this.level.addEntity(player)
 
-    this.updatePlayerList()
+    this.broadcast(new PlayerList({
+      type: PlayerListType.ADD,
+      players: [player],
+    }))
   }
 
   public getPlayer(id: bigint): Player | null {
@@ -261,16 +264,17 @@ export class Server extends EventEmitter<ServerEvents> implements IServer {
   }
 
   public removePlayer(id: bigint): void {
+    const player = this.players.get(id)
+    if(!player) return
+
     this.players.delete(id)
 
     this.removeEntity(id)
 
     this.broadcast(new PlayerList({
       type: PlayerListType.REMOVE,
-      players: Array.from(this.players.values()),
+      players: [player],
     }))
-
-    this.updatePlayerList()
   }
 
   public removeEntity(id: bigint): void {
@@ -407,15 +411,6 @@ export class Server extends EventEmitter<ServerEvents> implements IServer {
     }))
   }
 
-  private updatePlayerList() {
-    this.clients.forEach(async client => {
-      client.sendBatched(new PlayerList({
-        type: PlayerListType.ADD,
-        players: Array.from(this.players.values()),
-      }))
-    })
-  }
-
   public spawnToAll(entity: Entity): void {
     if (entity instanceof Player) {
       this.broadcast(new AddPlayer({
@@ -429,6 +424,7 @@ export class Server extends EventEmitter<ServerEvents> implements IServer {
         yaw: entity.position.yaw,
         headYaw: entity.position.headYaw,
         metadata: entity.metadata,
+        permissions: entity.permissionLevel,
       }), entity.clientId)
     } else if (entity instanceof DroppedItem){
       this.broadcast(new AddDroppedItem({

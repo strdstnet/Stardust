@@ -32,6 +32,8 @@ export class Player extends Human<PlayerEvents> {
   public identityPublicKey!: string
   public skinData!: SkinData
 
+  public permissionLevel = PlayerPermissions.VISITOR
+
   constructor(player: IPlayerCreate, public client: Client) {
     super(player.username, 'minecraft:player')
 
@@ -162,6 +164,6 @@ export class Player extends Human<PlayerEvents> {
 }
 
 import { Client } from './network/Client'
-import { Login, TextType, TitleType, Gamemode } from '@strdstnet/protocol'
+import { Login, TextType, TitleType, Gamemode, PlayerPermissions } from '@strdstnet/protocol'
 import { Metadata } from '@strdstnet/utils.binary/lib/Metadata'
 

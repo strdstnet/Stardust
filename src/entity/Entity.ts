@@ -251,5 +251,5 @@ import { BoundingBox } from '../utils/BoundingBox'
 import { mtRand } from '../utils/mtRand'
 import { Attr, Attribute } from './Attribute'
 import { Metadata } from '@strdstnet/utils.binary/lib/Metadata'
-import { ItemIDs, ItemIsDurable, MetadataFlag, MetadataGeneric, MetadataType, Namespaced, Vector3 } from '@strdstnet/utils.binary'
+import { MetadataFlag, MetadataGeneric, MetadataType, Namespaced, Vector3 } from '@strdstnet/utils.binary'
 
