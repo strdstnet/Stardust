@@ -1161,13 +1161,13 @@
   resolved "https://npm.pkg.github.com/download/@strdst/utils.nbt/1.0.2/2ac0ab43add66538c356ebc40e536e300a88bdcd65f2566e7b7110e81c49091d#df949dc867568e290bc02dd9f2d2b591426d35a6"
   integrity sha512-vfGQuAlAfWYneIjHPDyQ4Z4+VUh85RaygVAg6PoZA3yiY51eGyMOMf+VHoSEmAcIFjr8rJZCb5Tenfcz0EfFBw==
 
-"@strdstnet/protocol@1.100.7":
-  version "1.100.7"
-  resolved "https://npm.pkg.github.com/download/@strdstnet/protocol/1.100.7/cc49c869019eac536b38fa8e1c3d0f832cbcc33056d63af03829eb057e4766da#e0122e686da52509fb569b9fab599f6c07d3a8ae"
-  integrity sha512-oBS3MJNaH6ctevGRbZAwJefdpQvgiyqXZFabR3KSLoeX+G9STxAgVIX/PNw54VxJQZTVdjdRYSf9+8WNV1XZ8A==
+"@strdstnet/protocol@1.201.0":
+  version "1.201.0"
+  resolved "https://npm.pkg.github.com/download/@strdstnet/protocol/1.201.0/dc9690ad4b2f72254a0440d5c4e6206e490b34995bd1ec43edbfbb8b00913321#a52378814abeb0b1d7702bc86774caa1a323c8ad"
+  integrity sha512-UeNt6O5wymZ0O3kti/DzNaXF+7TqCu9RWxl8X26hd0QDbCyi7czQKlWjYKY/mQmIY+vMRKOWacHjnFfvHI6B6A==
   dependencies:
     "@strdst/utils.nbt" "^1.0.2"
-    "@strdstnet/utils.binary" "^1.1.2"
+    "@strdstnet/utils.binary" "^1.1.3"
 
 "@strdstnet/utils.anvil@^1.0.4":
   version "1.0.9"
@@ -1182,6 +1182,15 @@
   version "1.1.2"
   resolved "https://npm.pkg.github.com/download/@strdstnet/utils.binary/1.1.2/a144a5610b49c185f89c3fb0103194a3400e4b14e73c6004ffba4f6d46932f02#8381c50c579f52fac3e78ee6c298664a0dfc5259"
   integrity sha512-tZKeGGSJ1Hoa8xOhcZ905cDECaaqVCTFoNK+ejDziWOqj9EjUYkgYqsMDnbAfIDW5lx0gmeVA3LvjtQNtVZH/w==
+  dependencies:
+    "@strdst/utils.binary" "^1.0.5"
+    "@strdst/utils.nbt" "^1.0.2"
+    uuid "^8.3.0"
+
+"@strdstnet/utils.binary@^1.1.3":
+  version "1.1.3"
+  resolved "https://npm.pkg.github.com/download/@strdstnet/utils.binary/1.1.3/b13dc291208885b990084359c1c80e21f34db947228d078434419d8f76ce83da#62329e007113bc8ca412e845294ade5eb2eaec67"
+  integrity sha512-3Xl0Qh+YKJVUBfPSYI4BqfxotVajiAhRT1Kg1UCXP5ihmU9LBOip1cEmuuAM7cWZssp5+T0o4CKOPxIu6jzdlQ==
   dependencies:
     "@strdst/utils.binary" "^1.0.5"
     "@strdst/utils.nbt" "^1.0.2"

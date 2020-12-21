@@ -32,7 +32,7 @@ export class Player extends Human<PlayerEvents> {
   public identityPublicKey!: string
   public skinData!: SkinData
 
-  public permissionLevel = PlayerPermissions.VISITOR
+  public permissionLevel = PlayerPermissions.MEMBER
 
   constructor(player: IPlayerCreate, public client: Client) {
     super(player.username, 'minecraft:player')
