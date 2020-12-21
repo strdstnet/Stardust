@@ -7,7 +7,7 @@ export interface ICreateCommand {
   trigger: string,
   description?: string,
   args?: ICommandArgument[],
-  usage?: string,
+  consoleArgs?: ICommandArgument[],
   permission?: CommandPermissions,
   playerExecutable?: boolean,
   consoleExecutable?: boolean,

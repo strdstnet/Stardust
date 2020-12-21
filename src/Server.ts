@@ -263,6 +263,14 @@ export class Server extends EventEmitter<ServerEvents> implements IServer {
     return this.players.get(id) || null
   }
 
+  public getPlayerByUsername(username: string): Player | null {
+    for(const [, player] of this.players) {
+      if(player.username.toLowerCase() === username.toLowerCase()) return player
+    }
+
+    return null
+  }
+
   public removePlayer(id: bigint): void {
     const player = this.players.get(id)
     if(!player) return
