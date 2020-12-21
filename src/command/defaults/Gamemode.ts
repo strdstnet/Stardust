@@ -1,10 +1,10 @@
-import { ArgType, Gamemode } from '@strdstnet/protocol'
+import { ArgType, Gamemode as GM } from '@strdstnet/protocol'
 import { Player } from '../../Player'
 import { Server } from '../../Server'
 import { ICommandExecute } from '../../types/commands'
 import { Command } from '../Command'
 
-export class SetGamemode extends Command {
+export class Gamemode extends Command {
 
   constructor() {
     super({
@@ -29,18 +29,19 @@ export class SetGamemode extends Command {
     }
 
     const [ gameMode, target ] = args
+    const gm = parseInt(gameMode, 10)
 
     if(target) {
       const player = Server.i.getPlayerByUsername(target)
 
       if(player) {
-        player.setGamemode(gameMode as unknown as Gamemode)
+        player.setGamemode(gm as GM)
         executor.sendMessage(`Set gamemode to ${gameMode} for ${player.username}`)
       } else {
         executor.sendMessage('Player not found')
       }
     } else if(executor instanceof Player) {
-      executor.setGamemode(gameMode as unknown as Gamemode)
+      executor.setGamemode(gm as GM)
       executor.sendMessage(`Set own gamemode to ${gameMode}`)
     }
   }
