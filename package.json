@@ -1,7 +1,7 @@
 {
   "name": "@strdstnet/stardust",
-  "repository": "https://github.com/HyperstoneNet/Stardust.git",
-  "author": "Hyperstone Developers <devs@hyperstone.io>",
+  "repository": "https://github.com/strdstnet/Stardust.git",
+  "author": "Stardust Developers <devs@strdst.tech>",
   "main": "lib/index.js",
   "types": "lib/index.d.ts",
   "scripts": {
