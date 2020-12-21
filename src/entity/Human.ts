@@ -1,10 +1,11 @@
 import { Creature } from './Creature'
 
-type HumanContainers = [Inventory, EnderChest, Armor, ...Container[]]
+type HumanContainers = [Inventory, EnderChest, Armor]
 
 interface IHumanEvents {
   _: () => void,
 }
+
 
 export class Human<Events extends EventDict = EventDict, Containers extends Container[] = []> extends Creature<Events & IHumanEvents, [...HumanContainers, ...Containers]> {
 

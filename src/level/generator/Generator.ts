@@ -2,6 +2,8 @@ import { Chunk } from '../Chunk'
 
 export abstract class Generator {
 
-  public abstract async chunk(x: number, z: number): Promise<Chunk>
+  public async chunk(x: number, z: number): Promise<Chunk> {
+    return null as any as Chunk
+  }
 
 }
