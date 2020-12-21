@@ -45,6 +45,10 @@ export class Player extends Human<PlayerEvents> {
     })
   }
 
+  public get displayName(): string {
+    return this.username
+  }
+
   public get clientId(): bigint {
     return this.client.id
   }

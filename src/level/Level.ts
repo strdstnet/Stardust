@@ -36,12 +36,11 @@ export class Level {
   }
 
   public onTick(): void {
-    const blocks = this.dirtyBlocks.values()
-    this.dirtyBlocks.clear()
-
-    for(const [pos, block] of blocks) {
+    for(const [pos, block] of this.dirtyBlocks) {
       Server.i.updateBlock(pos, block)
     }
+
+    this.dirtyBlocks.clear()
   }
 
   public static getChunkId(x: number, z: number): string {

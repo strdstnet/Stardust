@@ -89,7 +89,7 @@ export abstract class Living<Events extends EventDict = EventDict, Containers ex
     if(cause) this.lastDamageCause = cause
     if(args) this.lastDamageArgs = args
 
-    // this._health.set(0)
+    this._health.set(0)
   }
 
   public get canAttack(): boolean {

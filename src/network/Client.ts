@@ -407,7 +407,13 @@ export class Client {
       headYaw,
     } = packet.props
 
-    this.player.position.update(new EntityPosition(x, y, z, pitch, yaw, headYaw), PosUpdateType.PLAYER_MOVEMENT)
+    if(!this.player.alive) return
+
+    if(y < 0) {
+      // this.player.kill(DamageCause.VOID, [this.player.displayName])
+    } else {
+      this.player.position.update(new EntityPosition(x, y, z, pitch, yaw, headYaw), PosUpdateType.PLAYER_MOVEMENT)
+    }
 
     this.sendNearbyChunks()
   }
@@ -966,7 +972,7 @@ import { Player } from '../Player'
 import { Chunk } from '../level/Chunk'
 import { DummyAddress, IClientArgs } from '../types/network'
 import { Chat } from '../Chat'
-import { LevelEventType, PlayerEventAction } from '../types/player'
+import { DamageCause, LevelEventType, PlayerEventAction } from '../types/player'
 import { EntityPosition, PosUpdateType } from '../entity/EntityPosition'
 import { ContainerId, ContainerType} from '../types/containers'
 import { Container } from '../containers/Container'
