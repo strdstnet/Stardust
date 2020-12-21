@@ -37,11 +37,18 @@ export class Human<Events extends EventDict = EventDict, Containers extends Cont
     this.inventory.add(grass)
     this.inventory.add(ItemMap.get('minecraft:stone'))
     this.inventory.add(ItemMap.get('minecraft:dirt'))
-    this.inventory.add(ItemMap.get('minecraft:netherite_sword'))
-    this.inventory.add(ItemMap.get('minecraft:netherite_axe'))
-    this.inventory.add(ItemMap.get('minecraft:netherite_shovel'))
-    this.inventory.add(ItemMap.get('minecraft:diamond_sword'))
-    this.inventory.add(ItemMap.get('minecraft:diamond_pickaxe'))
+    this.inventory.add(ItemMap.get('minecraft:iron_helmet'))
+    // this.inventory.add(ItemMap.get('minecraft:jungle_button'))
+    // this.inventory.add(ItemMap.get('minecraft:netherite_shovel'))
+    // this.inventory.add(ItemMap.get('minecraft:diamond_sword'))
+    // this.inventory.add(ItemMap.get('minecraft:diamond_pickaxe'))
+
+    // const axe = ItemMap.get('minecraft:jungle_button')
+    // console.log(axe)
+    // if(axe) {
+    //   console.log(axe.nid)
+    //   console.log(axe.rid)
+    // }
   }
 
   protected addAttributes(): void {

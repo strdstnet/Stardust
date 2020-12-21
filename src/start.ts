@@ -8,7 +8,7 @@ import { Server } from './Server'
 
 Server.start({
   port: process.argv[2] ? parseInt(process.argv[2]) : 19132,
-  level: process.argv[3] ? process.argv[3] : 'hsn',
+  level: process.argv[3] ? process.argv[3] : 'bw2',
   maxPlayers: 200000,
   motd: {
     line1: 'HyperstoneNetwork',

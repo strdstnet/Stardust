@@ -119,11 +119,11 @@ export class Server extends EventEmitter<ServerEvents> implements IServer {
   }
 
   public static async start(opts?: Partial<ServerOpts>): Promise<Server> {
-    await BlockMap.populate()
-    this.logger.as('BlockMap').info(`Registered ${BlockMap.count} blocks`)
-
     await ItemMap.registerItems()
     this.logger.as('ItemMap').info(`Registered ${ItemMap.count} items`)
+
+    await BlockMap.populate()
+    this.logger.as('BlockMap').info(`Registered ${BlockMap.count} blocks`)
 
     Attribute.initAttributes()
     GlobalTick.start(Server.TPS)

@@ -1,7 +1,7 @@
 import { IItemTableItem } from '@strdstnet/protocol'
-import { IItem, Namespaced } from '@strdstnet/utils.binary'
+import { IItem, Namespaced, ItemRuntimes } from '@strdstnet/utils.binary'
 import { Item } from './Item'
-import ItemDefinition from './items.json'
+import Tools from './tools.json'
 
 export class ItemMap {
 
@@ -51,8 +51,10 @@ export class ItemMap {
     return item ? (clone ? item.clone() : item) : null
   }
 
-  private static registerItem(name: string): Item {
-    const item = new Item(name)
+  private static registerItem(nid: string): Item {
+    if(this.items.has(nid)) return this.items.get(nid) as Item
+
+    const item = new Item(nid)
     this.add(item)
 
     return item
@@ -61,16 +63,12 @@ export class ItemMap {
   public static async registerItems(): Promise<void> {
     this.clear()
 
-    for await(const { name } of ItemDefinition.standard) {
-      this.registerItem(name)
-    }
-
-    for await(const { defaults, items } of ItemDefinition.tools) {
+    for await(const { defaults, items } of Tools) {
       for await(const item of items) {
         const props = Object.assign({}, defaults, item) as any
 
         this.add(new Tool(
-          item.name,
+          item.nid,
           props.blockType,
           props.entityDmg,
           props.blockDmg,
@@ -81,6 +79,10 @@ export class ItemMap {
           props.durability,
         ))
       }
+    }
+
+    for await(const nid of Object.keys(ItemRuntimes.toRuntime)) {
+      this.registerItem(nid)
     }
   }
 

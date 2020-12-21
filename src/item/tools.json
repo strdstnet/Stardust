@@ -1,0 +1,204 @@
+[
+  {
+    "nid": "Swords",
+    "defaults": {
+      "blockType": 1,
+      "entityDmg": 1,
+      "blockDmg": 2,
+      "miningMod": 1.5,
+      "harvestLvl": 1,
+      "miningEff": 10
+    },
+    "items": [
+      {
+        "nid": "minecraft:iron_sword",
+        "attackPts": 7,
+        "durability": 251
+      },
+      {
+        "nid": "minecraft:wooden_sword",
+        "attackPts": 5,
+        "durability": 60
+      },
+      {
+        "nid": "minecraft:stone_sword",
+        "attackPts": 6,
+        "durability": 132
+      },
+      {
+        "nid": "minecraft:diamond_sword",
+        "attackPts": 8,
+        "durability": 1562
+      },
+      {
+        "nid": "minecraft:golden_sword",
+        "attackPts": 5,
+        "durability": 33
+      },
+      {
+        "nid": "minecraft:netherite_sword",
+        "attackPts": 9,
+        "durability": 2032
+      }
+    ]
+  },
+  {
+    "nid": "Axes",
+    "defaults": {
+      "blockType": 8,
+      "entityDmg": 2,
+      "blockDmg": 1,
+      "miningMod": 1
+    },
+    "items": [
+      {
+        "nid": "minecraft:iron_axe",
+        "attackPts": 6,
+        "durability": 251,
+        "harvestLvl": 4,
+        "miningEff": 6
+      },
+      {
+        "nid": "minecraft:wooden_axe",
+        "attackPts": 4,
+        "durability": 60,
+        "harvestLvl": 1,
+        "miningEff": 2
+      },
+      {
+        "nid": "minecraft:stone_axe",
+        "attackPts": 5,
+        "durability": 132,
+        "harvestLvl": 3,
+        "miningEff": 4
+      },
+      {
+        "nid": "minecraft:diamond_axe",
+        "attackPts": 7,
+        "durability": 1562,
+        "harvestLvl": 5,
+        "miningEff": 8
+      },
+      {
+        "nid": "minecraft:golden_axe",
+        "attackPts": 4,
+        "durability": 33,
+        "harvestLvl": 2,
+        "miningEff": 12
+      },
+      {
+        "nid": "minecraft:netherite_axe",
+        "attackPts": 8,
+        "durability": 2032,
+        "harvestLvl": 6,
+        "miningEff": 9
+      }
+    ]
+  },
+  {
+    "nid": "Shovels",
+    "defaults": {
+      "blockType": 2,
+      "entityDmg": 2,
+      "blockDmg": 1,
+      "miningMod": 1
+    },
+    "items": [
+      {
+        "nid": "minecraft:iron_shovel",
+        "attackPts": 4,
+        "durability": 251,
+        "harvestLvl": 4,
+        "miningEff": 6
+      },
+      {
+        "nid": "minecraft:wooden_shovel",
+        "attackPts": 2,
+        "durability": 60,
+        "harvestLvl": 1,
+        "miningEff": 2
+      },
+      {
+        "nid": "minecraft:stone_shovel",
+        "attackPts": 3,
+        "durability": 132,
+        "harvestLvl": 3,
+        "miningEff": 4
+      },
+      {
+        "nid": "minecraft:diamond_shovel",
+        "attackPts": 5,
+        "durability": 1562,
+        "harvestLvl": 5,
+        "miningEff": 8
+      },
+      {
+        "nid": "minecraft:golden_shovel",
+        "attackPts": 2,
+        "durability": 33,
+        "harvestLvl": 2,
+        "miningEff": 12
+      },
+      {
+        "nid": "minecraft:netherite_shovel",
+        "attackPts": 6,
+        "durability": 2032,
+        "harvestLvl": 6,
+        "miningEff": 9
+      }
+    ]
+  },
+  {
+    "nid": "Pickaxes",
+    "defaults": {
+      "blockType": 4,
+      "entityDmg": 2,
+      "blockDmg": 1,
+      "miningMod": 1
+    },
+    "items": [
+      {
+        "nid": "minecraft:iron_pickaxe",
+        "attackPts": 5,
+        "durability": 251,
+        "harvestLvl": 4,
+        "miningEff": 6
+      },
+      {
+        "nid": "minecraft:wooden_pickaxe",
+        "attackPts": 3,
+        "durability": 60,
+        "harvestLvl": 1,
+        "miningEff": 2
+      },
+      {
+        "nid": "minecraft:stone_pickaxe",
+        "attackPts": 4,
+        "durability": 132,
+        "harvestLvl": 3,
+        "miningEff": 4
+      },
+      {
+        "nid": "minecraft:diamond_pickaxe",
+        "attackPts": 6,
+        "durability": 1562,
+        "harvestLvl": 5,
+        "miningEff": 8
+      },
+      {
+        "nid": "minecraft:golden_pickaxe",
+        "attackPts": 3,
+        "durability": 33,
+        "harvestLvl": 2,
+        "miningEff": 12
+      },
+      {
+        "nid": "minecraft:netherite_pickaxe",
+        "attackPts": 7,
+        "durability": 2032,
+        "harvestLvl": 6,
+        "miningEff": 9
+      }
+    ]
+  }
+]
