@@ -1,6 +1,14 @@
 import * as _Stardust from './index'
+import * as _Protocol from '@strdstnet/protocol'
+import * as _Binary from '@strdstnet/utils.binary'
+import * as _Events from '@strdstnet/utils.events'
+import * as _NBT from '@strdst/utils.nbt'
 
 global.Stardust = _Stardust
+global.Protocol = _Protocol
+global.Binary = _Binary
+global.Events = _Events
+global.NBT = _NBT
 
 import Logger from '@bwatton/logger'
 
