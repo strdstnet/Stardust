@@ -1,6 +1,5 @@
 import * as _Stardust from './index'
 
-// eslint-disable-next-line no-var
 global.Stardust = _Stardust
 
 import Logger from '@bwatton/logger'
