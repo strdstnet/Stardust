@@ -32,7 +32,8 @@ export class PluginManager {
       const PATH = path.join(PLUGIN_DIR, item)
 
       const stat = fs.statSync(PATH)
-      if(!stat.isDirectory()) continue
+      // if(!stat.isDirectory()) continue
+      if(!stat.isFile()) continue
 
       const module = await import(PATH)
 
