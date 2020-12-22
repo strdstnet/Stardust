@@ -2,7 +2,7 @@
   "name": "@strdstnet/stardust",
   "repository": "https://github.com/strdstnet/Stardust.git",
   "author": "Stardust Developers <devs@strdst.tech>",
-  "main": "lib/Stardust.d.ts",
+  "main": "lib/index.js",
   "types": "lib/Stardust.d.ts",
   "scripts": {
     "start": "nodemon",
@@ -11,7 +11,7 @@
     "test": "jest",
     "clear-test-cache": "jest --clearCache",
     "gb": "barrelsby --delete -d src -l below -q -S -e @types/",
-    "build": "rm -rf lib && tsc && cp src/Stardust.d.ts lib/ && rm -r lib/*.js lib/**/*.js"
+    "build": "rm -rf lib && tsc && cp src/Stardust.d.ts lib/ && rm -r lib/*.js lib/**/*.js && touch lib/index.js"
   },
   "dependencies": {
     "@bwatton/logger": "^1.0.4",
