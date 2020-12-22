@@ -166,7 +166,7 @@ export class Level {
     return canPlace
   }
 
-  public dropItem(location: Vector3, iItem: IItem): void {
+  public async dropItem(location: Vector3, iItem: IItem): Promise<void> {
     const item = ItemMap.from(iItem)
     if(!item) return
 
@@ -179,6 +179,14 @@ export class Level {
     this.entities.set(droppedItem.id, droppedItem)
 
     Server.i.spawnToAll(droppedItem)
+
+    const items = this.getEntitiesNear(droppedItem, 1)
+
+    for (const item of await items) {
+      if (item instanceof DroppedItem) {
+        droppedItem.position.update(item.position)
+      }
+    }
   }
 
   public addEntity(entity: Entity<any>): void {
