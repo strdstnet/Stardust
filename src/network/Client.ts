@@ -766,6 +766,16 @@ export class Client {
     this.sendBatched(new PlayStatus({
       status: PlayStatusType.PLAYER_SPAWN,
     }))
+
+    setTimeout(() => {
+      this.sendBatched(new FormRequest(
+        new Form()
+          .setTitle('Test Form')
+          .setContent('Did it work?')
+          .addButton(new FormButton().setText('Test Button'))
+          .encode(),
+      ))
+    }, 10000)
   }
 
   private async sendNearbyChunks(): Promise<void> {
@@ -983,8 +993,9 @@ import { Living } from '../entity/Living'
 import { Attr, Attribute } from '../entity/Attribute'
 import { PlayerEvent } from '../events/PlayerEvent'
 import { CommandHandler } from '../command/CommandHandler'
-import { ACK, AddPlayer, AdventureSettings, AdventureSettingsFlag, Animate, AvailableCommands, BatchedPacket, BiomeDefinitionList, BitFlag, BundledPacket, bundlePackets, ChunkRadiusUpdated, CommandPermissions, CommandRequest, ConnectedPing, ConnectedPong, ConnectionRequest, ConnectionRequestAccepted, ContainerClose, ContainerNotification, ContainerOpen, ContainerTransaction, ContainerTransactionType, ContainerUpdate, CreativeContent, Disconnect, Emote, EntityAnimation, EntityDefinitionList, EntityEquipment, EntityMetadata, EzTransfer, Gamemode, IBundledPacket, Interact, InteractAction, ItemComponent, ITransaction, LevelChunk, LevelSound, Login, MovePlayer, NAK, NetworkChunkPublisher, NewIncomingConnection, Packet, PacketBatch, PacketBundle, Packets, PacketViolationWarning, PartialPacket, PlayerAction, PlayerList, PlayerListType, PlayStatus, PlayStatusType, Protocol, Reliability, RequestChunkRadius, ResourcePackResponseStatus, ResourcePacksInfo, ResourcePacksResponse, ResourcePacksStack, Respawn, RespawnState, SetGamemode, SetLocalPlayerInitialized, SetTitle, StartGame, Text, TextType, TickSync, TitleCommand, TitleType, UpdateAttributes, UseItemOnEntityType, UseItemType, WorldSound } from '@strdstnet/protocol'
+import { ACK, AddPlayer, AdventureSettings, AdventureSettingsFlag, Animate, AvailableCommands, BatchedPacket, BiomeDefinitionList, BitFlag, BundledPacket, bundlePackets, ChunkRadiusUpdated, CommandPermissions, CommandRequest, ConnectedPing, ConnectedPong, ConnectionRequest, ConnectionRequestAccepted, ContainerClose, ContainerNotification, ContainerOpen, ContainerTransaction, ContainerTransactionType, ContainerUpdate, CreativeContent, Disconnect, Emote, EntityAnimation, EntityDefinitionList, EntityEquipment, EntityMetadata, EzTransfer, FormRequest, Gamemode, IBundledPacket, Interact, InteractAction, ItemComponent, ITransaction, LevelChunk, LevelSound, Login, MovePlayer, NAK, NetworkChunkPublisher, NewIncomingConnection, Packet, PacketBatch, PacketBundle, Packets, PacketViolationWarning, PartialPacket, PlayerAction, PlayerList, PlayerListType, PlayStatus, PlayStatusType, Protocol, Reliability, RequestChunkRadius, ResourcePackResponseStatus, ResourcePacksInfo, ResourcePacksResponse, ResourcePacksStack, Respawn, RespawnState, SetGamemode, SetLocalPlayerInitialized, SetTitle, StartGame, Text, TextType, TickSync, TitleCommand, TitleType, UpdateAttributes, UseItemOnEntityType, UseItemType, WorldSound } from '@strdstnet/protocol'
 import { BinaryData, IAddress, IItem, MetadataGeneric, Namespaced, Vector3 } from '@strdstnet/utils.binary'
 import { Metadata } from '@strdstnet/utils.binary/lib/Metadata'
 import { ItemMap } from '../item/ItemMap'
+import { Form, FormButton } from '../form'
 
