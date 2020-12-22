@@ -51,6 +51,8 @@ export abstract class Living<Events extends EventDict = EventDict, Containers ex
     this.lastDamageArgs = causeArgs
     this._health.set(this.health - halfHearts)
 
+    Server.i.broadcastEntityAnimation(this, EntityAnimationType.HURT, 0)
+
     if(this.health <= 0) {
       this.kill()
     }
