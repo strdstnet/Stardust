@@ -1156,6 +1156,14 @@
     "@strdst/utils.nbt" "^1.0.2"
     uuid "^8.3.0"
 
+"@strdst/utils.binary@^1.0.8":
+  version "1.0.8"
+  resolved "https://npm.pkg.github.com/download/@strdst/utils.binary/1.0.8/61bde59d41ac9858a57ccc0e9462a81b990cd3e3fe507fccef682376409bbdc9#91b38fd2a7cfc7b6bec4b79dd8f946cda61c97b5"
+  integrity sha512-n+GanxNhm1jsd9V43wyDBuQaaxOhxHk/5ranyzKh833Ex5XpBsHzOD6TIo8MOpseF+Cy2h9MQD+tanlbM4mJLQ==
+  dependencies:
+    "@strdst/utils.nbt" "^1.0.2"
+    uuid "^8.3.0"
+
 "@strdst/utils.nbt@^1.0.2":
   version "1.0.2"
   resolved "https://npm.pkg.github.com/download/@strdst/utils.nbt/1.0.2/2ac0ab43add66538c356ebc40e536e300a88bdcd65f2566e7b7110e81c49091d#df949dc867568e290bc02dd9f2d2b591426d35a6"
@@ -1187,12 +1195,12 @@
     "@strdst/utils.nbt" "^1.0.2"
     uuid "^8.3.0"
 
-"@strdstnet/utils.binary@^1.1.5":
-  version "1.1.5"
-  resolved "https://npm.pkg.github.com/download/@strdstnet/utils.binary/1.1.5/64c879b8d35ac15c6a8c5496f208ec6eddc842b33c99598ffee38fae0357b0e5#b584bff9b93da37e503f1863cb55c3d4517b6989"
-  integrity sha512-hkGlwpVmty7xZsKZBirgqOBrsCEwiUtzBIiTrZ7LxLAD/dKNkI5ZeDXFCb57nky6JLsXgU2kH6eaWTs0cFZH6g==
+"@strdstnet/utils.binary@^1.1.7":
+  version "1.1.7"
+  resolved "https://npm.pkg.github.com/download/@strdstnet/utils.binary/1.1.7/f8780035060c84dfe12076696e0835a6330d204585114726ac235442bacacc8c#5fb044a93e90c7fdac5256fb19cb44c5ebd0cfc6"
+  integrity sha512-QagmwGb2RC2+2GkL4eqyAFsCJ9+Z9QuZ+Ee2N09jjaV77dSxGmiYy3wF3JFPZ0j0ZBstRN9/jwL50GFCTgddCA==
   dependencies:
-    "@strdst/utils.binary" "^1.0.5"
+    "@strdst/utils.binary" "^1.0.8"
     "@strdst/utils.nbt" "^1.0.2"
     uuid "^8.3.0"
 
@@ -1311,10 +1319,10 @@
   resolved "https://registry.yarnpkg.com/@types/json-schema/-/json-schema-7.0.5.tgz#dcce4430e64b443ba8945f0290fb564ad5bac6dd"
   integrity sha512-7+2BITlgjgDhH0vvwZU/HZJVyk+2XUlvxXe8dFMedNX/aMkaOq++rMAFXc0tM7ij15QaWlbdQASBR9dihi+bDQ==
 
-"@types/node@*", "@types/node@^14.14.10":
-  version "14.14.10"
-  resolved "https://registry.yarnpkg.com/@types/node/-/node-14.14.10.tgz#5958a82e41863cfc71f2307b3748e3491ba03785"
-  integrity sha512-J32dgx2hw8vXrSbu4ZlVhn1Nm3GbeCFNw2FWL8S5QKucHGY0cyNwjdQdO+KMBZ4wpmC7KhLCiNsdk1RFRIYUQQ==
+"@types/node@*", "@types/node@^14.14.21":
+  version "14.14.21"
+  resolved "https://registry.yarnpkg.com/@types/node/-/node-14.14.21.tgz#d934aacc22424fe9622ebf6857370c052eae464e"
+  integrity sha512-cHYfKsnwllYhjOzuC5q1VpguABBeecUp24yFluHpn/BQaVxB1CuQ1FSRZCzrPxrkIfWISXV2LbeoBthLWg0+0A==
 
 "@types/node@^12.7.2":
   version "12.12.53"
