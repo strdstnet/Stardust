@@ -11,9 +11,7 @@ export class DroppedItem extends Entity {
 
   public age = 0
 
-  private pickupDelay = Math.round(Server.TPS / 3)
-
-  constructor(public item: Item, public fromFishing = false) {
+  constructor(public item: Item, public pickupDelay: number, public fromFishing = false) {
     super('Dropped Item', 'minecraft:item', [0.25, 0.25])
   }
 

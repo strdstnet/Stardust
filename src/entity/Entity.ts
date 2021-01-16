@@ -14,6 +14,8 @@ export abstract class Entity<Events extends EventDict = EventDict, Containers ex
 
   public baseOffset = 0
 
+  public temporalVector = new Vector3(0, 0, 0)
+
   public id = BigInt(++Entity.entityCount)
 
   public attributeMap = new AttributeMap()
@@ -70,16 +72,16 @@ export abstract class Entity<Events extends EventDict = EventDict, Containers ex
   }
 
   protected doFallTick(): void {
-    const block = this.level.getBlockAt(Math.floor(this.position.x), Math.floor(this.position.y) - 1, Math.floor(this.position.z))
-    if(this.falling) {
-      const fallRate = Math.min(this.fallRate, this.position.y - this.fallingTo)
-      this.position.update(this.position.x, this.position.y - fallRate, this.position.z)
+    // const block = this.level.getBlockAt(Math.floor(this.position.x), Math.floor(this.position.y) - 1, Math.floor(this.position.z))
+    // if(this.falling) {
+    //   const fallRate = Math.min(this.fallRate, this.position.y - this.fallingTo)
+    //   this.position.update(this.position.x, this.position.y - fallRate, this.position.z)
 
-      if(this.position.y <= this.fallingTo + 1) this.fallingTo = -1
-    } else if(block.nid === Namespaced.AIR) {
-      this.fallingTo = this.position.y - 1
-      this.position.update(this.position.x, this.position.y - this.fallRate, this.position.z)
-    }
+    //   if(this.position.y <= this.fallingTo + 1) this.fallingTo = -1
+    // } else if(block.nid === Namespaced.AIR) {
+    //   this.fallingTo = this.position.y - 1
+    //   this.position.update(this.position.x, this.position.y - this.fallRate, this.position.z)
+    // }
   }
 
   protected applyForces(): void {
@@ -97,6 +99,20 @@ export abstract class Entity<Events extends EventDict = EventDict, Containers ex
 
     this.position.motion.x *= friction
     this.position.motion.z *= friction
+  }
+
+  protected checkObstruction(x: number, y: number, z: number): boolean {
+    //TODO: Implement this
+
+    const floorX = Math.floor(x)
+    const floorY = Math.floor(y)
+    const floorZ = Math.floor(z)
+
+    const diffX = x - floorX
+    const diffY = y - floorY
+    const diffZ = z - floorZ
+
+    return false
   }
 
   public get type(): string {
@@ -182,6 +198,16 @@ export abstract class Entity<Events extends EventDict = EventDict, Containers ex
     }
   }
 
+  public directionVector(): Vector3 {
+    const y = -Math.sin(deg2Rad(this.position.pitch))
+    const xz = Math.cos(deg2Rad(this.position.pitch))
+    const x = -xz * Math.sin(deg2Rad(this.position.yaw))
+    const z = xz * Math.cos(deg2Rad(this.position.yaw))
+
+    return this.temporalVector.setComponents(x, y, z).normalize()
+  }
+
+
   public getAttributeValue(attr: Attr, def = 0): number {
     const attribute = this.attributeMap.get(attr)
 
@@ -252,4 +278,5 @@ import { mtRand } from '../utils/mtRand'
 import { Attr, Attribute } from './Attribute'
 import { Metadata } from '@strdstnet/utils.binary/lib/Metadata'
 import { MetadataFlag, MetadataGeneric, MetadataType, Namespaced, Vector3 } from '@strdstnet/utils.binary'
+import { deg2Rad } from '../utils/deg2rad'
 
