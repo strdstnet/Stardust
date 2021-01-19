@@ -8,8 +8,7 @@ export class Transfer extends Command {
 
   constructor() {
     super({
-      name: 'Transfer',
-      trigger: 'transfer',
+      name: 'transfer',
       description: 'Transfer to a different server',
       args: [
         { name: 'type', type: ArgType.MESSAGE, optional: false },

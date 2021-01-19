@@ -7,8 +7,7 @@ export class Say extends Command {
 
   constructor() {
     super({
-      name: 'Say',
-      trigger: 'say',
+      name: 'say',
       description: 'Say something',
       args: [
         { name: 'message', type: ArgType.RAW_TEXT, optional: false },

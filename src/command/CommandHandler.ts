@@ -12,7 +12,7 @@ export abstract class CommandHandler {
   public static async init(): Promise<void> {
     for(const Command of Object.values(DefaultCommands)) {
       const cmd = new Command()
-      this.commands.set(cmd.trigger, cmd)
+      this.commands.set(cmd.name, cmd)
     }
   }
 

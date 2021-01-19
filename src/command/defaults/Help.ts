@@ -5,8 +5,7 @@ export class Help extends Command {
 
   constructor() {
     super({
-      name: 'Help',
-      trigger: 'help',
+      name: 'help',
       description: 'Get command help',
     })
   }

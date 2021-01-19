@@ -8,8 +8,7 @@ export class Gamemode extends Command {
 
   constructor() {
     super({
-      name: 'Gamemode',
-      trigger: 'gamemode',
+      name: 'gamemode',
       description: 'Sets a player\'s game mode',
       args: [
         { name: 'gameMode', type: ArgType.INT, optional: false },

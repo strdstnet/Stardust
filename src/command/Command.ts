@@ -1,23 +1,23 @@
 
 
-import { ArgType, CommandPermissions, ICommandArgument } from '@strdstnet/protocol'
+import { ArgType, CommandPermissions, ICommand, ICommandArgument } from '@strdstnet/protocol'
 import { Console } from '../console/Console'
 import { Player } from '../Player'
 import { ICommandExecute, ICreateCommand } from '../types/commands'
 
-export abstract class Command {
+export abstract class Command implements ICommand {
 
   public name: string
-  public trigger: string
   public description: string
+  public aliases: string[]
   public args: ICommandArgument[]
   public consoleArgs: ICommandArgument[]
   public permission: CommandPermissions
 
   constructor(cmd: ICreateCommand) {
-    this.name = cmd.name
-    this.trigger = cmd.trigger
+    this.name = cmd.name.toLowerCase()
     this.description = cmd.description || ''
+    this.aliases = cmd.aliases || []
     this.args = cmd.args || []
     this.consoleArgs = cmd.consoleArgs || this.args
     this.permission = typeof cmd.permission !== 'undefined' ? cmd.permission : CommandPermissions.NORMAL
@@ -53,7 +53,7 @@ export abstract class Command {
 
   public getUsageFor(executor: 'player' | 'console'): string {
     const args = executor === 'console' ? this.consoleArgs : this.args
-    let usage = `Usage: /${this.trigger}`
+    let usage = `Usage: /${this.name}`
 
     for(const arg of args) {
       if(arg.optional) usage += ` [${arg.name}: ${Command.argTypeToString(arg.type)}]`

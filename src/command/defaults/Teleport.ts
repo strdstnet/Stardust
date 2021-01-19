@@ -8,9 +8,9 @@ export class Teleport extends Command {
 
   constructor() {
     super({
-      name: 'Teleport',
-      trigger: 'tp',
+      name: 'teleport',
       description: 'Teleport to a player or a set of coordinates',
+      aliases: ['tp'],
       args: [
         { name: 'x', type: ArgType.INT, optional: false },
         { name: 'y', type: ArgType.INT, optional: false },

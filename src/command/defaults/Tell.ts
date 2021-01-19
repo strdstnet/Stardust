@@ -7,8 +7,7 @@ export class Tell extends Command {
 
   constructor() {
     super({
-      name: 'Tell',
-      trigger: 'tell',
+      name: 'tell',
       description: 'Send someone a private message',
       args: [
         { name: 'player', type: ArgType.TARGET, optional: false },

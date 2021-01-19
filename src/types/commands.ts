@@ -4,8 +4,8 @@ import { CommandPermissions, ICommandArgument } from '@strdstnet/protocol'
 
 export interface ICreateCommand {
   name: string,
-  trigger: string,
   description?: string,
+  aliases?: string[],
   args?: ICommandArgument[],
   consoleArgs?: ICommandArgument[],
   permission?: CommandPermissions,
