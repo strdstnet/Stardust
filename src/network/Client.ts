@@ -506,7 +506,7 @@ export class Client {
   private handleNormalTransaction(transaction: ContainerTransaction): void {
     const { actions, transaction: pos } = transaction.props
 
-    const motion = this.player.directionVector()?.multiply(0.4)
+    const motion = this.player.directionVector().multiply(0.4)
 
     Server.i.level.dropItem(new Vector3(this.player.position.x, this.player.position.y, this.player.position.z), actions[0].newItem, motion, 40)
   }

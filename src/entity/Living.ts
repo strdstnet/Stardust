@@ -19,14 +19,25 @@ export abstract class Living<Events extends EventDict = EventDict, Containers ex
   protected lastDamageCause: DamageCause = DamageCause.GENERIC
   protected lastDamageArgs: string[] = []
 
+  public isAlive = true
+
   public async onTick(): Promise<void> {
     await super.onTick()
+
+    this.doEntityTick()
 
     if(this._health.isDirty()) {
       this.updateHealth()
     }
 
     if(this.lastAttack > 0) this.lastAttack--
+  }1
+
+  protected doEntityTick(): void {
+    if (this.position.y <= 0) {
+      if (!this.isAlive) return
+      this.doDamage(10, DamageCause.VOID)
+    }
   }
 
   protected initContainers(): void {
@@ -92,6 +103,7 @@ export abstract class Living<Events extends EventDict = EventDict, Containers ex
     if(args) this.lastDamageArgs = args
 
     this._health.set(0)
+    this.isAlive = false
   }
 
   public get canAttack(): boolean {
@@ -127,5 +139,4 @@ import { Tool } from '../item/Tool'
 import { EventDict } from '@strdstnet/utils.events'
 import { ValueTracker } from '../utils/ValueTracker'
 import { NumberTracker } from '../utils/NumberTracker'
-import { DroppedItem } from './DroppedItem'
 
