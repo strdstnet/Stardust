@@ -31,7 +31,7 @@ export abstract class Living<Events extends EventDict = EventDict, Containers ex
     }
 
     if(this.lastAttack > 0) this.lastAttack--
-  }1
+  }
 
   protected doEntityTick(): void {
     if (this.position.y <= 0) {
