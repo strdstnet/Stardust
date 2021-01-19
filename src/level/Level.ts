@@ -166,12 +166,12 @@ export class Level {
     return canPlace
   }
 
-  public dropItem(location: Vector3, iItem: IItem): void {
+  public async dropItem(location: Vector3, iItem: IItem, motion?: Vector3, delay = 10): Promise<void> {
     const item = ItemMap.from(iItem)
     if(!item) return
 
-    const motion = new Vector3(Math.random() * 0.2 - 0.1, 0.2, Math.random() * 0.2 - 0.1)
-    const droppedItem = new DroppedItem(item)
+    motion = motion ?? new Vector3(Math.random() * 0.2 - 0.1, 0.2, Math.random() * 0.2 - 0.1)
+    const droppedItem = new DroppedItem(item, delay)
 
     droppedItem.position.update(location.x, location.y, location.z)
     droppedItem.position.motion = motion
@@ -179,6 +179,14 @@ export class Level {
     this.entities.set(droppedItem.id, droppedItem)
 
     Server.i.spawnToAll(droppedItem)
+
+    const items = this.getEntitiesNear(droppedItem, 1)
+
+    for (const item of await items) {
+      if (item instanceof DroppedItem) {
+        droppedItem.position.update(item.position)
+      }
+    }
   }
 
   public addEntity(entity: Entity<any>): void {

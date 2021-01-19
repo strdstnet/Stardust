@@ -459,11 +459,9 @@ export class Server extends EventEmitter<ServerEvents> implements IServer {
   }
 
   public despawn(player: Player): void {
-    setTimeout(() => { // TODO: Move timeout to death animation
-      this.broadcast(new RemoveEntity({
-        entityRuntimeId: player.id,
-      }), player.clientId)
-    }, 1.5 * 1000)
+    this.broadcast(new RemoveEntity({
+      entityRuntimeId: player.id,
+    }), player.clientId)
   }
 
   public sendMotion(entity: Entity<any>, motion: Vector3): void {

@@ -148,7 +148,9 @@ export class Player extends Human<PlayerEvents> {
     this.client.setHealth(this.health)
 
     if(this.health <= 0) {
-      Server.i.broadcastEntityAnimation(this, EntityAnimationType.DEATH, 0)
+      setTimeout(() => {
+        Server.i.broadcastEntityAnimation(this, EntityAnimationType.DEATH, 0)
+      }, 1.5 * 1000)
       Server.i.despawn(this)
     }
   }
