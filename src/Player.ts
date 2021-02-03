@@ -5,7 +5,7 @@ import { EntityAnimationType, DamageCause, SkinData } from './types/player'
 import { Server } from './Server'
 import { Chat } from './Chat'
 import { PosUpdateType } from './entity/EntityPosition'
-import { MetadataFlag, MetadataType, UUID } from '@strdstnet/utils.binary'
+import { MetadataFlag, MetadataType, UUID, Vector3 } from '@strdstnet/utils.binary'
 
 interface IPlayerCreate {
   username: string,
@@ -169,8 +169,7 @@ export class Player extends Human<PlayerEvents> {
     if(this.health <= 0) {
       setTimeout(() => {
         Server.i.broadcastEntityAnimation(this, EntityAnimationType.DEATH, 0)
-      }, 1.5 * 1000)
-      Server.i.despawn(this)
+      }, Server.TPS / 3)
     }
   }
 
@@ -184,6 +183,8 @@ export class Player extends Human<PlayerEvents> {
 
     Server.i.broadcastMetadata(this, this.metadata, true)
     Server.i.spawnToAll(this)
+
+    this.isAlive = true
   }
 
 }
