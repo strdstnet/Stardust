@@ -20,6 +20,7 @@ export class Block {
     protected itemNID: string = nid,
     public fromEdu = false,
     public toolType = BlockToolType.NONE,
+    public waterLogged = false,
   ) {
     this.metaVal = meta
 

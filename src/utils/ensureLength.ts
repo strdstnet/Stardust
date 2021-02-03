@@ -1,9 +1,9 @@
-export function ensureLength(arr: number[], length: number, filler = 0): void {
+export function ensureLength(arr: number[] | Uint8Array, length: number, filler = 0): void {
   if(arr.length === length) return
 
-  if(arr.length > length) {
-    arr.splice(0, length)
-  }
+  // if(arr.length > length) {
+  //   arr.splice(0, length)
+  // }
 
   for(let i = 0; i < length; i++) {
     const v = arr[i]

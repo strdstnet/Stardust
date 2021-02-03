@@ -15,6 +15,8 @@ export class Level {
   private chunkDelta: ChunkDeltaList = new Map() // Map<ChunkIndex, Map<BlockIndex, Block>>
   private dirtyBlocks: Set<[Vector3, Block]> = new Set()
 
+  private blocks: Uint8Array = new Uint8Array()
+
   private entities: Map<bigint, Entity<any>> = new Map()
 
   constructor(public name: string, public spawn: Vector3, public generator: Generator) {}
@@ -94,6 +96,18 @@ export class Level {
     return block || null
   }
 
+  public getBlockInfoAt(x: number, y: number, z: number): [number, number] {
+    const fromDelta = this.getBlockFromDelta(x, y, z)
+    if(fromDelta) return [fromDelta.rid, fromDelta.meta]
+
+    const chunkIndex = Level.getChunkId(x >> 4, z >> 4)
+    const chunk = this.chunkCache.get(chunkIndex)
+
+    if(!chunk) throw new Error('Tried getting block in uncached chunk')
+
+    return chunk.getBlockInfoAt(x & 0x0f, y, z & 0x0f)
+  }
+
   public getBlockAt(x: number, y: number, z: number): Block {
     const fromDelta = this.getBlockFromDelta(x, y, z)
     if(fromDelta) return fromDelta
@@ -104,6 +118,38 @@ export class Level {
     if(!chunk) throw new Error('Tried getting block in uncached chunk')
 
     return chunk.getBlockAt(x & 0x0f, y, z & 0x0f)
+  }
+
+  /**
+   * @param filter A function to filter the results by
+   */
+  public getBlocksInBB(box: BoundingBox, filterFn?: (block: Block) => boolean): Array<[Block, Vector3]> {
+    const blocks: Array<[Block, Vector3]> = []
+
+    const cursor = new Vector3(0, 0, 0)
+    for (cursor.y = Math.floor(box.minY); cursor.y <= Math.floor(box.maxY); cursor.y++) {
+      for (cursor.z = Math.floor(box.minZ); cursor.z <= Math.floor(box.maxZ); cursor.z++) {
+        for (cursor.x = Math.floor(box.minX); cursor.x <= Math.floor(box.maxX); cursor.x++) {
+          const block = this.getBlockAt(cursor.x, cursor.y, cursor.z)
+
+          if(!filterFn || filterFn(block)) blocks.push([block, new Vector3(cursor.x, cursor.y, cursor.z)])
+        }
+      }
+    }
+
+    return blocks
+  }
+
+  public isSolid(x: number, y: number, z: number): boolean {
+    if(y < 0) return false
+
+    const [ id ] = this.getBlockInfoAt(Math.floor(x), Math.floor(y), Math.floor(z))
+
+    const rid = BlockMap.legacyToRuntime.get(id)
+
+    if(typeof rid === 'undefined') return false
+
+    return rid !== BlockMap.AIR.rid
   }
 
   public setBlock(x: number, y: number, z: number, block: Block | string): void {
@@ -170,23 +216,22 @@ export class Level {
     const item = ItemMap.from(iItem)
     if(!item) return
 
-    motion = motion ?? new Vector3(Math.random() * 0.2 - 0.1, 0.2, Math.random() * 0.2 - 0.1)
     const droppedItem = new DroppedItem(item, delay)
 
+    droppedItem.position.motion = motion || new Vector3(Math.random() * 0.2 - 0.1, /*0.2*/0, Math.random() * 0.2 - 0.1)
     droppedItem.position.update(location.x, location.y, location.z)
-    droppedItem.position.motion = motion
 
     this.entities.set(droppedItem.id, droppedItem)
 
     Server.i.spawnToAll(droppedItem)
 
-    const items = this.getEntitiesNear(droppedItem, 1)
+    // const items = this.getEntitiesNear(droppedItem, 1)
 
-    for (const item of await items) {
-      if (item instanceof DroppedItem) {
-        droppedItem.position.update(item.position)
-      }
-    }
+    // for (const item of await items) {
+    //   if (item instanceof DroppedItem) {
+    //     droppedItem.position.update(item.position)
+    //   }
+    // }
   }
 
   public addEntity(entity: Entity<any>): void {
@@ -263,7 +308,7 @@ export class Level {
   }
 
   public async getEntitiesNear(nearEntity: Entity, radius: number): Promise<Entity[]> {
-    const points = this.getPointsAround3d(nearEntity.position.coords, radius)
+    const points = this.getPointsAround3d(nearEntity.basePosition.coords, radius)
 
     const entities = []
     for(const point of points) {
@@ -284,7 +329,7 @@ import { Anvil } from './generator/Anvil'
 import { Flat } from './generator/Flat'
 import { Block, BlockFace } from '../block/Block'
 import { BlockMap } from '../block/BlockMap'
-import { IItem, Vector3 } from '@strdstnet/utils.binary'
+import { BlockRuntimes, IItem, Vector3 } from '@strdstnet/utils.binary'
 import { GlobalTick } from '../tick/GlobalTick'
 import { Server } from '../Server'
 import { Entity } from '../entity/Entity'
@@ -292,4 +337,5 @@ import { BoundingBox } from '../utils/BoundingBox'
 import { Item } from '../item/Item'
 import { DroppedItem } from '../entity/DroppedItem'
 import { ItemMap } from '../item/ItemMap'
+import { LevelBlockFilter } from '../types'
 

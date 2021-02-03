@@ -9,8 +9,8 @@ export abstract class Entity<Events extends EventDict = EventDict, Containers ex
 
   public static entityCount = 0
 
-  protected gravity = 0
-  protected drag = 0
+  protected gravity = 0.08
+  protected drag = 0.02
 
   public baseOffset = 0
 
@@ -29,8 +29,11 @@ export abstract class Entity<Events extends EventDict = EventDict, Containers ex
 
   public level = Server.i.level
 
-  public fallingTo = -1 // null if not falling else y coord falling to
+  public fallingTo = -1 // y coord falling to
   public fallRate = 14 / Server.TPS // 14 blocks per second
+
+  protected doPhysics = false
+  public physics: Physics
 
   constructor(
     public name: string, // Ex. Zombie
@@ -38,6 +41,8 @@ export abstract class Entity<Events extends EventDict = EventDict, Containers ex
     public dimensions: [number, number] = [1, 1], // [width, height] in blocks
   ) {
     super()
+
+    this.physics = new Physics(this)
 
     GlobalTick.attach(this)
 
@@ -62,57 +67,19 @@ export abstract class Entity<Events extends EventDict = EventDict, Containers ex
   }
 
   public async onTick(): Promise<void> {
-    this.doFallTick()
+    if(this.doPhysics && !this.physics.onGround) {
+      // console.log('POS', this.position.coords, this.physics.entity.pos)
+      this.physics.doPhysics()
+    }
 
     if(this.position.hasUpdate) {
-      // this.applyForces()
       this.updateLocation()
       this.position.acknowledgeUpdate()
     }
   }
 
-  protected doFallTick(): void {
-    // const block = this.level.getBlockAt(Math.floor(this.position.x), Math.floor(this.position.y) - 1, Math.floor(this.position.z))
-    // if(this.falling) {
-    //   const fallRate = Math.min(this.fallRate, this.position.y - this.fallingTo)
-    //   this.position.update(this.position.x, this.position.y - fallRate, this.position.z)
-
-    //   if(this.position.y <= this.fallingTo + 1) this.fallingTo = -1
-    // } else if(block.nid === Namespaced.AIR) {
-    //   this.fallingTo = this.position.y - 1
-    //   this.position.update(this.position.x, this.position.y - this.fallRate, this.position.z)
-    // }
-  }
-
-  protected applyForces(): void {
-    const friction = 1 - this.drag
-
-    if(this.dragBeforeGravity) this.position.motion.y *= friction
-
-    this.position.motion.y -= this.gravity
-
-    if(!this.dragBeforeGravity) this.position.motion.y *= friction
-
-    if(this.position.onGround) {
-      // TODO: Block friction
-    }
-
-    this.position.motion.x *= friction
-    this.position.motion.z *= friction
-  }
-
-  protected checkObstruction(x: number, y: number, z: number): boolean {
-    //TODO: Implement this
-
-    const floorX = Math.floor(x)
-    const floorY = Math.floor(y)
-    const floorZ = Math.floor(z)
-
-    const diffX = x - floorX
-    const diffY = y - floorY
-    const diffZ = z - floorZ
-
-    return false
+  public move(deltaX: number, deltaY: number, deltaZ: number, type = PosUpdateType.PLAYER_MOVEMENT): void {
+    this.position.update(deltaX, deltaY - this.baseOffset, deltaZ, type)
   }
 
   public get type(): string {
@@ -271,7 +238,7 @@ export abstract class Entity<Events extends EventDict = EventDict, Containers ex
 import { AttributeMap } from './AttributeMap'
 import { Player } from '../Player'
 import { GlobalTick } from '../tick/GlobalTick'
-import { EntityPosition } from './EntityPosition'
+import { EntityPosition, PosUpdateType } from './EntityPosition'
 import { Server } from '../Server'
 import { BoundingBox } from '../utils/BoundingBox'
 import { mtRand } from '../utils/mtRand'
@@ -279,4 +246,4 @@ import { Attr, Attribute } from './Attribute'
 import { Metadata } from '@strdstnet/utils.binary/lib/Metadata'
 import { MetadataFlag, MetadataGeneric, MetadataType, Namespaced, Vector3 } from '@strdstnet/utils.binary'
 import { deg2Rad } from '../utils/deg2rad'
-
+import { Physics } from '../physics/Physics'

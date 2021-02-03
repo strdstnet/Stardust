@@ -8,8 +8,8 @@ export class SubChunk implements ISubChunk {
     public skyLightData: number[],
     public blockLightData: number[],
   ) {
-    ensureLength(this.metadata, 2048)
     ensureLength(this.blockIds, 4096)
+    ensureLength(this.metadata, 2048)
     ensureLength(this.skyLightData, 2048, 0xff)
     ensureLength(this.blockLightData, 2048)
   }

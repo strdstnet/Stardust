@@ -34,6 +34,8 @@ export class Player extends Human<PlayerEvents> {
 
   public permissionLevel = PlayerPermissions.MEMBER
 
+  public gamemode: Gamemode = Gamemode.SURVIVAL
+
   constructor(player: IPlayerCreate, public client: Client) {
     super(player.username, 'minecraft:player')
 
@@ -75,10 +77,6 @@ export class Player extends Human<PlayerEvents> {
     }
   }
 
-  protected doFallTick(): void {
-    return // This is done client side, for now
-  }
-
   public kill(cause?: DamageCause, args?: string[]): void {
     super.kill(cause, args)
 
@@ -111,8 +109,29 @@ export class Player extends Human<PlayerEvents> {
     this.position.update(x, y, z, PosUpdateType.OTHER)
   }
 
-  public setGamemode(gameMode: Gamemode): void {
-    this.client.updateGamemode(gameMode)
+  public setGamemode(gameMode: string | Gamemode): void {
+    if(typeof gameMode === 'string') {
+      switch(gameMode.toLowerCase()) {
+        case 's':
+        case 'survival':
+          this.client.updateGamemode(Gamemode.SURVIVAL)
+          break
+        case 'c':
+        case 'creative':
+          this.client.updateGamemode(Gamemode.CREATIVE)
+          break
+        case 'a':
+        case 'adventure':
+          this.client.updateGamemode(Gamemode.ADVENTURE)
+          break
+        case 'sp':
+        case 'spectator':
+          this.client.updateGamemode(Gamemode.SPECTATOR)
+          break
+      }
+    } else {
+      this.client.updateGamemode(gameMode)
+    }
   }
 
   public updateLocation(): void {

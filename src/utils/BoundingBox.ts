@@ -32,4 +32,51 @@ export class BoundingBox {
     )
   }
 
+  public clone(): BoundingBox {
+    return new BoundingBox(this.minX, this.minY, this.minZ, this.maxX, this.maxY, this.maxZ)
+  }
+
+  public extend(dx: number, dy: number, dz: number): this {
+    if (dx < 0) this.minX += dx
+    else this.maxX += dx
+
+    if (dy < 0) this.minY += dy
+    else this.maxY += dy
+
+    if (dz < 0) this.minZ += dz
+    else this.maxZ += dz
+
+    return this
+  }
+
+  public contract(x: number, y: number, z: number): this {
+    this.minX += x
+    this.minY += y
+    this.minZ += z
+    this.maxX -= x
+    this.maxY -= y
+    this.maxZ -= z
+    return this
+  }
+
+  public expand(x: number, y: number, z: number): this {
+    this.minX -= x
+    this.minY -= y
+    this.minZ -= z
+    this.maxX += x
+    this.maxY += y
+    this.maxZ += z
+    return this
+  }
+
+  public offset(x: number, y: number, z: number): this {
+    this.minX += x
+    this.minY += y
+    this.minZ += z
+    this.maxX += x
+    this.maxY += y
+    this.maxZ += z
+    return this
+  }
+
 }

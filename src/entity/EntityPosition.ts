@@ -55,8 +55,11 @@ export class EntityPosition {
   }
 
   public get hasUpdate(): boolean {
-    return this.updateType !== PosUpdateType.NONE
-    // return this.motion.x !== 0 || this.motion.y !== 0 || this.motion.z !== 0 || !this.onGround
+    return this.updateType !== PosUpdateType.NONE ||
+      // this.motion.x !== 0 ||
+      // this.motion.y !== 0 ||
+      // this.motion.z !== 0 ||
+      !this.onGround
   }
 
   public acknowledgeUpdate(): void {

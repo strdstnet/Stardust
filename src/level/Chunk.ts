@@ -68,8 +68,12 @@ export class Chunk implements IChunk {
     return this.getSubChunk(blockY >> 4)
   }
 
+  public getBlockInfoAt(x: number, y: number, z: number): [number, number] {
+    return this.getSubChunkAt(y).getBlockAt(x, y & 0x0f, z)
+  }
+
   public getBlockAt(x: number, y: number, z: number): Block {
-    const [id, meta] = this.getSubChunkAt(y).getBlockAt(x, y & 0x0f, z)
+    const [id, meta] = this.getBlockInfoAt(x, y, z)
 
     const block = BlockMap.getById(id) || Block.fromId(id)
     if(!block) throw new Error(`Unknown block with ID: ${id}`)

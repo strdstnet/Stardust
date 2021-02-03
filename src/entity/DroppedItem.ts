@@ -11,8 +11,12 @@ export class DroppedItem extends Entity {
 
   public age = 0
 
+  protected doPhysics = true
+
   constructor(public item: Item, public pickupDelay: number, public fromFishing = false) {
     super('Dropped Item', 'minecraft:item', [0.25, 0.25])
+
+    this.immobile = true
   }
 
   public async onTick(): Promise<void> {

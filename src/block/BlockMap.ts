@@ -7,6 +7,8 @@ export class BlockMap {
   public static runtimeToLegacy: Map<number, number> = new Map()
   public static legacyToRuntime: Map<number, number> = new Map()
 
+  public static WATERLIKE_BLOCKS = ['minecraft:flowing_water', 'minecraft:water', 'minecraft:seagrass', 'minecraft:kelp', 'minecraft:bubble_column']
+
   public static get AIR(): Block {
     return this.blocks.get('minecraft:air') as Block
   }
