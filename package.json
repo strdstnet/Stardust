@@ -31,7 +31,7 @@
     "@babel/preset-typescript": "^7.12.13",
     "@strdst/tsconfig": "^1.0.3",
     "@types/chalk": "^2.2.0",
-    "@types/fs-extra": "^9.0.6",
+    "@types/fs-extra": "^9.0.7",
     "@types/jest": "^26.0.20",
     "@types/node": "^14.14.28",
     "@types/pbf": "^3.0.2",
