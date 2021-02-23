@@ -110,6 +110,7 @@ export class Player extends Human<PlayerEvents> {
   }
 
   public setGamemode(gameMode: string | Gamemode): void {
+    this.gamemode = gameMode as Gamemode
     if(typeof gameMode === 'string') {
       switch(gameMode.toLowerCase()) {
         case 's':

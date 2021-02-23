@@ -1134,10 +1134,10 @@
   resolved "https://npm.pkg.github.com/download/@strdst/utils.nbt/1.0.2/2ac0ab43add66538c356ebc40e536e300a88bdcd65f2566e7b7110e81c49091d#df949dc867568e290bc02dd9f2d2b591426d35a6"
   integrity sha512-vfGQuAlAfWYneIjHPDyQ4Z4+VUh85RaygVAg6PoZA3yiY51eGyMOMf+VHoSEmAcIFjr8rJZCb5Tenfcz0EfFBw==
 
-"@strdstnet/protocol@1.201.4":
-  version "1.201.4"
-  resolved "https://npm.pkg.github.com/download/@strdstnet/protocol/1.201.4/f4cfc58de173b192c5918c99c280dad67ed0185ebb26dddb91f3614ac28397d2#b2ff86d2296cd9adc759aa764710048ebd592a14"
-  integrity sha512-QYUz4zcKn2rsSAEL36eW+PFxFXL9M7Mn0lc+5U/YWHa1gcoh8WLKsQiwoTFsz22LNbOiHWvtEudGifkNwK67/A==
+"@strdstnet/protocol@1.201.6":
+  version "1.201.6"
+  resolved "https://npm.pkg.github.com/download/@strdstnet/protocol/1.201.6/1d37dbf042247ec62aa019cf1def68ce4b173ea345c4d44a7646c35cb4ce5abf#3cfc63caa55e89c3b47cc51aa7407f6a55b9591f"
+  integrity sha512-eUjpzKLbJhqt7et9hUNzAFLY7z17H23TPNbagzOqGjKUym6AyLpHaMn0IIXp2IpG50PuaIy1HNyKytujLDGMBA==
   dependencies:
     "@strdst/utils.nbt" "^1.0.2"
     "@strdstnet/utils.binary" "^1.1.5"
@@ -1151,10 +1151,19 @@
     "@strdst/utils.nbt" "^1.0.2"
     fs-extra "^9.0.1"
 
-"@strdstnet/utils.binary@^1.1.5", "@strdstnet/utils.binary@^1.1.7":
+"@strdstnet/utils.binary@^1.1.5":
   version "1.1.7"
   resolved "https://npm.pkg.github.com/download/@strdstnet/utils.binary/1.1.7/f8780035060c84dfe12076696e0835a6330d204585114726ac235442bacacc8c#5fb044a93e90c7fdac5256fb19cb44c5ebd0cfc6"
   integrity sha512-QagmwGb2RC2+2GkL4eqyAFsCJ9+Z9QuZ+Ee2N09jjaV77dSxGmiYy3wF3JFPZ0j0ZBstRN9/jwL50GFCTgddCA==
+  dependencies:
+    "@strdst/utils.binary" "^1.0.8"
+    "@strdst/utils.nbt" "^1.0.2"
+    uuid "^8.3.0"
+
+"@strdstnet/utils.binary@^1.1.8":
+  version "1.1.8"
+  resolved "https://npm.pkg.github.com/download/@strdstnet/utils.binary/1.1.8/a13d1b8caa72cffa152db11fd7f3e138ab974dbf67a8ac2b3fc10ba859cab37d#6e26b79d9da83d2dcaab6a1d322f064ea94eef53"
+  integrity sha512-vAZSOzGGkTMr2D0bPdxJjAuQSGgheAarN8pxN2jWkuuR6yVWEZL+qhB5xtQgvQYbTjSawJKlFWZzKqXwEonzuw==
   dependencies:
     "@strdst/utils.binary" "^1.0.8"
     "@strdst/utils.nbt" "^1.0.2"
