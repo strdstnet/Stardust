@@ -28,7 +28,7 @@
   "devDependencies": {
     "@babel/core": "^7.12.17",
     "@babel/preset-env": "^7.12.17",
-    "@babel/preset-typescript": "^7.12.17",
+    "@babel/preset-typescript": "^7.13.0",
     "@strdst/tsconfig": "^1.0.3",
     "@types/chalk": "^2.2.0",
     "@types/fs-extra": "^9.0.7",
