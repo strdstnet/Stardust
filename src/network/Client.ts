@@ -307,6 +307,9 @@ export class Client {
           case Packets.FORM_RESPONSE:
             this.handleFormResponse(pk)
             break
+          case Packets.BLOCK_PICK_REQUEST:
+            this.handleBlockPick(pk)
+            break
           default:
             this.logger.debug(`UNKNOWN BATCHED PACKET ${pk.id}`)
         }
@@ -317,6 +320,12 @@ export class Client {
     const { formId, formData } = packet.props
 
     console.log(formId, formData)
+  }
+
+  private handleBlockPick(packet: BlockPickRequest) {
+    const { blockX, blockY, blockZ, addUserData, hotbarSlot } = packet.props
+
+    console.log('Got block pick', blockX, blockY, blockZ, addUserData, hotbarSlot)
   }
 
   private handleNewIncomingConnection(packet: NewIncomingConnection) {}
@@ -527,6 +536,9 @@ export class Client {
 
         Server.i.broadcastLevelEvent(LevelEventType.PARTICLE_DESTROY, pos.x + 0.5, pos.y + 0.5, pos.z + 0.5, block.rid)
         Server.i.level.setBlock(pos.x, pos.y, pos.z, BlockMap.AIR)
+        
+        if (this.player.gamemode === Gamemode.CREATIVE) return
+
         Server.i.level.dropItem(new Vector3(pos.x + 0.5, pos.y + 0.5, pos.z + 0.5), block.item)
         break
       case UseItemType.CLICK_BLOCK:
@@ -957,7 +969,7 @@ import { Living } from '../entity/Living'
 import { Attr, Attribute } from '../entity/Attribute'
 import { PlayerEvent } from '../events/PlayerEvent'
 import { CommandHandler } from '../command/CommandHandler'
-import { ACK, AddPlayer, AdventureSettings, AdventureSettingsFlag, Animate, AvailableCommands, BatchedPacket, BiomeDefinitionList, BitFlag, BundledPacket, bundlePackets, ChunkRadiusUpdated, CommandPermissions, CommandRequest, ConnectedPing, ConnectedPong, ConnectionRequest, ConnectionRequestAccepted, ContainerClose, ContainerNotification, ContainerOpen, ContainerTransaction, ContainerTransactionType, ContainerUpdate, CreativeContent, Disconnect, Emote, EntityAnimation, EntityDefinitionList, EntityEquipment, EntityMetadata, EzTransfer, FormRequest, FormResponse, Gamemode, IBundledPacket, Interact, InteractAction, ItemComponent, ITransaction, LevelChunk, LevelSound, Login, MovePlayer, NAK, NetworkChunkPublisher, NewIncomingConnection, Packet, PacketBatch, PacketBundle, Packets, PacketViolationWarning, PartialPacket, PlayerAction, PlayerList, PlayerListType, PlayStatus, PlayStatusType, Protocol, Reliability, RequestChunkRadius, ResourcePackResponseStatus, ResourcePacksInfo, ResourcePacksResponse, ResourcePacksStack, Respawn, RespawnState, SetGamemode, SetLocalPlayerInitialized, SetTitle, StartGame, Text, TextType, TickSync, TitleCommand, TitleType, UpdateAttributes, UseItemOnEntityType, UseItemType, WorldSound } from '@strdstnet/protocol'
+import { ACK, AddPlayer, AdventureSettings, AdventureSettingsFlag, Animate, AvailableCommands, BatchedPacket, BiomeDefinitionList, BitFlag, BundledPacket, bundlePackets, ChunkRadiusUpdated, CommandPermissions, CommandRequest, ConnectedPing, ConnectedPong, ConnectionRequest, ConnectionRequestAccepted, ContainerClose, ContainerNotification, ContainerOpen, ContainerTransaction, ContainerTransactionType, ContainerUpdate, CreativeContent, Disconnect, Emote, EntityAnimation, EntityDefinitionList, EntityEquipment, EntityMetadata, EzTransfer, FormRequest, FormResponse, Gamemode, IBundledPacket, Interact, InteractAction, ItemComponent, ITransaction, LevelChunk, LevelSound, Login, MovePlayer, NAK, NetworkChunkPublisher, NewIncomingConnection, Packet, PacketBatch, PacketBundle, Packets, PacketViolationWarning, PartialPacket, PlayerAction, PlayerList, PlayerListType, PlayStatus, PlayStatusType, Protocol, Reliability, RequestChunkRadius, ResourcePackResponseStatus, ResourcePacksInfo, ResourcePacksResponse, ResourcePacksStack, Respawn, RespawnState, SetGamemode, SetLocalPlayerInitialized, SetTitle, StartGame, Text, TextType, TickSync, TitleCommand, TitleType, UpdateAttributes, UseItemOnEntityType, UseItemType, WorldSound, BlockPickRequest } from '@strdstnet/protocol'
 import { BinaryData, IAddress, IItem, MetadataGeneric, Namespaced, Vector3 } from '@strdstnet/utils.binary'
 import { Metadata } from '@strdstnet/utils.binary/lib/Metadata'
 import { ItemMap } from '../item/ItemMap'
