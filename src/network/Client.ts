@@ -25,7 +25,7 @@ export class Client {
 
   private player!: Player
 
-  private viewDistance = 4
+  private viewDistance = 8
 
   private lastPlayerChunk: string | null = null // 'x:z' last chunk we generated nearby chunks from
   private recentlySentChunks: string[] = [] // ['x:z']
@@ -36,6 +36,9 @@ export class Client {
   private animateQueue: Map<number, Animate> = new Map()
 
   private loginData!: BinaryData
+
+  private l1ChunkTimeout: NodeJS.Timeout | null = null
+  private l2ChunkTimeout: NodeJS.Timeout | null = null
 
   constructor({ id, address, socket, mtuSize }: IClientArgs, public sequenceNumber = -1) {
     this.id = id
@@ -772,21 +775,21 @@ export class Client {
     this.player.notifyContainers()
     this.player.notifyHeldItem()
 
-    await this.sendNearbyChunks()
+    this.sendNearbyChunks()
 
     this.sendBatched(new PlayStatus({
       status: PlayStatusType.PLAYER_SPAWN,
     }))
 
-    setTimeout(() => {
-      this.sendBatched(new FormRequest(
-        new Form()
-          .setTitle('Test Form')
-          .setContent('Did it work?')
-          .addButton(new FormButton().setText('Test Button'))
-          .encode(),
-      ))
-    }, 10000)
+    // setTimeout(() => {
+    //   this.sendBatched(new FormRequest(
+    //     new Form()
+    //       .setTitle('Test Form')
+    //       .setContent('Did it work?')
+    //       .addButton(new FormButton().setText('Test Button'))
+    //       .encode(),
+    //   ))
+    // }, 10000)
   }
 
   private async sendNearbyChunks(): Promise<void> {
@@ -796,72 +799,22 @@ export class Client {
     if(chunkXZ === this.lastPlayerChunk) return
     this.lastPlayerChunk = chunkXZ
 
-    const neededChunks: [number, number][] = []
-    const chunkCoords: string[] = []
+    const doChunks = (chunks: Chunk[]) => {
+      for(const chunk of chunks) {
+        const coords = `${chunk.x}:${chunk.z}`
+        if(this.recentlySentChunks.includes(coords)) continue
 
-    const maybePush = (x: number, z: number) => {
-      const coords = `${x}:${z}`
-      if(!this.recentlySentChunks.includes(coords)) {
-        neededChunks.push([x, z])
-        chunkCoords.push(coords)
         this.recentlySentChunks.push(coords)
-      }
-    }
-    maybePush(chunkX, chunkZ)
 
-    for(let d = 1; d <= this.viewDistance; d++) { // x+
-      maybePush(chunkX + d, chunkZ)
-
-      for(let d2 = 1; d2 <= this.viewDistance; d2++) {
-        maybePush(chunkX + d, chunkZ - d2)
+        this.sendBatched(new LevelChunk({
+          chunk,
+          cache: false,
+          usedHashes: [],
+        }))
       }
     }
 
-    for(let d = 1; d <= this.viewDistance; d++) { // x-
-      maybePush(chunkX - d, chunkZ)
-
-      for(let d2 = 1; d2 <= this.viewDistance; d2++) {
-        maybePush(chunkX - d, chunkZ + d2)
-      }
-    }
-
-    for(let d = 1; d <= this.viewDistance; d++) { // z+
-      maybePush(chunkX, chunkZ + d)
-
-      for(let d2 = 1; d2 <= this.viewDistance; d2++) {
-        maybePush(chunkX + d2, chunkZ + d)
-      }
-    }
-
-    for(let d = 1; d <= this.viewDistance; d++) { // z-
-      maybePush(chunkX, chunkZ - d)
-
-      for(let d2 = 1; d2 <= this.viewDistance; d2++) {
-        maybePush(chunkX - d2, chunkZ - d)
-      }
-    }
-
-    for(const [x, z] of neededChunks) {
-      const chunk = await Server.i.level.getChunkAt(x, z)
-      // const chunk = new Chunk(x, z, [SubChunk.grassPlatform], [], [], [], [])
-
-      this.sendBatched(new LevelChunk({
-        chunk,
-        cache: false,
-        usedHashes: [],
-      }))
-    }
-
-    if(neededChunks.length > 1) {
-      // setTimeout(() => {
-      this.sendBatched(new NetworkChunkPublisher({
-        x: this.player.position.x,
-        y: this.player.position.y,
-        z: this.player.position.z,
-        radius: this.viewDistance * 16,
-      }))
-      // }, 2000)
-    }
+    doChunks(await this.player.getChunksAhead(this.viewDistance, true))
 
     if(this.recentlySentChunks.length > (this.nearbyChunkCount * 2)) {
       this.recentlySentChunks.splice(0, this.nearbyChunkCount)
@@ -1009,4 +962,5 @@ import { BinaryData, IAddress, IItem, MetadataGeneric, Namespaced, Vector3 } fro
 import { Metadata } from '@strdstnet/utils.binary/lib/Metadata'
 import { ItemMap } from '../item/ItemMap'
 import { Form, FormButton } from '../form'
+import { SubChunk } from '../level'
 

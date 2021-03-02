@@ -7,6 +7,13 @@ interface SkinImage {
   data: Buffer,
 }
 
+export enum Direction {
+  NORTH,
+  EAST,
+  SOUTH,
+  WEST,
+}
+
 enum SkinAnimationType {
   HEAD    = 1,
   BODY_32 = 2,

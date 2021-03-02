@@ -50,7 +50,8 @@ export class Anvil extends Generator {
 
     const level = nbt.get('Level')
     const subChunks: SubChunk[] = []
-    for(const section of level.val('Sections')) {
+
+    for(const section of level.val('Sections') || []) {
       if(section.val('Y') === -1) {
         subChunks.push(SubChunk.empty)
       } else {
@@ -64,8 +65,8 @@ export class Anvil extends Generator {
     }
 
     return new Chunk(
-      level.val('xPos'),
-      level.val('zPos'),
+      level.val('xPos') || x,
+      level.val('zPos') || z,
       subChunks,
       level.val('Entities') || [],
       level.val('TileEntities') || [],
