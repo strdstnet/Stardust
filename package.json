@@ -12,14 +12,17 @@
     "test": "jest",
     "clear-test-cache": "jest --clearCache",
     "gb": "barrelsby --delete -d src -l below -q -S -e @types/",
-    "build": "rm -rf lib && tsc && cp src/Stardust.d.ts lib/ && rm -r lib/*.js lib/**/*.js && touch lib/index.js"
+    "build": "rm -rf lib && tsc && cp src/Stardust.d.ts lib/ && rm -r lib/*.js lib/**/*.js && touch lib/index.js",
+    "initSdk": "yarn pnpify --sdk vscode"
   },
   "dependencies": {
     "@bwatton/logger": "^1.0.4",
+    "@strdst/utils.nbt": "^1.0.2",
     "@strdstnet/protocol": "1.201.6",
     "@strdstnet/utils.anvil": "^1.0.4",
     "@strdstnet/utils.binary": "^1.1.8",
     "@strdstnet/utils.events": "^1.0.3",
+    "@yarnpkg/pnpify": "^2.4.0",
     "chalk": "^3.0.0",
     "fs-extra": "^9.1.0",
     "tsee": "^1.3.2",

@@ -103,13 +103,18 @@ dist
 # TernJS port file
 .tern-port
 
+# Yarn
+.yarn/*
+!.yarn/patches
+!.yarn/releases
+!.yarn/plugins
+!.yarn/sdks
+!.yarn/versions
+.pnp.*
 
-.yarn/
-.pnp.js
-.yarnrc.yml
+
 lib/
 nodemon.json
-
 src/block/test.ts
 plugins/
 worlds/

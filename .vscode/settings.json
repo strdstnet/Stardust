@@ -1,4 +1,4 @@
-e{
+{
   "files.eol": "\r\n",
   "eslint.packageManager": "yarn",
   "eslint.alwaysShowStatus": true,
@@ -7,5 +7,14 @@ e{
   "editor.codeActionsOnSave": {
     "source.fixAll": true
   },
-  "eslint.workingDirectories": ["./src"]
+  "eslint.workingDirectories": [
+    "./src"
+  ],
+  "search.exclude": {
+    "**/.yarn": true,
+    "**/.pnp.*": true
+  },
+  "eslint.nodePath": ".yarn/sdks",
+  "typescript.tsdk": ".yarn/sdks/typescript/lib",
+  "typescript.enablePromptUseWorkspaceTsdk": true
 }
