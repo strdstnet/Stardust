@@ -326,6 +326,10 @@ export class Client {
     const { blockX, blockY, blockZ, addUserData, hotbarSlot } = packet.props
 
     console.log('Got block pick', blockX, blockY, blockZ, addUserData, hotbarSlot)
+
+    const block = this.level.getBlockAt(blockX, blockY, blockZ)
+
+    this.player.inventory.add(ItemMap.get(block.nid))
   }
 
   private handleNewIncomingConnection(packet: NewIncomingConnection) {}
@@ -336,9 +340,9 @@ export class Client {
 
     this.player = Player.createFrom(packet, this)
 
-    // if (!this.player.XUID) {
-    //   this.disconnect('You are not authenticated with Xbox Live.')
-    // }
+    if (!this.player.XUID) {
+      this.disconnect('You are not authenticated with Xbox Live.')
+    }
 
     // TODO: Actually implement packs
     this.sendBatchedMulti([
