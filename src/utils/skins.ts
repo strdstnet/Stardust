@@ -8,6 +8,7 @@ function fromB64(base64: string): Buffer {
 export function getSkinData(data: IClientData): SkinData {
   return {
     id: data.SkinId,
+    playFabId: data.PlayFabId,
     armSize: data.ArmSize,
     color: data.SkinColor,
     resourcePatch: fromB64(data.SkinResourcePatch),

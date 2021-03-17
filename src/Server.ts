@@ -216,6 +216,8 @@ export class Server extends EventEmitter<ServerEvents> implements IServer {
     return UnconnectedPong.getMOTD({
       line1, line2, maxPlayers,
       numPlayers: this.players.size,
+      serverId: Server.id,
+      gamemode: 'Survival',
     })
   }
 

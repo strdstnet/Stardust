@@ -16,5 +16,7 @@
       "./node_modules/@types",
     ],
     "declaration": true
-  }
+  },
+  "include": ["src"],
+  "exclude": ["**/*.test.ts"]
 }

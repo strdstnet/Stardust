@@ -750,8 +750,6 @@ export class Client {
       defaultPlayerPermission: this.player.permissionLevel,
     }))
 
-    console.log(ItemMap.itemTable.filter(i => i.rid > 1000))
-
     this.sendBatched(new ItemComponent())
 
     // // TODO: Name tag visible, can climb, immobile
