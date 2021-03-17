@@ -1563,9 +1563,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@strdstnet/protocol@npm:1.201.6":
-  version: 1.201.6
-  resolution: "@strdstnet/protocol@npm:1.201.6::__archiveUrl=https%3A%2F%2Fnpm.pkg.github.com%2Fdownload%2F%40strdstnet%2Fprotocol%2F1.201.6%2F1d37dbf042247ec62aa019cf1def68ce4b173ea345c4d44a7646c35cb4ce5abf"
+"@strdstnet/protocol@1.201.7":
+  version "1.201.7"
+  resolved "https://npm.pkg.github.com/download/@strdstnet/protocol/1.201.7/8bf801e203c74d27a3dc6e6b19882139b8cd8ec6f83ba3b7ba0f21c020083713#3782dfdfded093037d6ae41bb354eb46cb97c990"
+  integrity sha1-N4Lf397QkwN9auQbs1TrRsuXyZA=
   dependencies:
     "@strdst/utils.nbt": ^1.0.2
     "@strdstnet/utils.binary": ^1.1.5

@@ -17,8 +17,7 @@
   },
   "dependencies": {
     "@bwatton/logger": "^1.0.4",
-    "@strdst/utils.nbt": "^1.0.2",
-    "@strdstnet/protocol": "1.201.6",
+    "@strdstnet/protocol": "1.201.7",
     "@strdstnet/utils.anvil": "^1.0.4",
     "@strdstnet/utils.binary": "^1.1.8",
     "@strdstnet/utils.events": "^1.0.3",
