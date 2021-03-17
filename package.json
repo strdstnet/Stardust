@@ -13,14 +13,13 @@
     "clear-test-cache": "jest --clearCache",
     "gb": "barrelsby --delete -d src -l below -q -S -e @types/",
     "build": "rm -rf lib && tsc && cp src/Stardust.d.ts lib/ && rm -r lib/*.js lib/**/*.js && touch lib/index.js",
-    "build:js": "rm -rf lib && tsc && cp src/Stardust.d.ts lib/ && touch lib/index.js",
     "initSdk": "yarn pnpify --sdk vscode",
-    "prof": "yarn build:js && NODE_ENV=production node --prof lib/start.js"
+    "start:dev": "ts-node -T src/start.ts"
   },
   "dependencies": {
     "@bwatton/logger": "^1.0.4",
     "@strdst/utils.nbt": "^1.0.2",
-    "@strdstnet/protocol": "1.210.1",
+    "@strdstnet/protocol": "1.2.7",
     "@strdstnet/utils.anvil": "^1.0.4",
     "@strdstnet/utils.binary": "^1.1.9",
     "@strdstnet/utils.events": "^1.0.3",
