@@ -106,6 +106,8 @@ dist
 # Yarn
 .yarn/*
 !.yarn/patches
+!.yarn/releases
+!.yarn/plugins
 !.yarn/sdks
 !.yarn/versions
 .pnp.*
@@ -114,6 +116,6 @@ dist
 lib/
 nodemon.json
 src/block/test.ts
-plugins/
+./plugins/
 worlds/
 .DS_Store
