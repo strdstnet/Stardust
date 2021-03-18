@@ -86,6 +86,12 @@ export abstract class Living<Events extends EventDict = EventDict, Containers ex
 
     this.lastAttack = Math.round(Server.TPS / 3)
 
+    if (this instanceof Player && target.type === 'NPC') {
+      target.emit('NPCClick', new Event({ player: this }))
+
+      return
+    }
+
     // if(item instanceof Tool) {
     //   target.doDamage(action.damage, DamageCause.PVP_ITEM, [target.name, this.name, `%${item.name}`])
     // } else {
@@ -136,7 +142,8 @@ import { EntityAnimationType } from '../types/player'
 import { Item } from '../item/Item'
 import { Server } from '../Server'
 import { Tool } from '../item/Tool'
-import { EventDict } from '@strdstnet/utils.events'
+import { Event, EventDict } from '@strdstnet/utils.events'
 import { ValueTracker } from '../utils/ValueTracker'
 import { NumberTracker } from '../utils/NumberTracker'
+import { Player } from '../Player'
 
