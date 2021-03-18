@@ -5,6 +5,7 @@
   "main": "lib/index.js",
   "types": "lib/Stardust.d.ts",
   "types_": "src/Stardust.d.ts",
+  "version": "0.0.17",
   "scripts": {
     "start": "nodemon",
     "start:client": "ts-node src/client/test.ts",
@@ -14,7 +15,9 @@
     "gb": "barrelsby --delete -d src -l below -q -S -e @types/",
     "build": "rm -rf lib && tsc && cp src/Stardust.d.ts lib/ && rm -r lib/*.js lib/**/*.js && touch lib/index.js",
     "initSdk": "yarn pnpify --sdk vscode",
-    "start:dev": "ts-node -T src/start.ts"
+    "prof": "yarn build:js && NODE_ENV=production node --prof lib/start.js",
+    "start:dev": "ts-node -T src/start.ts",
+    "release": "yarn version patch && git add . && git commit -m $(cat package.json | grep version | head -1 | awk -F: '{ print $2 }' | sed 's/[\",]//g') && git push"
   },
   "dependencies": {
     "@bwatton/logger": "^1.0.4",

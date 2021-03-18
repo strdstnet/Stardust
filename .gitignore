@@ -116,6 +116,6 @@ dist
 lib/
 nodemon.json
 src/block/test.ts
-plugins/
+./plugins/
 worlds/
 .DS_Store
