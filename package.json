@@ -5,7 +5,7 @@
   "main": "lib/index.js",
   "types": "lib/Stardust.d.ts",
   "types_": "src/Stardust.d.ts",
-  "version": "0.0.16",
+  "version": "0.0.17",
   "scripts": {
     "start": "nodemon",
     "start:client": "ts-node src/client/test.ts",
