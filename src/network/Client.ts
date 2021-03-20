@@ -162,7 +162,7 @@ export class Client {
     })
   }
 
-  public sendRawMaybeSplit(packet: Packet<any>): void {
+  public async sendRawMaybeSplit(packet: Packet<any>): Promise<void> {
     const packetData = packet.encode()
 
     const data: BinaryData[] = []
@@ -173,7 +173,7 @@ export class Client {
 
       for(const [idx, dataPart] of dataParts.entries()) {
         const bd = new BinaryData()
-        bd.writeByte(Protocol.PARTIAL_PACKET)
+        bd.writeByte(Packets.PARTIAL_PACKET)
         bd.writeByte(packet.id)
         bd.writeShort(dataParts.length)
         bd.writeShort(idx)
@@ -185,12 +185,15 @@ export class Client {
       data.push(packetData)
     }
 
+    const wait = async (ms: number) => new Promise(resolve => setTimeout(resolve, ms))
+
     for(const part of data) {
       Server.i.send({
         packet: part,
         socket: this.socket,
         address: this.address,
       })
+      await wait(1)
     }
   }
 
@@ -366,11 +369,33 @@ export class Client {
 
   private handleNewIncomingConnection(packet: NewIncomingConnection) {}
 
+    // TODO: REMOVE THIS, ONLY FOR DEBUGGING
+    public saveLoginDataToFile({ props }: Login) {
+      function decodeJWT(token: string): any {
+        const [, payload] = token.split('.')
+        const buffer = Buffer.from(payload.replace(/-/g, '+').replace(/_/g, '/'), 'base64')
+        return JSON.parse(buffer.toString())
+      }
+  
+      const chainData = JSON.parse(props.chainData)
+      const chain: any = {}
+      for(const token of chainData.chain) {
+        Object.assign(chain, decodeJWT(token))
+      }
+  
+      fs.writeFileSync(path.join(__dirname, `${props.username}.json`), JSON.stringify({
+        chain,
+        client: decodeJWT(props.clientData),
+      }))
+    }
+
   public handleLogin(packet: Login): void {
     this.loginData = packet.data
     // TODO: Login verification, already logged in?, ...
 
     this.player = Player.createFrom(packet, this)
+
+    this.saveLoginDataToFile(packet)
 
     if (!this.player.XUID) {
       this.disconnect('You are not authenticated with Xbox Live.')
@@ -393,12 +418,14 @@ export class Client {
   }
 
   public ezTransfer(serverType: string): void {
-    this.sendRaw(new EzTransfer({
+    this.sendRawMaybeSplit(new EzTransfer({
       serverType,
       clientId: this.id,
       sequenceNumber: this.sequenceNumber,
       loginData: this.loginData,
     }))
+
+    // console.log('sending ez transfer')
     this.destroy()
   }
 
@@ -985,6 +1012,8 @@ export class Client {
 
 }
 
+import path from 'path'
+import fs from 'fs'
 import Logger from '@bwatton/logger'
 import { Socket } from 'dgram'
 import { Server } from '../Server'
@@ -1009,4 +1038,5 @@ import { Metadata } from '@strdstnet/utils.binary/lib/Metadata'
 import { ItemMap } from '../item/ItemMap'
 import { Form, FormButton } from '../form'
 import { SubChunk } from '../level'
+import { Console } from 'node:console'
 
