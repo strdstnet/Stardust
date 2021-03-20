@@ -1,4 +1,5 @@
-import { AddressFamily, IAddress } from '@strdstnet/utils.binary'
+import { AddressFamily, BinaryData, IAddress } from '@strdstnet/utils.binary'
+import { Packet } from '@strdstnet/protocol'
 import { Socket } from 'dgram'
 
 export const FamilyStrToInt = {
@@ -7,7 +8,7 @@ export const FamilyStrToInt = {
 }
 
 export interface ISendPacketArgs {
-  packet: any,
+  packet: Packet<any> | BinaryData,
   socket: Socket,
   address: IAddress,
 }

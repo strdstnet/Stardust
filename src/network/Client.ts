@@ -162,6 +162,38 @@ export class Client {
     })
   }
 
+  public sendRawMaybeSplit(packet: Packet<any>): void {
+    const packetData = packet.encode()
+
+    const data: BinaryData[] = []
+
+    const maxLength = this.mtuSize - 60 - 6
+    if(packetData.length > maxLength) {
+      const dataParts = packetData.split(maxLength)
+
+      for(const [idx, dataPart] of dataParts.entries()) {
+        const bd = new BinaryData()
+        bd.writeByte(Protocol.PARTIAL_PACKET)
+        bd.writeByte(packet.id)
+        bd.writeShort(dataParts.length)
+        bd.writeShort(idx)
+        bd.writeByteArray(dataPart, false)
+
+        data.push(bd)
+      }
+    } else {
+      data.push(packetData)
+    }
+
+    for(const part of data) {
+      Server.i.send({
+        packet: part,
+        socket: this.socket,
+        address: this.address,
+      })
+    }
+  }
+
   private send(packet: BundledPacket<any>) {
     this.sendQueue.push(packet)
   }

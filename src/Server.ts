@@ -474,7 +474,7 @@ export class Server extends EventEmitter<ServerEvents> implements IServer {
   }
 
   public send({ packet, socket, address }: ISendPacketArgs): void {
-    const data = packet.encode()
+    const data = packet instanceof Packet ? packet.encode() : packet
     // this.logger.debug('Sending', data.buf)
     socket.send(data.toBuffer(), address.port, address.ip)
   }
