@@ -15,7 +15,7 @@ import { BlockMap } from './block/BlockMap'
 import { Entity } from './entity/Entity'
 import { Block } from './block/Block'
 import { EventEmitter } from '@strdstnet/utils.events'
-import { PluginManager } from './PluginManager'
+import { PluginManager } from './plugin'
 import { DroppedItem } from './entity/DroppedItem'
 import { PlayerEvent } from './events/PlayerEvent'
 import { Console } from './console/Console'
@@ -67,6 +67,7 @@ const DEFAULT_OPTS: ServerOpts = {
     line1: 'A Stardust Server',
     line2: '',
   },
+  plugins: [],
 }
 
 type ServerEvents = {
@@ -133,7 +134,7 @@ export class Server extends EventEmitter<ServerEvents> implements IServer {
 
     const server = new Server(allOpts, level)
 
-    await PluginManager.init()
+    await PluginManager.init(allOpts.plugins)
     await CommandHandler.init()
     await Console.init()
 

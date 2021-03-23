@@ -1,6 +1,6 @@
 export * from './Chat'
 export * from './Player'
-export * from './Plugin'
+export * from './plugin'
 export * from './Server'
 
 export * from './block'

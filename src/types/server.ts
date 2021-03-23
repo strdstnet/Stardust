@@ -9,6 +9,7 @@ export interface ServerOpts {
     line1: string,
     line2: string,
   },
+  plugins: string[],
 }
 
 export interface IServer {

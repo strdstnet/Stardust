@@ -4,6 +4,8 @@ import * as _Binary from '@strdstnet/utils.binary'
 import * as _Events from '@strdstnet/utils.events'
 import * as _NBT from '@strdst/utils.nbt'
 
+import path from 'path'
+
 global.Stardust = _Stardust
 global.Protocol = _Protocol
 global.Binary = _Binary
@@ -22,4 +24,7 @@ Stardust.Server.start({
     line1: 'HyperstoneNetwork',
     line2: 'test',
   },
+  plugins: [
+    // `local:${path.join(__dirname, '..', '..', 'plugin.bedwars')}`,
+  ],
 })
