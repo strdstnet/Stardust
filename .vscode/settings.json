@@ -1,6 +1,6 @@
 {
   "files.eol": "\r\n",
-  "eslint.packageManager": "yarn",
+  "eslint.packageManager": "npm",
   "eslint.alwaysShowStatus": true,
   "eslint.format.enable": true,
   "eslint.lintTask.enable": true,
@@ -9,12 +9,5 @@
   },
   "eslint.workingDirectories": [
     "./src"
-  ],
-  "search.exclude": {
-    "**/.yarn": true,
-    "**/.pnp.*": true
-  },
-  "eslint.nodePath": ".yarn/sdks",
-  "typescript.tsdk": ".yarn/sdks/typescript/lib",
-  "typescript.enablePromptUseWorkspaceTsdk": true
+  ]
 }

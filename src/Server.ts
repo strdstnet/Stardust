@@ -50,6 +50,7 @@ import {
   PlayerListType,
   Protocol,
   RemoveEntity,
+  SegmentHandler,
   SetEntityMotion,
   UnconnectedPing,
   UnconnectedPong,
@@ -75,6 +76,11 @@ type ServerEvents = {
   playerSpawned: PlayerEvent,
 }
 
+interface SegmentHandlerArgs {
+  socket: Socket,
+  address: IAddress,
+}
+
 // TODO: Merge with Stardust.ts
 export class Server extends EventEmitter<ServerEvents> implements IServer {
 
@@ -97,6 +103,9 @@ export class Server extends EventEmitter<ServerEvents> implements IServer {
   public static level: Level
 
   private chat = new Chat(this)
+
+  private segmentHandler = new SegmentHandler<SegmentHandlerArgs>(({ data, socket, address }) =>
+    this.handleUnconnectedPacket({ data, socket, address }))
 
   private constructor(public opts: ServerOpts, public level: Level) {
     super()
@@ -174,35 +183,44 @@ export class Server extends EventEmitter<ServerEvents> implements IServer {
         }
 
         const data = new BinaryData(message)
-        const packetId = data.readByte(false)
 
-        const client = this.getClient(address)
-        if(client) {
-          // Connected
-          client.handlePacket(data)
+        if(data.buf[0] === Packets.PARTIAL_PACKET) {
+          this.segmentHandler.handle(data, { socket, address })
         } else {
-          // Unconnected
-          switch(packetId) {
-            case Packets.UNCONNECTED_PING:
-              this.handleUnconnectedPing({ data, socket, address })
-              break
-            case Packets.OPEN_CONNECTION_REQUEST_ONE:
-              this.handleConnectionRequest1({ data, socket, address })
-              break
-            case Packets.OPEN_CONNECTION_REQUEST_TWO:
-              this.handleConnectionRequest2({ data, socket, address })
-              break
-            case Packets.EZ_LOGIN:
-              this.handleEzLogin({ data, socket, address })
-              break
-            default:
-              logger.debug(`unknown packet: ${packetId}`)
+          const client = this.getClient(address)
+          if(client) {
+            // Connected
+            client.handlePacket(data)
+          } else {
+            // Unconnected
+            this.handleUnconnectedPacket({ data, socket, address })
           }
         }
       })
     })
 
     return this
+  }
+
+  private handleUnconnectedPacket({ data, socket, address }: IPacketHandlerArgs) {
+    const packetId = data.readByte(false)
+
+    switch(packetId) {
+      case Packets.UNCONNECTED_PING:
+        this.handleUnconnectedPing({ data, socket, address })
+        break
+      case Packets.OPEN_CONNECTION_REQUEST_ONE:
+        this.handleConnectionRequest1({ data, socket, address })
+        break
+      case Packets.OPEN_CONNECTION_REQUEST_TWO:
+        this.handleConnectionRequest2({ data, socket, address })
+        break
+      case Packets.EZ_LOGIN:
+        this.handleEzLogin({ data, socket, address })
+        break
+      default:
+        this.logger.debug(`unknown packet: ${packetId}`)
+    }
   }
 
   private get motd() {
