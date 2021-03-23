@@ -1,5 +1,6 @@
 import Logger from '@bwatton/logger'
 import { Event, EventEmitter } from '@strdstnet/utils.events'
+import { Server } from '../Server'
 import { PluginManager } from './PluginManager'
 
 interface IPluginManifest {
@@ -25,7 +26,9 @@ export abstract class Plugin extends EventEmitter<PluginEvents> {
 
   protected logger: Logger
 
-  constructor(public manifest: IPluginManifest) {
+  protected readonly server = Server.i
+
+  constructor(public manifest: IPluginManifest, protected pluginManager: PluginManager) {
     super()
 
     this.logger = new Logger(manifest.name)

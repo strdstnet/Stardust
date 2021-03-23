@@ -24,13 +24,12 @@ export class PluginManager {
   }
 
   private async loadFromLocalProj(projPath: string): Promise<Plugin> {
-    const pkg = (await import(path.join(projPath, 'package.json'))).default
+    const { name, version, main } = (await import(path.join(projPath, 'package.json'))).default
 
-    const main = pkg.main || 'src/index.ts'
-    const mainPath = path.join(projPath, main)
+    const mainPath = path.join(projPath, main || 'src/index.ts')
 
     const Plug = (await import(mainPath)).default
-    return new Plug()
+    return new Plug({ name, version }, this)
   }
 
   public static async init(plugins: string[]): Promise<PluginManager> {
