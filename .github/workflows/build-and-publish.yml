@@ -15,11 +15,10 @@ jobs:
           node-version: 14
           registry-url: https://npm.pkg.github.com/
           scope: '@strdstnet'
-      - run: yarn set version berry
-      - run: yarn
+      - run: npm init
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NODE_AUTH_TOKEN }}
-      - run: yarn build
-      - run: yarn npm publish --tag ${{ github.event.release.tag_name }}
+      - run: npm run build
+      - run: npm publish --tag ${{ github.event.release.tag_name }}
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NODE_AUTH_TOKEN }}

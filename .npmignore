@@ -1,4 +1,5 @@
 src/
 .vscode/
 .github/
-worlds/
+worlds/**
+plugins/**
