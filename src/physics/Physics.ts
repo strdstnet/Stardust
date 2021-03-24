@@ -116,11 +116,11 @@ export class Physics {
     }
   }
 
-  public doPhysics(): void {
+  public async doPhysics(): Promise<void> {
     this.motion = PhysicsVector3.from(this.entity.position.motion)
     this.pos = PhysicsVector3.from(this.entity.position.coords)
 
-    this.motion.apply(this.doLiquidPhysics())
+    this.motion.apply(await this.doLiquidPhysics())
 
     if(Math.abs(this.motion.x) < this.properties.negligeableVelocity) this.motion.x = 0
     if(Math.abs(this.motion.y) < this.properties.negligeableVelocity) this.motion.y = 0
@@ -140,25 +140,25 @@ export class Physics {
     }
   }
 
-  protected doLiquidPhysics(): PhysicsVector3 {
+  protected async doLiquidPhysics(): Promise<PhysicsVector3> {
     const motion = new PhysicsVector3(0, 0, 0)
 
     // Water
     const waterBB = this.entity.boundingBox.contract(0.001, 0.401, 0.001)
-    const waterBlocks = this.entity.level.getBlocksInBB(waterBB, block => block.waterLogged || BlockMap.WATERLIKE_BLOCKS.includes(block.nid))
+    const waterBlocks = await this.entity.level.getBlocksInBB(waterBB, block => block.waterLogged || BlockMap.WATERLIKE_BLOCKS.includes(block.nid))
     this.inWater = waterBlocks.length > 0
 
     // TODO: Water current physics
 
     // Lava
     const lavaBB = this.entity.boundingBox.contract(0.1, 0.4, 0.1)
-    const lavaBlocks = this.entity.level.getBlocksInBB(lavaBB, block => block.nid === 'minecraft:lava')
+    const lavaBlocks = await this.entity.level.getBlocksInBB(lavaBB, block => block.nid === 'minecraft:lava')
     this.inLava = lavaBlocks.length > 0
 
     return motion
   }
 
-  protected doGravity(): void {
+  protected async doGravity(): Promise<void> {
     const multiplier = (this.motion.y <= 0 && this.slowFalling) ? this.properties.slowFalling : 1
 
     if(this.inWater || this.inLava) {
@@ -193,7 +193,7 @@ export class Physics {
       if(underPos.y <= 0) {
         this.onGround = true
       } else {
-        const blockUnder = this.entity.level.getBlockAt(underPos.x, underPos.y, underPos.z)
+        const blockUnder = await this.entity.level.getBlockAt(underPos.x, underPos.y, underPos.z)
         this.onGround = blockUnder.nid !== 'minecraft:air'
       }
 
@@ -214,7 +214,7 @@ export class Physics {
     }
   }
 
-  public moveEntity(motion: PhysicsVector3): void {
+  public async moveEntity(motion: PhysicsVector3): Promise<void> {
     if(this.inWeb) {
       motion.x *= 0.25
       motion.y *= 0.05
@@ -231,8 +231,8 @@ export class Physics {
 
     const oldBB = this.entity.boundingBox
     const entityBB = this.entity.boundingBox
-    const queryBB = this.entity.boundingBox.extend(motion.x, motion.y, motion.z)
-    const surroundingBlocks = this.entity.level.getBlocksInBB(queryBB)
+    // const queryBB = this.entity.boundingBox.extend(motion.x, motion.y, motion.z)
+    // const surroundingBlocks = await this.entity.level.getBlocksInBB(queryBB)
 
     // for(const [, v3] of surroundingBlocks) {
     //   motion.y = this.computeOffsetY(BoundingBox.from(v3), entityBB, motion.y)
@@ -260,7 +260,7 @@ export class Physics {
     this.pos.z = entityBB.minZ + (this.entity.dimensions[0] / 2)
 
     const base = this.pos.offset(0, -0.2, 0)
-    const blockAtBase = base.y > 0 ? this.entity.level.getBlockAt(base.x, base.y, base.z) : null
+    const blockAtBase = base.y > 0 ? await this.entity.level.getBlockAt(base.x, base.y, base.z) : null
 
     // if(motion.x !== oldMX) this.entity.position.motion.x = 0
     // if(motion.z !== oldMX) this.entity.position.motion.z = 0

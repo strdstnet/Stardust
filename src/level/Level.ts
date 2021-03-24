@@ -67,7 +67,7 @@ export class Level {
 
   public async loadChunk(x: number, z: number): Promise<Chunk> {
     const chunk = await this.generator.chunk(x, z)
-    this.chunkCache.set(Level.getChunkId(x, z), chunk)
+    // this.chunkCache.set(Level.getChunkId(x, z), chunk)
 
     return chunk
   }
@@ -96,26 +96,32 @@ export class Level {
     return block || null
   }
 
-  public getBlockInfoAt(x: number, y: number, z: number): [number, number] {
+  public async getBlockInfoAt(x: number, y: number, z: number): Promise<[number, number]> {
     const fromDelta = this.getBlockFromDelta(x, y, z)
     if(fromDelta) return [fromDelta.rid, fromDelta.meta]
 
-    const chunkIndex = Level.getChunkId(x >> 4, z >> 4)
+    const chunkX = x >> 4
+    const chunkZ = z >> 4
+    const chunkIndex = Level.getChunkId(chunkX, chunkZ)
     const chunk = this.chunkCache.get(chunkIndex)
+      || await this.getChunkAt(chunkX, chunkZ)
 
-    if(!chunk) throw new Error('Tried getting block in uncached chunk')
+    // if(!chunk) throw new Error('Tried getting block in uncached chunk')
 
     return chunk.getBlockInfoAt(x & 0x0f, y, z & 0x0f)
   }
 
-  public getBlockAt(x: number, y: number, z: number): Block {
+  public async getBlockAt(x: number, y: number, z: number): Promise<Block> {
     const fromDelta = this.getBlockFromDelta(x, y, z)
     if(fromDelta) return fromDelta
 
-    const chunkIndex = Level.getChunkId(x >> 4, z >> 4)
+    const chunkX = x >> 4
+    const chunkZ = z >> 4
+    const chunkIndex = Level.getChunkId(chunkX, chunkZ)
     const chunk = this.chunkCache.get(chunkIndex)
+      || await this.getChunkAt(chunkX, chunkZ)
 
-    if(!chunk) throw new Error('Tried getting block in uncached chunk')
+    // if(!chunk) throw new Error('Tried getting block in uncached chunk')
 
     return chunk.getBlockAt(x & 0x0f, y, z & 0x0f)
   }
@@ -123,14 +129,14 @@ export class Level {
   /**
    * @param filter A function to filter the results by
    */
-  public getBlocksInBB(box: BoundingBox, filterFn?: (block: Block) => boolean): Array<[Block, Vector3]> {
+  public async getBlocksInBB(box: BoundingBox, filterFn?: (block: Block) => boolean): Promise<Array<[Block, Vector3]>> {
     const blocks: Array<[Block, Vector3]> = []
 
     const cursor = new Vector3(0, 0, 0)
     for (cursor.y = Math.floor(box.minY); cursor.y <= Math.floor(box.maxY); cursor.y++) {
       for (cursor.z = Math.floor(box.minZ); cursor.z <= Math.floor(box.maxZ); cursor.z++) {
         for (cursor.x = Math.floor(box.minX); cursor.x <= Math.floor(box.maxX); cursor.x++) {
-          const block = this.getBlockAt(cursor.x, cursor.y, cursor.z)
+          const block = await this.getBlockAt(cursor.x, cursor.y, cursor.z)
 
           if(!filterFn || filterFn(block)) blocks.push([block, new Vector3(cursor.x, cursor.y, cursor.z)])
         }
@@ -140,10 +146,10 @@ export class Level {
     return blocks
   }
 
-  public isSolid(x: number, y: number, z: number): boolean {
+  public async isSolid(x: number, y: number, z: number): Promise<boolean> {
     if(y < 0) return false
 
-    const [ id ] = this.getBlockInfoAt(Math.floor(x), Math.floor(y), Math.floor(z))
+    const [ id ] = await this.getBlockInfoAt(Math.floor(x), Math.floor(y), Math.floor(z))
 
     const rid = BlockMap.legacyToRuntime.get(id)
 

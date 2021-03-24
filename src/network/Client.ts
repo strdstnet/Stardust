@@ -5,6 +5,7 @@ interface SplitQueue {
 export class Client {
 
   public static MAX_CHUNKS_PER_TICK = 5
+  public static MAX_PACKETS_TO_KEEP = 30
 
   private logger: Logger = new Logger('Client')
 
@@ -199,6 +200,14 @@ export class Client {
     }
   }
 
+  private async addSentPacket(pk: PacketBundle) {
+    if(this.sentPackets.size > Client.MAX_PACKETS_TO_KEEP) {
+      this.sentPackets.clear()
+    }
+
+    this.sentPackets.set(pk.props.sequenceNumber, pk)
+  }
+
   private processSendQueue() {
     if(!this.sendQueue.length) return
 
@@ -208,7 +217,8 @@ export class Client {
     const [bundles, sequenceNumber, lastSplitId] = bundlePackets(packets, this.sequenceNumber, this.lastSplitId, this.mtuSize)
 
     for(const packet of bundles) {
-      this.sentPackets.set(packet.props.sequenceNumber, packet)
+      // this.sentPackets.set(packet.props.sequenceNumber, packet)
+      this.addSentPacket(packet)
 
       Server.i.send({
         packet,
@@ -337,12 +347,12 @@ export class Client {
     console.log(formId, formData)
   }
 
-  private handleBlockPick(packet: BlockPickRequest) {
+  private async handleBlockPick(packet: BlockPickRequest) {
     const { blockX, blockY, blockZ, addUserData, hotbarSlot } = packet.props
 
     console.log('Got block pick', blockX, blockY, blockZ, addUserData, hotbarSlot)
 
-    const block = this.level.getBlockAt(blockX, blockY, blockZ)
+    const block = await this.level.getBlockAt(blockX, blockY, blockZ)
 
     this.player.inventory.add(ItemMap.get(block.nid))
   }
@@ -544,10 +554,10 @@ export class Client {
     Server.i.level.dropItem(this.player.position.coords, actions[0].newItem, motion, 40)
   }
 
-  private handleUseItem(transaction: ITransaction): void {
+  private async handleUseItem(transaction: ITransaction): Promise<void> {
     const { type, position: pos, itemHolding, face } = transaction
 
-    const block = this.level.getBlockAt(pos.x, pos.y, pos.z)
+    const block = await this.level.getBlockAt(pos.x, pos.y, pos.z)
 
     const item = this.player.inventory.itemHolding
 
@@ -624,7 +634,7 @@ export class Client {
   private async handlePlayerAction(packet: PlayerAction) {
     const { action, actionX, actionY, actionZ, face } = packet.props
 
-    const block = this.level.getBlockAt(actionX, actionY, actionZ)
+    const block = await this.level.getBlockAt(actionX, actionY, actionZ)
     const item = this.player.inventory.itemHolding
 
     switch(action) {
