@@ -60,7 +60,7 @@ export class Client {
   }
 
   public disconnect(message: string, hideScreen = false): void {
-    this.send(new Disconnect({
+    this.sendBatched(new Disconnect({
       hideScreen,
       message,
     }))
