@@ -1,15 +1,18 @@
 name: Build and Publish to GH Packages
 
 on:
-  release:
-    types: [created]
+  push:
+    branches:
+      - main
+
 
 jobs:
   build-and-publish:
-    runs-on: ubuntu-latest
+    runs-on: self-hosted
     steps:
       - uses: actions/checkout@v2
-
+        with:
+          submodules: true
       - uses: actions/setup-node@v1
         with:
           node-version: 14
@@ -19,6 +22,15 @@ jobs:
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NODE_AUTH_TOKEN }}
       - run: npm run build
-      - run: npm publish --tag ${{ github.event.release.tag_name }}
+      - run: npm version patch ----no-git-tag-version
+      - name: Set PKG_VER
+        run: |
+            echo 'PKG_VER<<EOF' >> $GITHUB_ENV
+            node -e "console.log(require('./package.json').version);" >> $GITHUB_ENV
+            echo 'EOF' >> $GITHUB_ENV
+      - uses: EndBug/add-and-commit@v7
+        with:
+          message: ${{ env.PKG_VER }}
+      - run: npm publish
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NODE_AUTH_TOKEN }}
