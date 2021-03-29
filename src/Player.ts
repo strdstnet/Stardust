@@ -302,6 +302,6 @@ export class Player extends Human<PlayerEvents> {
 
 import { Client } from './network/Client'
 import { Login, TextType, TitleType, Gamemode, PlayerPermissions } from '@strdstnet/protocol'
-import { Metadata } from '@strdstnet/utils.binary/lib/Metadata'
+import { Metadata } from '@strdstnet/utils.binary'
 import { Chunk } from './level'
 
