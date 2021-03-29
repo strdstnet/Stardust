@@ -233,6 +233,14 @@ export abstract class Entity<Events extends EventDict = EventDict, Containers ex
     this.metadata.add(MetadataFlag.BOUNDING_BOX_HEIGHT, MetadataType.FLOAT, val)
   }
 
+  public set canClimb(val: boolean) {
+    this.metadata.setGeneric(MetadataGeneric.CAN_CLIMB, val)
+  }
+
+  public get canClimb(): boolean {
+    return this.metadata.getGeneric(MetadataGeneric.CAN_CLIMB)
+  }
+
 }
 
 import { AttributeMap } from './AttributeMap'

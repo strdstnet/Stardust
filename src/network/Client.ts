@@ -567,7 +567,7 @@ export class Client {
 
         Server.i.broadcastLevelEvent(LevelEventType.PARTICLE_DESTROY, pos.x + 0.5, pos.y + 0.5, pos.z + 0.5, block.rid)
         Server.i.level.setBlock(pos.x, pos.y, pos.z, BlockMap.AIR)
-        
+
         if (this.player.gamemode === Gamemode.CREATIVE) return
 
         Server.i.level.dropItem(new Vector3(pos.x + 0.5, pos.y + 0.5, pos.z + 0.5), block.item)
@@ -783,8 +783,10 @@ export class Client {
 
     this.sendBatched(new ItemComponent())
 
-    // // TODO: Name tag visible, can climb, immobile
+    // // TODO: Name tag visible, immobile
     // // https://github.com/pmmp/PocketMine-MP/blob/e47a711494c20ac86fea567b44998f2e24f3dbc7/src/pocketmine/Player.php#L2255
+
+    this.player.canClimb = true
 
     Server.logger.info(`${this.player.name} logged in from ${this.address.ip}:${this.address.port} with MTU ${this.mtuSize}`)
 
