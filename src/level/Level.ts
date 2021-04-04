@@ -67,7 +67,7 @@ export class Level {
 
   public async loadChunk(x: number, z: number): Promise<Chunk> {
     const chunk = await this.generator.chunk(x, z)
-    // this.chunkCache.set(Level.getChunkId(x, z), chunk)
+    this.chunkCache.set(Level.getChunkId(x, z), chunk)
 
     return chunk
   }
