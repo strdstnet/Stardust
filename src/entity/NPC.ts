@@ -1,6 +1,5 @@
 import { AddPlayer } from '@strdstnet/protocol'
-import { MetadataFlag, MetadataType, UUID, Vector3 } from '@strdstnet/utils.binary'
-import { Metadata } from '@strdstnet/utils.binary/lib/Metadata'
+import { MetadataFlag, MetadataType, UUID, Vector3, Metadata } from '@strdstnet/utils.binary'
 import { Event } from '@strdstnet/utils.events'
 import { Entity } from '.'
 import { Player } from '../Player'

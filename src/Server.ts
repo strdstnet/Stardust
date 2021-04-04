@@ -56,8 +56,7 @@ import {
   UnconnectedPong,
   WorldSound,
 } from '@strdstnet/protocol'
-import { Metadata } from '@strdstnet/utils.binary/lib/Metadata'
-import { BinaryData, IAddress, IItem, Vector3 } from '@strdstnet/utils.binary'
+import { BinaryData, IAddress, IItem, Vector3, Metadata } from '@strdstnet/utils.binary'
 
 const DEFAULT_OPTS: ServerOpts = {
   address: '0.0.0.0',
