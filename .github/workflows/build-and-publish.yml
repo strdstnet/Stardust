@@ -1,9 +1,9 @@
 name: Build and Publish to GH Packages
 
 on:
-  push:
-    branches:
-      - main
+#   push:
+#     branches:
+#       - main
 
 
 jobs:
