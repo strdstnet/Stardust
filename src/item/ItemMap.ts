@@ -39,7 +39,6 @@ export class ItemMap {
     if(!item) return null
 
     item.meta = iItem.meta
-    item.count = iItem.count
     item.nbt = iItem.nbt
 
     return item

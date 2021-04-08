@@ -1,78 +1,75 @@
-import { Namespaced } from '@strdstnet/utils.binary'
 import { Event, EventEmitter } from '@strdstnet/utils.events'
 
 type ContainerEvents = {
   slotChanged: Event<{
     slot: number,
-    item: Item,
+    stack: ItemStack,
   }>,
 }
 
 export abstract class Container extends EventEmitter<ContainerEvents> {
 
-  public static MAX_STACK = 64
-
-  public items: Item[]
-
-  constructor(public id: number, public type: ContainerType = ContainerType.CONTAINER, items: Item[] = [], protected name = 'Container', protected size = 0) {
+  constructor(
+    public id: number,
+    public type: ContainerType = ContainerType.CONTAINER,
+    public stacks: ItemStack[],
+    protected name = 'Container',
+    protected size = 0,
+  ) {
     super()
 
-    this.items = []
     for(let i = 0; i < this.size; i++) {
-      this.items[i] = items[i] || ItemMap.AIR
+      this.stacks[i] = stacks[i] || ItemStack.empty
     }
   }
 
-  public get maxStackSize(): number {
-    return Container.MAX_STACK
-  }
-
-  public emitSlotChanged(slot: number, item: Item): void {
+  public emitSlotChanged(slot: number, stack: ItemStack): void {
     this.emit('slotChanged', new Event({
-      slot, item,
+      slot, stack,
     }))
   }
 
-  public set(index: number, item: Item): void {
-    this.items[index] = item
+  public set(index: number, stack: ItemStack): void {
+    this.stacks[index] = stack
 
-    this.emitSlotChanged(index, item)
+    this.emitSlotChanged(index, stack)
   }
 
-  public add(item: Item | null): number {
+  public add(item: Item | null, count = 1) {
     if(!item) return -1 // We allow null here just for convenience
 
-    const index = this.items.findIndex(i => i.nid === Namespaced.AIR || (i.rid === item.rid && i.meta === item.meta && i.canStack && item.canStack && i.count < i.maxCount))
+    const index = this.stacks.findIndex(stack =>
+      stack.empty || (stack.is(item) && !stack.full()))
 
     if(index < 0) throw new Error('No inventory space free')
 
-    const existing = this.get(index)
+    const stack = this.get(index)
 
-    if(existing && existing.nid !== Namespaced.AIR) {
-      existing.count++
+    if(stack && !stack.empty) {
+      const addCount = Math.max(stack.maxCount, stack.count + count)
 
-      this.emitSlotChanged(index, existing)
+      stack.add(addCount)
+
+      if(addCount < count) this.add(item, count - addCount)
+
+      this.emitSlotChanged(index, stack)
     } else {
-      this.set(index, item)
+      this.set(index, new ItemStack(item, count))
     }
-
-    return index
   }
 
-  public get(index: number): Item {
-    const item = this.items[index]
-
-    return item || null
+  public get(index: number): ItemStack {
+    return this.stacks[index]
   }
 
   public clear(): void {
     for(let i = 0; i < this.size; i++) {
-      this.set(i, ItemMap.AIR)
+      this.set(i, ItemStack.empty)
     }
   }
 
 }
 
 import { Item } from '../item/Item'
-import { ItemMap } from '../item/ItemMap'
+import { ItemStack } from '../item/ItemStack'
 import { ContainerType } from '../types/containers'

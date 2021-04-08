@@ -1,6 +1,6 @@
 import { EventEmitter } from 'events'
 import { CompoundTag } from '@strdst/utils.nbt'
-import { IItem, ItemIsDurable, ItemRuntimes } from '@strdstnet/utils.binary'
+import { IBlock, IItem, ItemIsDurable, ItemRuntimes } from '@strdstnet/utils.binary'
 
 export interface IUseOnEntity {
   damage: number,
@@ -10,19 +10,12 @@ export class Item extends EventEmitter implements IItem {
 
   [ItemIsDurable] = false
 
-  public count = 1
-
   public nbt?: CompoundTag = undefined
 
   public baseDamage = 1
 
   constructor(public nid: string, public meta = 0, public maxCount = 64) {
     super()
-  }
-
-  /** @deprecated Use Item.nid instead (namespaced ID) */
-  public get name(): string {
-    return this.nid
   }
 
   public get rid(): number {
@@ -33,17 +26,17 @@ export class Item extends EventEmitter implements IItem {
     return rid
   }
 
-  /** @deprecated Use Item.rid instead */
-  public get runtimeId(): number {
-    return this.rid
-  }
-
-  public get canStack(): boolean {
-    return true
-  }
-
   public get damage(): number {
     return this.meta
+  }
+
+  // TODO:
+  public get block(): IBlock {
+    return {
+      rid: this.rid,
+      nid: this.nid,
+      meta: this.meta,
+    }
   }
 
   public clone(): Item {

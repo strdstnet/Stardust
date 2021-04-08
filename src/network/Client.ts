@@ -962,7 +962,7 @@ export class Client {
   public sendContainer(container: Container): void {
     this.sendBatched(new ContainerNotification({
       containerId: container.id,
-      items: container.items,
+      stacks: container.stacks,
     }))
   }
 
@@ -970,7 +970,7 @@ export class Client {
     this.sendBatched(new ContainerUpdate({
       containerId: container.id,
       slot,
-      item: container.items[slot],
+      stack: container.stacks[slot],
     }))
   }
 
