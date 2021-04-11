@@ -982,8 +982,6 @@ export class Client {
 
 }
 
-import path from 'path'
-import fs from 'fs'
 import Logger from '@bwatton/logger'
 import { Socket } from 'dgram'
 import { Server } from '../Server'
@@ -1005,7 +1003,3 @@ import { CommandHandler } from '../command/CommandHandler'
 import { ACK, AddPlayer, AdventureSettings, AdventureSettingsFlag, Animate, AvailableCommands, BatchedPacket, BiomeDefinitionList, BitFlag, BundledPacket, bundlePackets, ChunkRadiusUpdated, CommandPermissions, CommandRequest, ConnectedPing, ConnectedPong, ConnectionRequest, ConnectionRequestAccepted, ContainerClose, ContainerNotification, ContainerOpen, ContainerTransaction, ContainerTransactionType, ContainerUpdate, CreativeContent, Disconnect, Emote, EntityAnimation, EntityDefinitionList, EntityEquipment, EntityMetadata, EzTransfer, FormRequest, FormResponse, Gamemode, IBundledPacket, Interact, InteractAction, ItemComponent, ITransaction, LevelChunk, LevelSound, Login, MovePlayer, NAK, NetworkChunkPublisher, NewIncomingConnection, Packet, PacketBatch, PacketBundle, Packets, PacketViolationWarning, PartialPacket, PlayerAction, PlayerList, PlayerListType, PlayStatus, PlayStatusType, Protocol, Reliability, RequestChunkRadius, ResourcePackResponseStatus, ResourcePacksInfo, ResourcePacksResponse, ResourcePacksStack, Respawn, RespawnState, SetGamemode, SetLocalPlayerInitialized, SetTitle, StartGame, Text, TextType, TickSync, TitleCommand, TitleType, UpdateAttributes, UseItemOnEntityType, UseItemType, WorldSound, BlockPickRequest, PacketSegmenter, SegmentHandler } from '@strdstnet/protocol'
 import { BinaryData, IAddress, IItem, MetadataGeneric, Namespaced, Vector3, Metadata } from '@strdstnet/utils.binary'
 import { ItemMap } from '../item/ItemMap'
-import { Form, FormButton } from '../form'
-import { SubChunk } from '../level'
-import { Console } from 'node:console'
-
